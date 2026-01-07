@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import categoriesData from "../../data/categories.json";
 import Breadcrumb from "../../layout/Breadcrumb/Breadcrumb";
-import { getProductById } from "../../services/productService";
+// import { getProductById } from "../../services/productService";
 import Badge from "../common/Badge";
 import Button from "../common/Button";
 import ErrorMessage from "../common/ErrorMessage/ErrorMessage";
@@ -19,16 +19,16 @@ export default function ProductDetails({ productId }) {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    getProductById(productId)
-      .then((foundProduct) => {
-        if (!foundProduct) {
-          setError("Producto no encontrado");
-        } else {
-          setProduct(foundProduct);
-        }
-      })
-      .catch(() => setError("Ocurrió un error al cargar el producto."))
-      .finally(() => setLoading(false));
+    // getProductById(productId)
+    //   .then((foundProduct) => {
+    //     if (!foundProduct) {
+    //       setError("Producto no encontrado");
+    //     } else {
+    //       setProduct(foundProduct);
+    //     }
+    //   })
+    //   .catch(() => setError("Ocurrió un error al cargar el producto."))
+    //   .finally(() => setLoading(false));
   }, [productId]);
 
   const resolvedCategory = useMemo(() => {

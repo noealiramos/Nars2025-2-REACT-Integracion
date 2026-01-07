@@ -10,8 +10,8 @@ import Button from "../components/common/Button";
 import ErrorMessage from "../components/common/ErrorMessage/ErrorMessage";
 import Loading from "../components/common/Loading/Loading";
 import { useCart } from "../context/CartContext";
-import { getPaymentMethods } from "../services/paymentMethodService.js";
-import { getShippingAddresses } from "../services/shippingAddressService.js";
+// import { getPaymentMethods } from "../services/paymentMethodService.js";
+// import { getShippingAddresses } from "../services/shippingAddressService.js";
 import {
   STORAGE_KEYS,
   normalizeAddress,
@@ -105,10 +105,10 @@ export default function Checkout() {
             .map((addr, idx) => normalizeAddress(addr, idx))
             .filter(Boolean);
         } else {
-          const addrList = await getShippingAddresses();
-          addressesWithIds = (addrList || [])
-            .map((addr, idx) => normalizeAddress(addr, idx))
-            .filter(Boolean);
+          // const addrList = await getShippingAddresses();
+          // addressesWithIds = (addrList || [])
+          //   .map((addr, idx) => normalizeAddress(addr, idx))
+          //   .filter(Boolean);
         }
 
         if (savedPayments && savedPayments.length > 0) {
@@ -116,10 +116,10 @@ export default function Checkout() {
             .map((pay, idx) => normalizePayment(pay, idx))
             .filter(Boolean);
         } else {
-          const payList = await getPaymentMethods();
-          normalizedPayments = (payList || [])
-            .map((pay, idx) => normalizePayment(pay, idx))
-            .filter(Boolean);
+          // const payList = await getPaymentMethods();
+          // normalizedPayments = (payList || [])
+          //   .map((pay, idx) => normalizePayment(pay, idx))
+          //   .filter(Boolean);
         }
 
         if (!isMounted) return;

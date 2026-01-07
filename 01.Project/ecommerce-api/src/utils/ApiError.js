@@ -11,7 +11,7 @@ export class ApiError extends Error {
     }
   }
 }
-
+//DRY
 // Errores comunes predefinidos
 export class BadRequestError extends ApiError {
   constructor(message = "Bad Request") {

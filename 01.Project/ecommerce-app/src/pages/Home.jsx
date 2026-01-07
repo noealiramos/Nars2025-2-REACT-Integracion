@@ -4,7 +4,7 @@ import List from "../components/List/List";
 import ErrorMessage from "../components/common/ErrorMessage/ErrorMessage";
 import Loading from "../components/common/Loading/Loading";
 import homeImages from "../data/homeImages.json";
-import { fetchProducts } from "../services/productService";
+// import { fetchProducts } from "../services/productService";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -16,7 +16,7 @@ export default function Home() {
       try {
         setLoading(true);
         setError(null);
-        const productsData = await fetchProducts();
+        const productsData =[]// await fetchProducts();
         setProducts(productsData.products);
       } catch (err) {
         setError("No se pudieron cargar los productos. Intenta más tarde.");

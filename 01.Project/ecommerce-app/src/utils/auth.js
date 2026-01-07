@@ -1,4 +1,4 @@
-import { fetchUsers } from "../services/userService";
+// import { fetchUsers } from "../services/userService";
 
 const validUsers = {
   "admin@email.com": "admin123",
@@ -13,7 +13,7 @@ export async function login(email, password) {
     };
   }
 
-  const users = await fetchUsers();
+  const users =[] //await fetchUsers();
   const user = users.find((u) => u.email === email);
 
   if (user) {

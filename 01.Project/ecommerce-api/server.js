@@ -1,3 +1,4 @@
+import cors from 'cors'
 import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
@@ -15,6 +16,10 @@ setupGlobalErrorHandlers();
 
 export const app = express();
 dbConnection();
+app.use(cors({
+  origin: process.env.CORS_ORIGIN?.split(','),
+  credentials: true
+}));
 
 // Middlewares en el orden correcto
 app.use(express.json());
