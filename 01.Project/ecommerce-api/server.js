@@ -1,4 +1,3 @@
-import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
@@ -20,10 +19,6 @@ dbConnection();
 // Middlewares en el orden correcto
 app.use(express.json());
 app.use(logger);
-app.use(cors({
-  origin: process.env.CORS_ORIGIN?.split(',') || 'http://localhost:4200',
-  credentials: true
-}));
 
 // Rate limiting global para toda la API
 app.use("/api", apiLimiter);
