@@ -5,20 +5,19 @@ import ErrorMessage from "../components/common/ErrorMessage/ErrorMessage";
 import Loading from "../components/common/Loading/Loading";
 import homeImages from "../data/homeImages.json";
 import { getProducts } from "../services/productService";
+import Button from "../components/common/Button";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
-  const [name,setName]= useState('');
-  
-  
+  const [limit, setLimit] = useState(10);
+  const [display, setDisplay] = useState("grid");
 
   useEffect(() => {
     const loadProducts = async () => {
       try {
-
         setLoading(true);
         setError(null);
         const productsData = await getProducts();
@@ -35,6 +34,16 @@ export default function Home() {
     loadProducts();
   }, [page]);
 
+  const toggleDisplay = () => {
+    // if (display ==="grid") {
+    //   setDisplay("list-vertical");
+    // }else{
+    //   setDisplay('grid');
+    // }
+
+    display === "grid" ? setDisplay("list-vertical") : setDisplay("grid");
+  };
+
   return (
     <div>
       <BannerCarousel banners={homeImages} />
@@ -43,11 +52,14 @@ export default function Home() {
       ) : error ? (
         <ErrorMessage>{error}</ErrorMessage>
       ) : products.length > 0 ? (
-        <List
-          title="Productos recomendados"
-          products={products}
-          layout="grid"
-        />
+        <div>
+          <Button onClick={toggleDisplay}>{display}</Button>
+          <List
+            title="Productos recomendados"
+            products={products}
+            layout={display}
+          />
+        </div>
       ) : (
         <ErrorMessage>No hay productos en el catálogo</ErrorMessage>
       )}
