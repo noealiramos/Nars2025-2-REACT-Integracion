@@ -4,19 +4,25 @@ import List from "../components/List/List";
 import ErrorMessage from "../components/common/ErrorMessage/ErrorMessage";
 import Loading from "../components/common/Loading/Loading";
 import homeImages from "../data/homeImages.json";
-// import { fetchProducts } from "../services/productService";
+import { getProducts } from "../services/productService";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [name,setName]= useState('');
+  
+  
 
   useEffect(() => {
     const loadProducts = async () => {
       try {
+
         setLoading(true);
         setError(null);
-        const productsData =[]// await fetchProducts();
+        const productsData = await getProducts();
+        console.log(productsData);
         setProducts(productsData.products);
       } catch (err) {
         setError("No se pudieron cargar los productos. Intenta más tarde.");
@@ -27,7 +33,7 @@ export default function Home() {
     };
 
     loadProducts();
-  }, []);
+  }, [page]);
 
   return (
     <div>
