@@ -1,0 +1,26 @@
+secuencia=>>>
+* npm create vite@latest pokedex-minimalista -- --template react
+* cd pokedex-minimalista
+* npm install
+* npm run dev
+
+
+6) Subir a GitHub (entrega)
+
+Si no tienes repo todavía:
+
+git init
+git add .
+git commit -m "Sprint 1: Pokedex minimalista con fetch y hooks"
+
+
+Luego:
+
+Crea un repo en GitHub (ej. pokedex-minimalista)
+
+Conecta y sube (GitHub te da los comandos exactos). Normalmente:
+
+git remote add origin <URL_DE_TU_REPO>
+git branch -M main
+git push -u origin main
+
