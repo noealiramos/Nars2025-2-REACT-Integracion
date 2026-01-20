@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-// import { login } from "../../services/userService";
+import { login } from "../../services/auth";
 import Button from "../common/Button";
 import ErrorMessage from "../common/ErrorMessage/ErrorMessage";
 import Input from "../common/Input";
@@ -18,7 +18,8 @@ export default function LoginForm({ onSuccess }) {
     setLoading(true);
     setError("");
     try {
-      // const result = await login(email, password);
+      debugger;
+      const result = await login(email, password);
       onSuccess();
       window.location.reload();
     } catch (err) {

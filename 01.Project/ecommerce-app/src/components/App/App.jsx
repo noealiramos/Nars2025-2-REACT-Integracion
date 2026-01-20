@@ -15,6 +15,7 @@ import SearchResults from "../../pages/SearchResults";
 import Settings from "../../pages/Setttings";
 import WishList from "../../pages/WishList";
 import GuestOnly from "../../pages/GuestOnly";
+import Register from "../../pages/Register";
 
 function App() {
   return (

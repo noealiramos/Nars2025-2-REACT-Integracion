@@ -1,24 +1,42 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-// import { Register } from "../../services/userService";
+import { register } from "../../services/auth";
 import Button from "../common/Button";
 import ErrorMessage from "../common/ErrorMessage/ErrorMessage";
 import Input from "../common/Input";
 import "./RegisterForm.css";
 
 export default function RegisterForm({ onSuccess }) {
+  const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  const validateEmail = (email) => {
+    return email.match(
+      ///nomclatura para validar correo
+    );
+
+  };
+  
+  const validateForm = ()=> {
+    if(validateEmail(email)) {
+      setError("para que el email que capturaste es incorrecto");
+      return false;
+    }
+
+  };
+  
+  
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
     try {
-      // const result = await Register(email, password);
+      debugger;
+      const result = await register({ displayName, email, password });
       onSuccess();
       window.location.reload();
     } catch (err) {
@@ -29,10 +47,21 @@ export default function RegisterForm({ onSuccess }) {
   };
 
   return (
-    <div className="Register-container">
-      <div className="Register-card">
-        <h2>Iniciar Sesión</h2>
-        <form className="Register-form" onSubmit={onSubmit}>
+    <div className="register-container">
+      <div className="register-card">
+        <h2>Registrar usuario</h2>
+        <form className="register-form" onSubmit={onSubmit}>
+          <div className="form-group">
+            <Input
+              id="displayName"
+              label="Display Name: "
+              type="text"
+              value={displayName}
+              onChange={(event) => setDisplayName(event.target.value)}
+              placeholder="Ingresa tu nombre completo"
+              required
+            />
+          </div>
           <div className="form-group">
             <Input
               id="email"
@@ -62,7 +91,7 @@ export default function RegisterForm({ onSuccess }) {
             {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
           </Button>
         </form>
-        <div className="Register-footer">
+        <div className="register-footer">
           <Link to="/">Volver al inicio</Link>
         </div>
       </div>

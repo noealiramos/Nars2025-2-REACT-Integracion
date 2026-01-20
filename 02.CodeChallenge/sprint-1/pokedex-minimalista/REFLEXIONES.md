@@ -22,3 +22,7 @@ Convierte el body de la respuesta a un objeto JS. Devuelve una promesa con los d
 ## 5) ¿Por qué no usar index como key?
 Porque si la lista cambia de orden o se filtra, el index cambia y React puede reciclar elementos incorrectamente.
 El name es estable y único.
+
+
+## NOTAS:
+Objetivo: definir el resultado técnico que a lograr: cargar datos desde una API usando fetch, guardarlos con useState, y disparar la petición con useEffect.
