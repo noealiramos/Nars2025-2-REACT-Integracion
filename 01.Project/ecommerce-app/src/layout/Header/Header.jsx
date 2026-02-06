@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Icon from "../../components/common/Icon/Icon";
 import { useCart } from "../../context/CartContext";
 import { useTheme } from "../../context/ThemeContext";
-import { getCurrentUser, isAuthenticated, logout } from "../../utils/auth";
+import { useAuth } from "../../context/AuthContext";
 import Navigation from "../Navigation/Navigation";
 import "./Header.css";
 
@@ -16,29 +16,12 @@ export default function Header() {
   const { getTotalItems } = useCart();
   const totalItems = getTotalItems();
   const navigate = useNavigate();
-
-  // Simular estado de autenticación - reemplazar con tu lógica real
-  const [isAuth, setIsAuth] = useState(true);
-  const [user, setUser] = useState(getCurrentUser());
+  const { user, isAuth, logout } = useAuth();
 
   // Referencias para manejo de clicks fuera
   const userMenuRef = useRef(null);
   const mobileMenuRef = useRef(null);
   const searchInputRef = useRef(null);
-
-  useEffect(() => {
-    const updateAuthState = () => {
-      setIsAuth(isAuthenticated());
-      setUser(getCurrentUser());
-    };
-
-    window.addEventListener("storage", updateAuthState);
-    updateAuthState();
-
-    return () => {
-      window.addEventListener("storage", updateAuthState);
-    };
-  }, []);
 
   // Cerrar menús con Escape y clicks fuera
   useEffect(() => {
@@ -117,8 +100,6 @@ export default function Header() {
 
   const handleLogout = () => {
     logout();
-    setIsAuth(false);
-    setUser(null);
     setIsUserMenuOpen(false);
     setIsMobileMenuOpen(false);
     window.location.reload();

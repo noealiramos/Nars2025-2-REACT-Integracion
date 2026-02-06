@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../../services/auth";
+import { useAuth } from "../../context/AuthContext";
 import Button from "../common/Button";
 import ErrorMessage from "../common/ErrorMessage/ErrorMessage";
 import Input from "../common/Input";
@@ -9,24 +9,20 @@ import "./LoginForm.css";
 export default function LoginForm({ onSuccess }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login, loading } = useAuth();
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
-    try {
-      const result = await login(email, password);
-      if (result) {
-        onSuccess();
-        window.location.reload();
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+
+    const result = await login(email, password);
+    if (result.success) {
+      if (onSuccess) onSuccess();
+      navigate("/");
+    } else {
+      setError(result.error);
     }
   };
 
