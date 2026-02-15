@@ -1,18 +1,21 @@
 export const addressInitialValues = {
-    name : "",
-    address1: "",
-    address2: "",
-    postalCode: "",
+  address: {
+    name: "",
+    address: "",
     city: "",
+    state: "",
+    postalCode: "",
     country: "",
-    reference: "",
-    default: false,
+    phone: "",
+    isDefault: "",
+    addressType: "", // "home", "work", "other"
+  },
 };
 
-export const hasErrors = (errors)=> {
-    const walk = (obj)=>
-        Object.values(obj).some((v)=> 
-        v && typeof v === "objetc" ? walk(v) : Boolean(v),
-);
-return walk (errors);
+export const hasErrors = (errors) => {
+  const walk = (obj) =>
+    Object.values(obj).some((v) =>
+      v && typeof v === "object" ? walk(v) : Boolean(v),
+    );
+  return walk(errors);
 };

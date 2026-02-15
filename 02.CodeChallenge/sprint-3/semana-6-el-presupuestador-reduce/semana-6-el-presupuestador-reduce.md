@@ -148,7 +148,7 @@ Pista:
 - Escribe 2–3 frases: ¿qué hace reduce exactamente? ¿Por qué el total se actualiza solo?
 - ¿Qué pasaría si olvidas el valor inicial (0) en reduce?
 
-🚀 Si quieres ir más allá (opcional)
+🚀 Y tenemos que ir más allá!!
 - Añade validación: no permitir montos negativos o concepto vacío.
 - Crea un presupuesto inicial y muestra el saldo restante (presupuesto - total).
 - Añade categorías a los gastos y calcula totales por categoría.

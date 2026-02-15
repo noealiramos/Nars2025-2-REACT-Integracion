@@ -1,0 +1,28 @@
+.theme-btn {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 120ms ease, background-color 180ms ease, color 180ms ease;
+}
+
+.theme-btn:active {
+  transform: scale(0.98);
+}
+
+/* Botón según el tema RESUELTO */
+.app.light .theme-btn {
+  background: #ffffff;
+  color: #101114;
+}
+
+.app.dark .theme-btn {
+  background: #1b2230;
+  color: #f3f4f6;
+}
+
+/* Extra opcional: si la preferencia es auto, darle un borde distintivo */
+html[data-theme-preference="auto"] .theme-btn {
+  border-style: dashed;
+}

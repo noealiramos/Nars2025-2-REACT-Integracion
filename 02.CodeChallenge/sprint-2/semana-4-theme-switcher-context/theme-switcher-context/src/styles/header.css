@@ -1,0 +1,30 @@
+.header {
+  width: 100%;
+  padding: 14px 0; /* ya no empuja a los lados */
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+/* este es el truco: centramos el contenido del header */
+.header-inner {
+  width: min(980px, 92%);
+  margin: 0 auto;
+  padding: 0 20px; /* aire interno */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  font-size: 20px;
+}
+
+.title {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}

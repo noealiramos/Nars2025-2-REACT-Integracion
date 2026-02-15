@@ -2,7 +2,7 @@
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--gap) * 0.5);
+  gap: calc(var(--gap) * 0.35);
 }
 
 .input-label {
@@ -11,29 +11,50 @@
   color: var(--text);
 }
 
-.input-field {
-  padding: calc(var(--gap) * 0.75) var(--gap);
+.formInput {
+  width: 100%;
+  padding: calc(var(--gap) * 0.65) calc(var(--gap) * 0.75);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--r2);
   background: var(--surface);
   color: var(--text);
   font-size: 0.875rem;
   line-height: 1.4;
-  transition: all 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.input-field:focus {
+.formInput:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
 }
 
-.input-field::placeholder {
+.formInput::placeholder {
   color: var(--muted);
 }
 
-.input-field:disabled {
+.formInput:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   background: var(--bg);
+}
+
+.formInput.isInvalid {
+  border-color: var(--color-red);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
+}
+
+.formInput.isInvalid:focus {
+  border-color: var(--color-red);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.formError {
+  color: var(--color-red);
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.3;
 }

@@ -1,0 +1,51 @@
+/* Layout base */
+.app {
+  min-height: 100vh;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  width: min(980px, 92%);
+  margin: 24px auto;
+  flex: 1;
+}
+
+.card {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.footer {
+  padding: 14px 0;
+  text-align: center;
+  opacity: 0.8;
+  font-size: 14px;
+}
+
+/* Temas */
+.app.light {
+  background-color: #f7f7fb;
+  color: #101114;
+}
+
+.app.dark {
+  background-color: #0f1115;
+  color: #f3f4f6;
+}
+
+/* Card según tema */
+.app.light .card {
+  background: #ffffff;
+}
+
+.app.dark .card {
+  background: #141821;
+}

@@ -24,3 +24,13 @@ git remote add origin <URL_DE_TU_REPO>
 git branch -M main
 git push -u origin main
 
+
+
+npm create vite@latest theme-switcher-context -- --template react
+cd theme-switcher-context
+npm install
+npm run dev
+
+
+npm create vite@latest semana-5-generador-de-pizzas -- --template react
+npm create vite@latest semana-6-el-presupuestador-reduce -- --template react

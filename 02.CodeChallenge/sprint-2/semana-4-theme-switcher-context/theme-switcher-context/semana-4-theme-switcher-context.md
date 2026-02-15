@@ -136,7 +136,7 @@ Pista:
 - Escribe 2–3 frases: ¿qué diferencia viste entre pasar props y usar Context?
 - ¿En qué casos usarías Context vs props normales?
 
-🚀 Si quieres ir más allá (opcional)
+🚀 Y para ir más allá
 - Añade más temas (ej: 'auto' que detecta preferencia del sistema).
 - Persiste el tema en localStorage para que se mantenga al recargar.
 - Crea un custom hook `useTheme()` que encapsule `useContext(ThemeContext)`.

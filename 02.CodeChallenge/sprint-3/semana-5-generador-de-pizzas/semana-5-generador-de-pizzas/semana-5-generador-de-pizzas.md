@@ -161,7 +161,7 @@ Pista:
 - Escribe 2–3 frases: ¿qué diferencia viste entre manejar un array y un string en el estado?
 - ¿Qué pasó cuando intentaste mutar el array directamente sin copiarlo?
 
-🚀 Si quieres ir más allá (opcional)
+🚀 Hay que ir más allá
 - Añade un campo de texto para el nombre del cliente (input controlado).
 - Crea un contador de precio que sume según ingredientes y tamaño.
 - Guarda el pedido en un array de "pedidos confirmados" y muéstralos en una lista.

@@ -1,50 +1,71 @@
 .payment-form {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: clamp(16px, 3vw, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
 }
 
 .payment-form h3 {
-  margin-bottom: 20px;
-  color: #333;
-  text-align: center;
+  margin: 0;
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  font-weight: 600;
+  color: var(--text);
 }
 
-.form-row {
+.payment-form .form-row {
   display: flex;
-  gap: 16px;
+  gap: var(--gap);
 }
 
-.form-row > div {
+.payment-form .form-row > * {
   flex: 1;
+  min-width: 0;
 }
 
-.form-checkbox {
-  margin: 16px 0;
+.payment-form .form-checkbox {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: calc(var(--gap) * 0.5);
 }
 
-.form-checkbox input[type="checkbox"] {
+.payment-form .form-checkbox input[type="checkbox"] {
   width: 16px;
   height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
 }
 
-.form-checkbox label {
-  color: #666;
-  font-size: 0.9rem;
+.payment-form .form-checkbox label {
+  font-size: 0.875rem;
+  color: var(--muted);
+  cursor: pointer;
 }
 
-.form-actions {
-  margin-top: 24px;
+.payment-form .submitError {
+  color: var(--color-red);
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  border-radius: var(--r2);
+  padding: calc(var(--gap) * 0.5) var(--gap);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  margin: 0;
+}
+
+.payment-form .form-actions {
   display: flex;
+  gap: calc(var(--gap) * 0.75);
   justify-content: flex-end;
+  padding-top: calc(var(--gap) * 0.5);
+  border-top: 1px solid var(--border);
 }
 
-.form-actions button {
-  min-width: 150px;
+@media (max-width: 480px) {
+  .payment-form .form-row {
+    flex-direction: column;
+  }
 }
