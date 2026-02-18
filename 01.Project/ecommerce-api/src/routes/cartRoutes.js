@@ -7,7 +7,8 @@ import {
   getCartById,
   getCartByUser,
   getCarts,
-  updateCart,
+  updateCart
+  updateCartItem,
 } from "../controllers/cartController.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
 import isAdmin from "../middlewares/isAdminMiddleware.js";
@@ -27,6 +28,7 @@ router.get(
   validate,
   getCartByUser
 );
+
 router.post(
   "/cart/add-product",
   authMiddleware,
@@ -38,6 +40,8 @@ router.post(
   validate,
   addProductToCart
 );
+
+
 router.get(
   "/cart/:id",
   authMiddleware,
@@ -62,6 +66,8 @@ router.post(
   validate,
   createCart
 );
+
+rutasNuevasM ???
 router.put(
   "/cart/:id",
   authMiddleware,
@@ -78,6 +84,7 @@ router.put(
   validate,
   updateCart
 );
+
 router.delete(
   "/cart/:id",
   authMiddleware,
@@ -85,5 +92,21 @@ router.delete(
   validate,
   deleteCart
 );
+
+router.put("/cart/update-item",
+  authMiddleware,
+  [bodyMongoIdValidation("userId","User ID"),
+  [bodyMongoIdValidation("productID","Product ID"),
+    quantityValidation("quantity",true),
+    ],
+    validate,
+    updateCartItem,
+  );
+
+router.delete(
+  "/car/remove-item/:productId", authMiddleware,[
+  mongoIdValidation("userId","User ID"),
+]);
+
 
 export default router;

@@ -135,7 +135,41 @@ async function addProductToCart(req, res, next) {
   } catch (error) {
     next(error);
   }
+
+
+  async function clearCartItem(req,res,netx){
+    try{
+      const {userId,productId,quantity}= req.body;
+      const cart = await Cart.findOne({user: userId});
+      if(!cart){
+        return res.status(404).json({message: "cart not found"});
+      }
+    }
+  }
+
 }
+
+
+async function removeCartItem(req,res,netx){
+  try{
+    const {userId} = req.body;
+    const [productId]= req.params;
+    
+    if(!cart){
+      return res.status (404).json({message: "cart not found"});
+    }
+
+
+    const car = await Cart.dinOner
+  }catch (error){
+    next(error;)
+  }
+}
+
+cart.productos = cart.productsfilter(
+  (item)= item
+)
+
 
 export {
   addProductToCart,
@@ -145,4 +179,5 @@ export {
   getCartByUser,
   getCarts,
   updateCart,
+  updateCartItems, remove cartItem, ClearSpice
 };
