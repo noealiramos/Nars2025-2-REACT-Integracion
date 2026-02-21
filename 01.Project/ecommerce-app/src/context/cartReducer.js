@@ -18,9 +18,9 @@ export const cartInitialState = {
 
 export function cartReducer(state, action) {
   switch (action.type) {
-    case CART_ACTIONS.INIT:{
+    case CART_ACTIONS.INIT: {
       const items = action.payload || [];
-      return {...state,items};
+      return { ...state, items };
     }
     case CART_ACTIONS.ADD: {
       const p = action.payload; //{id,name,price,image,}

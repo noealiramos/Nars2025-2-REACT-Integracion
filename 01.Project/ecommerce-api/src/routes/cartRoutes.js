@@ -7,8 +7,10 @@ import {
   getCartById,
   getCartByUser,
   getCarts,
-  updateCart
+  updateCart,
   updateCartItem,
+  removeCartItem,
+  clearCartItems,
 } from "../controllers/cartController.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
 import isAdmin from "../middlewares/isAdminMiddleware.js";
@@ -20,13 +22,15 @@ import {
 } from "../middlewares/validators.js";
 
 const router = express.Router();
+
 router.get("/cart", authMiddleware, isAdmin, getCarts);
+
 router.get(
   "/cart/user/:id",
   authMiddleware,
   [mongoIdValidation("id", "User ID")],
   validate,
-  getCartByUser
+  getCartByUser,
 );
 
 router.post(
@@ -38,9 +42,8 @@ router.post(
     quantityValidation("quantity", true),
   ],
   validate,
-  addProductToCart
+  addProductToCart,
 );
-
 
 router.get(
   "/cart/:id",
@@ -48,8 +51,9 @@ router.get(
   isAdmin,
   [mongoIdValidation("id", "Cart ID")],
   validate,
-  getCartById
+  getCartById,
 );
+
 router.post(
   "/cart",
   authMiddleware,
@@ -64,12 +68,11 @@ router.post(
     quantityValidation("products.*.quantity"),
   ],
   validate,
-  createCart
+  createCart,
 );
 
-rutasNuevasM ???
 router.put(
-  "/cart/:id",
+  "/cart-item/:id",
   authMiddleware,
   [
     mongoIdValidation("id", "Cart ID"),
@@ -82,7 +85,7 @@ router.put(
     quantityValidation("products.*.quantity", true),
   ],
   validate,
-  updateCart
+  updateCart,
 );
 
 router.delete(
@@ -90,23 +93,39 @@ router.delete(
   authMiddleware,
   [mongoIdValidation("id", "Cart ID")],
   validate,
-  deleteCart
+  deleteCart,
 );
 
-router.put("/cart/update-item",
+// Rutas nuevas
+router.put(
+  "/cart/update-item",
   authMiddleware,
-  [bodyMongoIdValidation("userId","User ID"),
-  [bodyMongoIdValidation("productID","Product ID"),
-    quantityValidation("quantity",true),
-    ],
-    validate,
-    updateCartItem,
-  );
+  [
+    bodyMongoIdValidation("userId", "User ID"),
+    bodyMongoIdValidation("productId", "Product ID"),
+    quantityValidation("quantity", true),
+  ],
+  validate,
+  updateCartItem,
+);
 
 router.delete(
-  "/car/remove-item/:productId", authMiddleware,[
-  mongoIdValidation("userId","User ID"),
-]);
+  "/cart/remove-item/:productId",
+  authMiddleware,
+  [
+    mongoIdValidation("productId", "Product ID"),
+    bodyMongoIdValidation("userId", "User ID"),
+  ],
+  validate,
+  removeCartItem,
+);
 
+router.post(
+  "/cart/clear",
+  authMiddleware,
+  [bodyMongoIdValidation("userId", "User ID")],
+  validate,
+  clearCartItems,
+);
 
 export default router;

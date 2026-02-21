@@ -6,9 +6,8 @@ import {
   useReducer,
   useState,
 } from "react";
-
-import {useAuth} from "./AuthContext";
-import *as cartService from "../services/cartService";
+import { useAuth } from "./AuthContext";
+import * as cartService from "../services/cartService";
 import { CART_ACTIONS, cartInitialState, cartReducer } from "./cartReducer";
 
 const CartContext = createContext();
@@ -21,8 +20,7 @@ export function CartProvider({ children }) {
     lastSyncError: null,
   });
 
-  const {isAuth} = useAuth();
-
+  const { isAuth, user } = useAuth();
 
   // Funciones auxiliares:
   const getTotalItems = () =>
@@ -35,52 +33,43 @@ export function CartProvider({ children }) {
     localStorage.setItem("cart", JSON.stringify(state.items));
   }, [state.items]);
 
-useEffect(()=>{
-  const initializaCart= async ()=> {
-    if(isAuth){
-      try{
-        const backendCart = await cartService.getCart();
-        if(backendCart?.items){
-          dispatch({type:CART_ACTIONS.INIT,payload: backendCart.items});
+  useEffect(() => {
+    const initializeCart = async () => {
+      if (isAuth && user?._id) {
+        try {
+          const backendCart = await cartService.getCart(user._id);
+          if (backendCart?.items) {
+            dispatch({ type: CART_ACTIONS.INIT, payload: backendCart.items });
+          }
+        } catch (error) {
+          console.error(error);
         }
-      }catch (error){
-        console.error(error);
       }
+    };
+
+    initializeCart();
+  }, [isAuth]);
+
+  const syncToBackend = async (syncFn) => {
+    if (!isAuth) return;
+
+    setSyncState({ syncing: true, lastSyncError: null });
+    try {
+      await syncFn();
+      setSyncState({ syncing: false, lastSyncError: null });
+    } catch (error) {
+      console.error(error);
+      setSyncState({ syncing: false, lastSyncError: error });
     }
   };
-  initializaCart();
-},[isAuth]);
-
-
-const syncToBackend = async (syncFn)=> {
-  if(!isAuth) return;
-
-  setSyncState({syncing:true, lastSyncError: null});
-  try {
-    await syncFn();
-    setSyncState({syncing: false, lastSyncError:null});
-
-  } catch (error){
-    console.error(error);
-    setSyncState({syncing:false, lastSyncError: error});
-  }
-};
-
-
-
-
-
-
 
   const removeFromCart = (productId) => {
     dispatch({ type: CART_ACTIONS.REMOVE, payload: productId });
+
+    syncToBackend(async () => {
+      await cartService.removeToCart(user._id, productId);
+    });
   };
-
-  syncToBackend(async ()=>{
-    await cartService.removeFromCart(productId);
-  });
-};
-
 
   const updateQuantity = (productId, newQuantity) => {
     dispatch({
@@ -88,26 +77,25 @@ const syncToBackend = async (syncFn)=> {
       payload: { _id: productId, quantity: newQuantity },
     });
 
-    syncToBackend(async ()=>{
-    await cartService.updateCartItem(productId,newQuantity);
-  });
-
+    syncToBackend(async () => {
+      await cartService.updateCartItem(user._id, productId, newQuantity);
+    });
   };
 
   const addToCart = (product, quantity = 1) => {
     dispatch({ type: CART_ACTIONS.ADD, payload: { ...product, quantity } });
 
-    syncToBackend(async ()=>{
-    await cartService.addToCart(product._id, quantity);
-  });
+    syncToBackend(async () => {
+      await cartService.addToCart(user._id, product._id, quantity);
+    });
   };
 
   const clearCart = () => {
     dispatch({ type: CART_ACTIONS.CLEAR });
 
-    syncToBackend(async ()=>{
-    await cartService.clearCart();
-  });
+    syncToBackend(async () => {
+      await cartService.clearCart(user._id);
+    });
   };
 
   const value = useMemo(
@@ -125,6 +113,7 @@ const syncToBackend = async (syncFn)=> {
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+}
 
 export function useCart() {
   const context = useContext(CartContext);

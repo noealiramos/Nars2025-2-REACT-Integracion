@@ -158,7 +158,7 @@ Pista:
 - Escribe 2–3 frases: ¿qué ventaja viste en tests automatizados vs probar manualmente?
 - ¿Cómo te ayudarían los tests cuando trabajes en equipo?
 
-🚀 Si quieres ir más allá (opcional)
+🚀 Hay que ir más hayá!!!
 - Añade un test para verificar que el botón existe en el documento.
 - Usa `userEvent` en lugar de `fireEvent` (simula mejor el comportamiento real).
 - Escribe tests para el componente del Presupuestador (agregar/eliminar gastos).
