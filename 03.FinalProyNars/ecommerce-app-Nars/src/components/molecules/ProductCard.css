@@ -1,0 +1,112 @@
+.product-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.9rem;
+  border: 1px solid #1f2937;
+  background: radial-gradient(circle at top, #020617, #020617 40%, #020617);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+
+  /* Importante para que todas las tarjetas tengan el mismo tamaño */
+  height: 100%;
+}
+
+/* === ÁREA DE IMAGEN (altura fija) === */
+.product-card__image-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top, #111827, #020617);
+  position: relative;
+
+  height: 230px; /* Ajusta si quieres más alto o más bajo */
+  overflow: hidden;
+}
+
+.product-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-card__image-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: #9ca3af;
+}
+
+/* === CUERPO DE LA TARJETA === */
+.product-card__body {
+  padding: 0.9rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1; /* Para empujar los botones hacia abajo */
+}
+
+.product-card__name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f9fafb;
+  margin: 0;
+  min-height: 2.4rem; /* ayuda a alinear títulos de largo distinto */
+}
+
+.product-card__material {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.product-card__material span {
+  color: #e5e7eb;
+}
+
+.product-card__price {
+  color: #fbbf24;
+  font-weight: 600;
+  margin-top: 0.2rem;
+}
+
+/* === BOTONES ABAJO SIEMPRE === */
+.product-card__actions {
+  margin-top: auto; /* empuja hacia abajo */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.product-card__link {
+  border-radius: 999px;
+  border: 1px solid #374151;
+  padding: 0.45rem 0.8rem;
+  font-size: 0.78rem;
+  color: #e5e7eb;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.product-card__link:hover {
+  background-color: #111827;
+  border-color: #4b5563;
+}
+
+
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.products-grid > article {
+  height: 100%;
+}
