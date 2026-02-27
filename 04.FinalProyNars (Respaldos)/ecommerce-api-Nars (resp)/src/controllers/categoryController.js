@@ -50,7 +50,7 @@ async function getCategoryById(req, res, next) {
       return res.status(404).json({ message: "Categoría no encontrada" });
     }
     res.status(200).json(category);
-  } catch (error) {
+  } catch (error) { 
     return next(error);
   }
 }
@@ -58,14 +58,15 @@ async function getCategoryById(req, res, next) {
 async function createCategory(req, res, next) {
   try {
     const { name, description, parentCategory, imageURL } = req.body;
-    const newCategory = await Category.create({
+    const newCategory = new Category({
       name,
       description,
       parentCategory: parentCategory || null,
       imageURL: imageURL || null,
     });
+    await newCategory.save();
     res.status(201).json(newCategory);
-  } catch (error) {
+  } catch (error) { 
     return next(error);
   }
 }
@@ -85,8 +86,8 @@ async function updateCategory(req, res, next) {
       return res.status(404).json({ message: "Categoría no encontrada" });
     }
     res.status(200).json(updatedCategory);
-  } catch (error) {
-    return next(error);
+  } catch (error) { 
+    return next(error); 
   }
 }
 
@@ -97,12 +98,12 @@ async function deleteCategory(req, res, next) {
     if (!deletedCategory) {
       return res.status(404).json({ message: "Categoría no encontrada" });
     }
-    return res.status(200).json({
+    return res.status(200).json({ 
       status: 'success',
-      message: 'Categoría eliminada correctamente',
+      message: 'Categoría eliminada correctamente', 
       data: deletedCategory
     });
-  } catch (error) {
+  } catch (error) { 
     return next(error);
   }
 }
@@ -156,8 +157,8 @@ async function searchCategory(req, res, next) {
       sort: sortField,
       order: sortOrder === -1 ? 'desc' : 'asc'
     });
-  } catch (error) {
-    return next(error);
+  } catch (error) { 
+    return next(error); 
   }
 }
 
