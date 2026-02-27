@@ -18,7 +18,7 @@ import catalogRoutes from './catalogRoutes.js';
 const router = express.Router();
 
 
- 
+
 /* ---- Con prefijo aquí (los módulos internos NO traen su base) ---- */
 router.use('/auth', authRoutes);                // /api/auth/...
 router.use('/users', userRoutes);               // /api/users/...
@@ -58,7 +58,7 @@ router.get('/health', async (req, res) => {
       mongoOk = true;
     }
   } catch (err) {
-    mongoStatus.error = err.message;
+    mongoStatus.error = 'Database connection error';
   }
 
   const overallStatus = mongoOk ? 'ok' : 'error';

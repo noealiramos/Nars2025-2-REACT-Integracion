@@ -18,13 +18,14 @@ export async function getProducts(req, res, next) {
   try {
     const { page, limit, skip } = getPagination(req, 10);
 
-    const { q, category, material, design, stone } = req.query;
+    const { category, material, design, stone } = req.query;
+    const q = typeof req.query.q === 'string' ? req.query.q.trim() : '';
     const filter = {};
     if (q) filter.name = { $regex: q, $options: 'i' };
     if (category) filter.category = category;          // se espera ObjectId válido
     if (material) filter.material = material;
-    if (design)   filter.design = design;
-    if (stone)    filter.stone = stone;
+    if (design) filter.design = design;
+    if (stone) filter.stone = stone;
 
     const sortField = req.query.sort || 'name';
     const order = (req.query.order || 'asc').toLowerCase() === 'desc' ? -1 : 1;
@@ -108,8 +109,8 @@ export async function createProduct(req, res, next) {
 
     // Validaciones enum
     const vMaterial = pickEnum(material, MATERIALS, 'material');
-    const vDesign   = pickEnum(design, DESIGNS, 'design');
-    const vStone    = stone ? pickEnum(stone, STONES, 'stone') : null;
+    const vDesign = pickEnum(design, DESIGNS, 'design');
+    const vStone = stone ? pickEnum(stone, STONES, 'stone') : null;
 
     // Regla: si design = Con piedra mineral → stone obligatorio
     if (vDesign === 'Con piedra mineral' && !vStone) {
@@ -139,12 +140,12 @@ export async function updateProduct(req, res, next) {
 
     // Validar enums si vienen
     if (updates.material) updates.material = pickEnum(updates.material, MATERIALS, 'material');
-    if (updates.design)   updates.design   = pickEnum(updates.design, DESIGNS, 'design');
-    if (updates.stone)    updates.stone    = pickEnum(updates.stone, STONES, 'stone');
+    if (updates.design) updates.design = pickEnum(updates.design, DESIGNS, 'design');
+    if (updates.stone) updates.stone = pickEnum(updates.stone, STONES, 'stone');
 
     // Resolver design/stone efectivos después del update
     const nextDesign = updates.design ?? current.design;
-    const nextStone  = Object.prototype.hasOwnProperty.call(updates, 'stone')
+    const nextStone = Object.prototype.hasOwnProperty.call(updates, 'stone')
       ? updates.stone
       : current.stone;
 
@@ -185,7 +186,7 @@ export async function deleteProduct(req, res, next) {
 export async function searchProducts(req, res, next) {
   try {
     const { page, limit, skip } = getPagination(req, 10);
-    const { q } = req.query;
+    const q = typeof req.query.q === 'string' ? req.query.q.trim() : '';
     if (!q) return res.json({ page, limit, total: 0, items: [] });
 
     const regex = { $regex: q, $options: 'i' };

@@ -30,8 +30,8 @@ router.get('/products/search', [
   query('minPrice').optional().isFloat({ min: 0 }),
   query('maxPrice').optional().isFloat({ min: 0 }),
   query('inStock').optional().isBoolean().withMessage('inStock must be boolean'),
-  query('sort').optional().isIn(['name','price','createdAt']),
-  query('order').optional().isIn(['asc','desc']),
+  query('sort').optional().isIn(['name', 'price', 'createdAt']),
+  query('order').optional().isIn(['asc', 'desc']),
   query('page').optional().isInt({ min: 1 }),
   query('limit').optional().isInt({ min: 1, max: 100 }),
 ], validate, searchProducts);
@@ -67,7 +67,5 @@ router.delete('/products/:id', [
   param('id').isMongoId(),
 ], validate, deleteProduct);
 
-// BÚSQUEDA existente
-router.get('/products/search', searchProducts);
 
 export default router;

@@ -25,12 +25,14 @@ export const getAllUsers = async (req, res, next) => {
     }
     if (req.query.role) filter.role = req.query.role;
     if (req.query.q) {
-      const q = String(req.query.q).trim();
-      filter.$or = [
-        { displayName: { $regex: q, $options: 'i' } },
-        { email: { $regex: q, $options: 'i' } },
-        { phone: { $regex: q, $options: 'i' } },
-      ];
+      const q = typeof req.query.q === 'string' ? req.query.q.trim() : '';
+      if (q) {
+        filter.$or = [
+          { displayName: { $regex: q, $options: 'i' } },
+          { email: { $regex: q, $options: 'i' } },
+          { phone: { $regex: q, $options: 'i' } },
+        ];
+      }
     }
 
     const [total, items] = await Promise.all([
@@ -169,7 +171,7 @@ export const deleteUser = async (req, res, next) => {
 export const searchUser = async (req, res, next) => {
   try {
     const { page, limit, skip } = getPagination(req, 10);
-    const q = (req.query.q || '').trim();
+    const q = typeof req.query.q === 'string' ? req.query.q.trim() : '';
     if (!q) return res.status(400).json({ message: 'q is required' });
     const filter = {
       $or: [

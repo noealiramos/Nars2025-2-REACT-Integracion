@@ -28,7 +28,8 @@ describe('errorHandler middleware', () => {
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.json).toHaveBeenCalledWith({
             status: 'error',
-            message: 'Internal Server Error'
+            message: 'Test Error',
+            stack: 'stack trace'
         });
     });
 });

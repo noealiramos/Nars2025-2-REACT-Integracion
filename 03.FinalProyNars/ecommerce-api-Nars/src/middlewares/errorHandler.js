@@ -10,10 +10,10 @@ const errorHandler = (err, req, res, next) => {
   const dateTime = new Date();
 
 
-const rid = req.requestId || '-';
-const status = res.statusCode || 500;
-const logMessage = `${dateTime.toISOString()} | ${rid} | ${status} | ${req.method} ${req.url} | ${err.message} | ${err.stack}\n`;
-//const logMessage = `${dateTime.toISOString()} | ${req.method} ${req.url} | ${err.message} | ${err.stack}\n`;
+  const rid = req.requestId || '-';
+  const status = res.statusCode || 500;
+  const logMessage = `${dateTime.toISOString()} | ${rid} | ${status} | ${req.method} ${req.url} | ${err.message} | ${err.stack}\n`;
+  //const logMessage = `${dateTime.toISOString()} | ${req.method} ${req.url} | ${err.message} | ${err.stack}\n`;
 
   // Crear directorio si no existe
   const logDir = path.dirname(logFilePath);
@@ -29,9 +29,13 @@ const logMessage = `${dateTime.toISOString()} | ${rid} | ${status} | ${req.metho
 
   // No enviar respuesta si ya se envió
   if (!res.headersSent) {
-    res.status(500).json({
+    const statusCode = err.status || err.statusCode || 500;
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    res.status(statusCode).json({
       status: 'error',
-      message: 'Internal Server Error'
+      message: isProduction && statusCode === 500 ? 'Internal Server Error' : err.message,
+      ...(isProduction ? {} : { stack: err.stack })
     });
   }
 
