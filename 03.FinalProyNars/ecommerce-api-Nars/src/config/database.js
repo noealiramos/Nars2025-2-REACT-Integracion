@@ -9,7 +9,7 @@ export default async function dbConnection() {
 
     // Materializa colecciones/índices al iniciar modelos (sin seed)
     mongoose.set('autoCreate', true);
-    mongoose.set('autoIndex', true);
+    mongoose.set('autoIndex', process.env.NODE_ENV !== 'production');
 
     await mongoose.connect(`${MONGODB_URI}/${MONGODB_DB}`);
     console.log('MongoDB is connected');
