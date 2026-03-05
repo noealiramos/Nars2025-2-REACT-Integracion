@@ -1,0 +1,36 @@
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.8rem;
+}
+
+.form-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #e5e7eb;
+}
+
+.form-input {
+  border-radius: 0.4rem;
+  border: 1px solid #374151;
+  background-color: rgba(15, 23, 42, 0.85);
+  padding: 0.45rem 0.7rem;
+  font-size: 0.9rem;
+  color: #f9fafb;
+}
+
+.form-input::placeholder {
+  color: #6b7280;
+}
+
+.form-input:focus {
+  outline: 2px solid #fbbf24;
+  outline-offset: 1px;
+  border-color: #fbbf24;
+}
+
+.form-error {
+  font-size: 0.75rem;
+  color: #f87171;
+}

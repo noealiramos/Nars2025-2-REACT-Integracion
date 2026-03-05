@@ -1,5 +1,5 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import './src/config/env.js';
+import env from './src/config/env.js';
 
 import express from 'express';
 import helmet from 'helmet';
@@ -9,7 +9,7 @@ import { rateLimit } from 'express-rate-limit';
 import dbConnection from './src/config/database.js';
 import setupGlobalErrorHandlers from './src/middlewares/globalErrorHandler.js';
 import requestId from './src/middlewares/requestId.js';
-import logger from './src/middlewares/logger.js';
+import { requestLogger } from './src/middlewares/logger.js';
 import errorHandler from './src/middlewares/errorHandler.js';
 import routes from './src/routes/index.js';
 
@@ -34,9 +34,7 @@ const app = express();
 app.use(helmet());
 
 // 2. CORS con Whitelist
-const whitelist = process.env.CORS_WHITELIST
-  ? process.env.CORS_WHITELIST.split(',')
-  : ['http://localhost:3000', 'http://localhost:5173'];
+const whitelist = env.CORS_WHITELIST;
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -77,7 +75,7 @@ app.use(express.json());
 
 // Observabilidad
 app.use(requestId);
-app.use(logger);
+app.use(requestLogger);
 
 import mongoose from 'mongoose';
 
@@ -109,10 +107,10 @@ app.use((req, res) => {
 // Error handler al final
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 3000;
-if (process.env.NODE_ENV !== 'test') {
+const PORT = env.PORT;
+if (env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT} in ${env.NODE_ENV} mode`);
   });
 }
 

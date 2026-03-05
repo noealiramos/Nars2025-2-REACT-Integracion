@@ -1,20 +1,28 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import fs from 'fs';
 import setupGlobalErrorHandlers from '../../../src/middlewares/globalErrorHandler.js';
+import logger from '../../../src/middlewares/logger.js';
 
-vi.mock('fs');
+vi.mock('../../../src/middlewares/logger.js', () => ({
+    default: {
+        error: vi.fn(),
+        info: vi.fn()
+    },
+    requestLogger: vi.fn()
+}));
 
 describe('globalErrorHandler setup', () => {
     let processOnSpy;
+    let processExitSpy;
 
     beforeEach(() => {
         vi.clearAllMocks();
         processOnSpy = vi.spyOn(process, 'on').mockImplementation(() => { });
-        fs.existsSync.mockReturnValue(true);
+        processExitSpy = vi.spyOn(process, 'exit').mockImplementation(() => { });
     });
 
     afterEach(() => {
         processOnSpy.mockRestore();
+        processExitSpy.mockRestore();
     });
 
     it('debe registrar manejadores para uncaughtException y unhandledRejection', () => {
@@ -24,7 +32,7 @@ describe('globalErrorHandler setup', () => {
         expect(processOnSpy).toHaveBeenCalledWith('unhandledRejection', expect.any(Function));
     });
 
-    it('el manejador de uncaughtException debe intentar escribir en el log', () => {
+    it('el manejador de uncaughtException debe intentar escribir en el log y salir', () => {
         setupGlobalErrorHandlers();
 
         // Obtener el callback registrado
@@ -33,10 +41,11 @@ describe('globalErrorHandler setup', () => {
         const error = new Error('Fatal crash');
         uncaughtHandler(error);
 
-        expect(fs.appendFileSync).toHaveBeenCalledWith(
-            expect.stringContaining('error.log'),
-            expect.stringContaining('UNCAUGHT EXCEPTION | Fatal crash')
-        );
+        expect(logger.error).toHaveBeenCalledWith(expect.objectContaining({
+            message: 'UNCAUGHT EXCEPTION',
+            error: 'Fatal crash'
+        }));
+        expect(processExitSpy).toHaveBeenCalledWith(1);
     });
 
     it('el manejador de unhandledRejection debe intentar escribir en el log', () => {
@@ -46,15 +55,9 @@ describe('globalErrorHandler setup', () => {
 
         rejectionHandler('Promise failed', {});
 
-        expect(fs.appendFileSync).toHaveBeenCalledWith(
-            expect.stringContaining('error.log'),
-            expect.stringContaining('UNHANDLED REJECTION | Promise failed')
-        );
-    });
-
-    it('debe crear el directorio de logs si no existe', () => {
-        fs.existsSync.mockReturnValue(false);
-        setupGlobalErrorHandlers();
-        expect(fs.mkdirSync).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({ recursive: true }));
+        expect(logger.error).toHaveBeenCalledWith(expect.objectContaining({
+            message: 'UNHANDLED REJECTION',
+            reason: 'Promise failed'
+        }));
     });
 });

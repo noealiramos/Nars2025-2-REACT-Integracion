@@ -1,0 +1,33 @@
+.page {
+  padding: 1.25rem 0 2rem;
+}
+
+.page--center {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.page__status {
+  font-size: 0.9rem;
+  color: #9ca3af;
+}
+
+.page__status--error {
+  color: #f87171;
+}
+
+.home-hero {
+  margin-bottom: 1.1rem;
+}
+
+.home-hero__text {
+  margin-top: 0.3rem;
+  max-width: 32rem;
+}
+
+.home-products {
+  margin-top: 0.25rem;
+}
