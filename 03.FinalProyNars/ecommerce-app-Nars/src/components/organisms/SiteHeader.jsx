@@ -1,12 +1,24 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { ThemeToggle } from "../atoms/ThemeToggle";
+import { SearchBox } from "../molecules/SearchBox";
 import "./SiteHeader.css";
 
+/**
+ * SiteHeader Organism
+ * Componente de cabecera principal.
+ */
 export function SiteHeader() {
   const { totalItems, clearCart } = useCart();
   const { isAuthenticated, user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSearch = (query) => {
+    // Redirigir a la página principal con el parámetro de búsqueda
+    // En una implementación real con API, esto dispararía una nueva carga de productos
+    navigate(`/?search=${encodeURIComponent(query)}`);
+  };
 
   return (
     <header className="site-header">
@@ -24,6 +36,11 @@ export function SiteHeader() {
             </span>
           </div>
         </Link>
+
+        {/* Search Bar - Molecule */}
+        <div className="site-header__search">
+          <SearchBox onSearch={handleSearch} />
+        </div>
 
         <nav className="site-header__nav">
           <NavLink
@@ -46,10 +63,10 @@ export function SiteHeader() {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="site-header__icon"
-                viewBox="0 24 24"
-                aria-hidden="true"
+                viewBox="0 0 24 24"
                 width="20"
                 height="20"
+                fill="currentColor"
               >
                 <path d="M2.25 3a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 .73.57L5.53 5.5H20.25a.75.75 0 0 1 .73.94l-2 7.5a.75.75 0 0 1-.73.56H8.03l-.3 1.2h11.02a.75.75 0 0 1 0 1.5H7.25a.75.75 0 0 1-.73-.94l.6-2.36-2.1-8.37H3a.75.75 0 0 1-.75-.75Z" />
                 <path d="M8.25 19.5A1.75 1.75 0 1 0 10 21.25 1.75 1.75 0 0 0 8.25 19.5Zm8.25 0A1.75 1.75 0 1 0 18.25 21.25 1.75 1.75 0 0 0 16.5 19.5Z" />
@@ -67,10 +84,10 @@ export function SiteHeader() {
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="site-header__icon"
-                  viewBox="0 24 24"
-                  aria-hidden="true"
+                  viewBox="0 0 24 24"
                   width="20"
                   height="20"
+                  fill="currentColor"
                 >
                   <path d="M12 2.25a9.75 9.75 0 1 0 9.75 9.75A9.76 9.76 0 0 0 12 2.25Zm0 4.5A3 3 0 1 1 9 9.75 3 3 0 0 1 12 6.75Zm0 11.4a7.2 7.2 0 0 1-4.95-1.98 4.72 4.72 0 0 1 4.95-3.27 4.72 4.72 0 0 1 4.95 3.27A7.2 7.2 0 0 1 12 18.15Z" />
                 </svg>
@@ -98,7 +115,6 @@ export function SiteHeader() {
             </NavLink>
           )}
 
-          <div className="site-header__divider" style={{ width: "1px", height: "24px", background: "var(--border)", margin: "0 0.5rem" }}></div>
           <ThemeToggle />
         </nav>
       </div>

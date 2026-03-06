@@ -9,6 +9,12 @@
 
   /* Importante para que todas las tarjetas tengan el mismo tamaño */
   height: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--elev-3);
 }
 
 /* === ÁREA DE IMAGEN (altura fija) === */

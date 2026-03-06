@@ -18,7 +18,7 @@ export default function Input({
   const className = "";
 
   return (
-    <div className={`input-group ${className}`}>
+    <div className={`input-group ${className}`} data-cy={`${id}-group`}>
       {label && (
         <label htmlFor={id} className="input-label">
           {label}
@@ -26,7 +26,8 @@ export default function Input({
       )}
       <input
         id={id}
-        className={`formInput ${invalid} ? "isInvalid" : ""`}
+        data-cy={id}
+        className={`formInput ${invalid ? "isInvalid" : ""}`}
         name={name}
         type={type}
         value={value}
@@ -38,7 +39,7 @@ export default function Input({
         aria-describedby={invalid ? errorId : undefined}
       />
       {invalid ? (
-        <p className="formError" errorId>
+        <p className="formError" id={errorId} data-cy={`${id}-error`}>
           {error}
         </p>
       ) : null}

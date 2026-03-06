@@ -8,29 +8,41 @@
 .form-label {
   font-size: 0.85rem;
   font-weight: 500;
-  color: #e5e7eb;
+  color: var(--text);
 }
 
 .form-input {
-  border-radius: 0.4rem;
-  border: 1px solid #374151;
-  background-color: rgba(15, 23, 42, 0.85);
-  padding: 0.45rem 0.7rem;
-  font-size: 0.9rem;
-  color: #f9fafb;
+  border-radius: var(--r2);
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  color: var(--text);
+  transition: all 0.2s ease;
 }
 
 .form-input::placeholder {
-  color: #6b7280;
+  color: var(--muted);
+  opacity: 0.6;
 }
 
 .form-input:focus {
-  outline: 2px solid #fbbf24;
-  outline-offset: 1px;
-  border-color: #fbbf24;
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.2);
+}
+
+.form-field--error .form-input {
+  border-color: var(--color-red);
+}
+
+.form-field--error .form-input:focus {
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
 }
 
 .form-error {
   font-size: 0.75rem;
-  color: #f87171;
+  color: var(--color-red);
+  margin-top: 2px;
+  font-weight: 500;
 }

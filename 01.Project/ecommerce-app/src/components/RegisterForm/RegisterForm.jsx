@@ -253,7 +253,7 @@ export default function RegisterForm({ onSuccess }) {
           </div>
           {error && <ErrorMessage>{error}</ErrorMessage>}
 
-          <Button disabled={loading} type="submit" variant="primary">
+          <Button disabled={loading} type="submit" variant="primary" data-cy="register-submit">
             {loading ? "Registrando..." : "Registrar"}
           </Button>
         </form>

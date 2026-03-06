@@ -9,6 +9,7 @@ export default function Button({
   variant = "primary",
   size = "base",
   className = "",
+  ...props
 }) {
   const buttonClasses = [
     "btn",
@@ -25,6 +26,7 @@ export default function Button({
       className={buttonClasses}
       onClick={onClick}
       disabled={disabled}
+      {...props}
     >
       {children}
     </button>

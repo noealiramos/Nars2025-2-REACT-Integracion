@@ -4,6 +4,7 @@ import { useCart } from "../contexts/CartContext";
 import { Button } from "../components/atoms/Button";
 import { Heading } from "../components/atoms/Heading";
 import { Text } from "../components/atoms/Text";
+import { ProductDetailSkeleton } from "../components/molecules/ProductDetailSkeleton";
 import "./ProductDetailPage.css";
 
 export function ProductDetailPage() {
@@ -12,11 +13,7 @@ export function ProductDetailPage() {
   const { addItem } = useCart();
 
   if (loading) {
-    return (
-      <div className="page-status-wrapper">
-        <p className="page__status">Cargando producto...</p>
-      </div>
-    );
+    return <ProductDetailSkeleton />;
   }
 
   if (error) {
@@ -27,7 +24,13 @@ export function ProductDetailPage() {
     );
   }
 
-  if (!product) return null;
+  if (!product) {
+    return (
+      <div className="page-status-wrapper">
+        <p className="page__status">El producto no existe.</p>
+      </div>
+    );
+  }
 
   const formattedPrice = new Intl.NumberFormat("es-MX", {
     style: "currency",
@@ -45,7 +48,9 @@ export function ProductDetailPage() {
             loading="lazy"
           />
         ) : (
-          <span className="product-detail__image-placeholder">Sin imagen</span>
+          <div className="product-detail__image-placeholder">
+            <span>Sin imagen</span>
+          </div>
         )}
       </div>
       <div className="product-detail__info">

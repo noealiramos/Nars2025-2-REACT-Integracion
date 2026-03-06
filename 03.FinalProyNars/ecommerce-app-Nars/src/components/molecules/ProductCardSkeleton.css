@@ -1,0 +1,22 @@
+.product-card-skeleton {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.9rem;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    height: 100%;
+    overflow: hidden;
+}
+
+.product-card-skeleton__body {
+    padding: 0.9rem 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    flex: 1;
+}
+
+.product-card-skeleton__actions {
+    margin-top: auto;
+    padding-top: 1rem;
+}

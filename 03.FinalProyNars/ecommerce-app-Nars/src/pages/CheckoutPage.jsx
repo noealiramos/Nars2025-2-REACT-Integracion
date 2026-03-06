@@ -7,6 +7,13 @@ import { useCart } from "../contexts/CartContext";
 import { useAuth } from "../contexts/AuthContext";
 import { appendOrderToHistory, STORAGE_KEYS } from "../utils/storageHelpers";
 import { SHIPPING_COST } from "../constants/orderConstants";
+import {
+  validateEmail,
+  validateCardNumber,
+  validateExpiry,
+  validateCVV,
+  formatCardNumber
+} from "../utils/validationHelpers";
 import "./CheckoutPage.css";
 
 export function CheckoutPage() {
@@ -18,7 +25,6 @@ export function CheckoutPage() {
   const [email, setEmail] = useState(user?.email || "");
   const [address, setAddress] = useState("");
 
-  // 🔹 Datos de pago (simulados)
   const [cardAlias, setCardAlias] = useState("");
   const [cardNumber, setCardNumber] = useState("");
   const [cardHolder, setCardHolder] = useState("");
@@ -27,30 +33,39 @@ export function CheckoutPage() {
   const [saveAsDefault, setSaveAsDefault] = useState(false);
 
   const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  // Si no hay items en el carrito, redirigir al inicio
   useEffect(() => {
     if (!items.length) {
       navigate("/");
     }
   }, [items, navigate]);
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!name.trim()) newErrors.name = "El nombre es obligatorio";
+    if (!validateEmail(email)) newErrors.email = "Email inválido";
+    if (!address.trim()) newErrors.address = "La dirección es obligatoria";
+    if (!cardAlias.trim()) newErrors.cardAlias = "El alias de la tarjeta es obligatorio";
+    if (!validateCardNumber(cardNumber)) newErrors.cardNumber = "Número de tarjeta inválido (16 dígitos)";
+    if (!cardHolder.trim()) newErrors.cardHolder = "El nombre del titular es obligatorio";
+    if (!validateExpiry(cardExpiry)) newErrors.cardExpiry = "Fecha inválida (MM/AA)";
+    if (!validateCVV(cardCvv)) newErrors.cardCvv = "CVV inválido (3-4 dígitos)";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleCardNumberChange = (e) => {
+    const formatted = formatCardNumber(e.target.value);
+    setCardNumber(formatted);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validaciones básicas
-    if (
-      !name ||
-      !email ||
-      !address ||
-      !cardAlias ||
-      !cardNumber ||
-      !cardHolder ||
-      !cardExpiry ||
-      !cardCvv
-    ) {
-      return;
-    }
+    if (!validateForm()) return;
     if (!items.length) return;
 
     setSubmitting(true);
@@ -59,10 +74,10 @@ export function CheckoutPage() {
     const shippingCost = SHIPPING_COST;
     const total = totalPrice + iva + shippingCost;
 
-    const last4 = cardNumber.slice(-4);
-    const paymentMethodSummary = `Tarjeta ${
-      cardAlias ? cardAlias + " " : ""
-    }terminación ${last4 || "****"}`;
+    const cleanCardNumber = cardNumber.replace(/\s/g, "");
+    const last4 = cleanCardNumber.slice(-4);
+    const paymentMethodSummary = `Tarjeta ${cardAlias ? cardAlias + " " : ""
+      }terminación ${last4 || "****"}`;
 
     const order = {
       id: `ORD-${Date.now()}`,
@@ -85,11 +100,8 @@ export function CheckoutPage() {
       createdAt: new Date().toISOString(),
     };
 
-    // Guardar orden
     appendOrderToHistory(order);
     localStorage.setItem(STORAGE_KEYS.lastOrder, JSON.stringify(order));
-
-    // Vaciar carrito
     clearCart();
 
     setSubmitting(false);
@@ -105,75 +117,78 @@ export function CheckoutPage() {
       </p>
 
       <form onSubmit={handleSubmit} className="checkout-form">
-        <TextInput
-          id="name"
-          label="Nombre completo"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Tu nombre"
-          required
-        />
-        <TextInput
-          id="email"
-          type="email"
-          label="Correo electrónico"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="tucorreo@ejemplo.com"
-          required
-        />
-        <TextInput
-          id="address"
-          label="Dirección de envío"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          placeholder="Calle, número, colonia, ciudad, estado"
-          required
-        />
+        <div className="form-section">
+          <Heading level={3}>Información de Envío</Heading>
+          <TextInput
+            id="name"
+            label="Nombre completo"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Tu nombre"
+            error={errors.name}
+            required
+          />
+          <TextInput
+            id="email"
+            type="email"
+            label="Correo electrónico"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="tucorreo@ejemplo.com"
+            error={errors.email}
+            required
+          />
+          <TextInput
+            id="address"
+            label="Dirección de envío"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="Calle, número, colonia, ciudad, estado"
+            error={errors.address}
+            required
+          />
+        </div>
 
-        {/* Separador antes del método de pago */}
         <hr className="section-divider" />
 
-        {/* 🔹 Sección de método de pago (datos de tarjeta) */}
         <section className="checkout-payment card-section">
-          <p className="checkout-payment__title">Método de pago (simulado)</p>
+          <Heading level={3}>Método de Pago (Simulado)</Heading>
           <p className="checkout-payment__hint">
             No se realizan cargos reales. Puedes ingresar datos de ejemplo.
           </p>
 
           <div className="payment-form">
-            {/* Alias */}
             <TextInput
               id="cardAlias"
               label="Alias de la tarjeta"
               value={cardAlias}
               onChange={(e) => setCardAlias(e.target.value)}
               placeholder="Ej. Bancomer, Nómina, Crédito oro"
+              error={errors.cardAlias}
               required
             />
 
-            {/* Número */}
             <TextInput
               id="cardNumber"
               label="Número de tarjeta"
               type="text"
               value={cardNumber}
-              onChange={(e) => setCardNumber(e.target.value)}
+              onChange={handleCardNumberChange}
               placeholder="4444 4444 4444 5555"
+              error={errors.cardNumber}
               required
             />
 
-            {/* Titular */}
             <TextInput
               id="cardHolder"
               label="Nombre del titular"
               value={cardHolder}
               onChange={(e) => setCardHolder(e.target.value)}
               placeholder="Nombre tal como aparece en la tarjeta"
+              error={errors.cardHolder}
               required
             />
 
-            {/* Expiración y CVV */}
             <div className="payment-form__inline">
               <TextInput
                 id="cardExpiry"
@@ -182,6 +197,7 @@ export function CheckoutPage() {
                 value={cardExpiry}
                 onChange={(e) => setCardExpiry(e.target.value)}
                 placeholder="MM/AA"
+                error={errors.cardExpiry}
                 required
               />
               <TextInput
@@ -191,11 +207,11 @@ export function CheckoutPage() {
                 value={cardCvv}
                 onChange={(e) => setCardCvv(e.target.value)}
                 placeholder="***"
+                error={errors.cardCvv}
                 required
               />
             </div>
 
-            {/* Checkbox */}
             <label className="payment-form__checkbox">
               <input
                 type="checkbox"
@@ -207,7 +223,6 @@ export function CheckoutPage() {
           </div>
         </section>
 
-        {/* Separador después del método de pago */}
         <hr className="section-divider" />
 
         <div className="checkout-form__actions">

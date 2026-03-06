@@ -12,6 +12,13 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.55rem 0;
+  gap: 1.5rem;
+}
+
+.site-header__search {
+  flex: 1;
+  display: flex;
+  justify-content: center;
 }
 
 .site-header__brand {
@@ -22,11 +29,16 @@
 }
 
 .site-header__logo {
-    width: 5rem;       /* mismo ancho */
-  height: 5rem;      /* mismo alto => base del círculo */
-  border-radius: 50%;  /* lo hace circular */
-  object-fit: cover;   /* rellena sin deformar */
-  border: 2px solid #fbbf24;  /* opcional: borde dorado elegante */
+  width: 5rem;
+  /* mismo ancho */
+  height: 5rem;
+  /* mismo alto => base del círculo */
+  border-radius: 50%;
+  /* lo hace circular */
+  object-fit: cover;
+  /* rellena sin deformar */
+  border: 2px solid #fbbf24;
+  /* opcional: borde dorado elegante */
   overflow: hidden;
 }
 
@@ -87,9 +99,11 @@
 
 /* Íconos del header (carrito y usuario) */
 .site-header__icon {
-  width: 22px !important;   /* Aumenta el tamaño */
+  width: 22px !important;
+  /* Aumenta el tamaño */
   height: 22px !important;
-  fill: #fbbf24 !important;  /* Color dorado */
+  fill: #fbbf24 !important;
+  /* Color dorado */
   margin-right: 4px;
   vertical-align: middle;
   opacity: 0.95;

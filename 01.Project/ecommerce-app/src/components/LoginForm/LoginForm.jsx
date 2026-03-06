@@ -56,7 +56,7 @@ export default function LoginForm({ onSuccess }) {
 
           {error && <ErrorMessage>{error}</ErrorMessage>}
 
-          <Button disabled={loading} type="submit" variant="primary">
+          <Button disabled={loading} type="submit" variant="primary" data-cy="login-submit">
             {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
           </Button>
         </form>

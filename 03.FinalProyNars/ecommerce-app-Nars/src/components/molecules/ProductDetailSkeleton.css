@@ -1,0 +1,34 @@
+.product-detail-skeleton {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-top: 2rem;
+}
+
+.product-detail-skeleton__info {
+    display: flex;
+    flex-direction: column;
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.mb-8 {
+    margin-bottom: 2rem;
+}
+
+.my-8 {
+    margin: 2rem 0;
+}
+
+@media (max-width: 768px) {
+    .product-detail-skeleton {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}

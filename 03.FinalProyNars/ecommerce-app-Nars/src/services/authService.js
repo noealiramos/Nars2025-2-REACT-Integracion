@@ -1,47 +1,32 @@
-import users from "../data/users";
 import { STORAGE_KEYS } from "../utils/storageHelpers";
-
-/**
- * Simula una validación de credenciales.
- * En un entorno real, esto se haría en el backend.
- */
-const MOCK_PASSWORD = "123456";
+import { apiClient } from "./apiClient";
 
 export async function login(email, password) {
-  // Simulación de retraso de red
-  await new Promise((resolve) => setTimeout(resolve, 800));
+  // Ahora llamamos al backend real en lugar de validar con datos locales
+  const response = await apiClient("/auth/login", {
+    body: { email, password },
+  });
 
-  const user = users.find((u) => u.email === email);
-
-  if (!user || password !== MOCK_PASSWORD) {
+  if (!response.success) {
     return {
       success: false,
-      error: "Email o contraseña incorrectos",
+      error: response.error || "Email o contraseña incorrectos",
     };
   }
 
-  if (!user.active) {
-    return {
-      success: false,
-      error: "Esta cuenta está desactivada",
-    };
+  // Se asume que el backend devuelve un objeto user y un token
+  const { user, token } = response.data;
+
+  if (user && token) {
+    localStorage.setItem(STORAGE_KEYS.authToken, token);
+    localStorage.setItem(STORAGE_KEYS.userData, JSON.stringify(user));
+    return { success: true, user };
   }
 
-  // Generamos un "token" algo más complejo (simulado)
-  const tokenPayload = {
-    sub: user.id,
-    email: user.email,
-    iat: Math.floor(Date.now() / 1000),
-    exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // 24h
+  return {
+    success: false,
+    error: "Estructura de respuesta inválida del servidor",
   };
-
-  const token = btoa(JSON.stringify(tokenPayload)).replace(/=/g, "");
-  const userWithLoginDate = { ...user, loginDate: new Date().toISOString() };
-
-  localStorage.setItem(STORAGE_KEYS.authToken, token);
-  localStorage.setItem(STORAGE_KEYS.userData, JSON.stringify(userWithLoginDate));
-
-  return { success: true, user: userWithLoginDate };
 }
 
 export function logout() {
@@ -56,14 +41,5 @@ export function getCurrentUser() {
 
 export function isAuthenticated() {
   const token = localStorage.getItem(STORAGE_KEYS.authToken);
-  if (!token) return false;
-
-  try {
-    // Verificación básica del token (expiración)
-    const payload = JSON.parse(atob(token));
-    const now = Math.floor(Date.now() / 1000);
-    return payload.exp > now;
-  } catch (e) {
-    return false;
-  }
+  return token !== null;
 }
