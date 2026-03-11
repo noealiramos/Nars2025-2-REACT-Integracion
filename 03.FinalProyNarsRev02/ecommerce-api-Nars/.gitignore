@@ -11,6 +11,7 @@ pnpm-debug.log*
 # Environment variables (MUY IMPORTANTE)
 #######################################
 .env
+.envProduction
 .env.*
 !.env.example
 
