@@ -1,41 +1,43 @@
-import { fetchUsers } from "./userService";
+import { authApi } from "../api/authApi";
 import { STORAGE_KEYS } from "../utils/storageHelpers";
 
-const validUsers = {
-  "ali.ramos@mail.com": "123456",
-  "george.lucas@mail.com": "123456",
-  "max.ramos@mail.com": "123456",
-  "noe.saldivar@mail.com": "123456"
-};
-
 export async function login(email, password) {
-  if (!validUsers[email] || validUsers[email] !== password) {
+  try {
+    const data = await authApi.login(email, password);
+    
+    // El backend devuelve { accessToken, refreshToken, user }
+    if (data.accessToken) {
+      localStorage.setItem(STORAGE_KEYS.accessToken, data.accessToken);
+      localStorage.setItem(STORAGE_KEYS.refreshToken, data.refreshToken);
+      localStorage.setItem(STORAGE_KEYS.userData, JSON.stringify(data.user));
+      return { success: true, user: data.user };
+    }
+
     return {
       success: false,
-      error: "Email o contraseña incorrectos",
+      error: "Error inesperado al iniciar sesión",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.response?.data?.message || "Email o contraseña incorrectos",
     };
   }
-
-  const users = await fetchUsers();
-  const user = users.find((u) => u.email === email);
-
-  if (user) {
-    const token = btoa(`${email}:${Date.now()}`);
-    const userWithLoginDate = { ...user, loginDate: new Date().toISOString() };
-    localStorage.setItem(STORAGE_KEYS.authToken, token);
-    localStorage.setItem(STORAGE_KEYS.userData, JSON.stringify(userWithLoginDate));
-    return { success: true, user: userWithLoginDate };
-  }
-
-  return {
-    success: false,
-    error: "Usuario no encontrado",
-  };
 }
 
-export function logout() {
-  localStorage.removeItem(STORAGE_KEYS.authToken);
-  localStorage.removeItem(STORAGE_KEYS.userData);
+export async function logout() {
+  try {
+    const refreshToken = localStorage.getItem(STORAGE_KEYS.refreshToken);
+    if (refreshToken) {
+      await authApi.logout(refreshToken);
+    }
+  } catch (error) {
+    console.error("Error during API logout:", error);
+  } finally {
+    localStorage.removeItem(STORAGE_KEYS.accessToken);
+    localStorage.removeItem(STORAGE_KEYS.refreshToken);
+    localStorage.removeItem(STORAGE_KEYS.userData);
+  }
 }
 
 export function getCurrentUser() {
@@ -44,6 +46,6 @@ export function getCurrentUser() {
 }
 
 export function isAuthenticated() {
-  const token = localStorage.getItem(STORAGE_KEYS.authToken);
-  return token !== null;
+  const token = localStorage.getItem(STORAGE_KEYS.accessToken);
+  return !!token;
 }

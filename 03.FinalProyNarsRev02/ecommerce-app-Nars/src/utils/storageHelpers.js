@@ -1,6 +1,8 @@
 export const STORAGE_KEYS = {
   cart: "cart",
-  authToken: "authToken",
+  accessToken: "accessToken",
+  refreshToken: "refreshToken",
+  authToken: "accessToken", // Alias para compatibilidad parcial
   userData: "userData",
   lastOrder: "lastOrder",
   orders: "orders"

@@ -5,7 +5,9 @@ import { Heading } from "../components/atoms/Heading";
 import { Button } from "../components/atoms/Button";
 import { useCart } from "../contexts/CartContext";
 import { useAuth } from "../contexts/AuthContext";
-import { appendOrderToHistory, STORAGE_KEYS } from "../utils/storageHelpers";
+import { shippingApi } from "../api/shippingApi";
+import { paymentApi } from "../api/paymentApi";
+import { orderApi } from "../api/orderApi";
 import { SHIPPING_COST } from "../constants/orderConstants";
 import "./CheckoutPage.css";
 
@@ -14,174 +16,187 @@ export function CheckoutPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  // 🔹 Datos de Envío
   const [name, setName] = useState(user?.name || "");
-  const [email, setEmail] = useState(user?.email || "");
   const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [phone, setPhone] = useState("");
 
-  // 🔹 Datos de pago (simulados)
+  // 🔹 Datos de pago
   const [cardAlias, setCardAlias] = useState("");
   const [cardNumber, setCardNumber] = useState("");
-  const [cardHolder, setCardHolder] = useState("");
+  const [cardHolder, setCardHolder] = useState(user?.name || "");
   const [cardExpiry, setCardExpiry] = useState("");
   const [cardCvv, setCardCvv] = useState("");
   const [saveAsDefault, setSaveAsDefault] = useState(false);
 
   const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(null);
 
-  // Si no hay items en el carrito, redirigir al inicio
   useEffect(() => {
     if (!items.length) {
       navigate("/");
     }
   }, [items, navigate]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMsg(null);
 
     // Validaciones básicas
-    if (
-      !name ||
-      !email ||
-      !address ||
-      !cardAlias ||
-      !cardNumber ||
-      !cardHolder ||
-      !cardExpiry ||
-      !cardCvv
-    ) {
+    if (!name || !address || !city || !state || !postalCode || !phone || 
+        !cardNumber || !cardHolder || !cardExpiry || !cardCvv) {
+      setErrorMsg("Por favor, completa todos los campos requeridos.");
       return;
     }
-    if (!items.length) return;
 
     setSubmitting(true);
 
-    const iva = totalPrice * 0.16;
-    const shippingCost = SHIPPING_COST;
-    const total = totalPrice + iva + shippingCost;
+    try {
+      // 1. Crear Dirección de Envío
+      const shippingRes = await shippingApi.create({
+        name,
+        address,
+        city,
+        state,
+        postalCode,
+        phone,
+        isDefault: saveAsDefault
+      });
+      const shippingAddressId = shippingRes._id;
 
-    const last4 = cardNumber.slice(-4);
-    const paymentMethodSummary = `Tarjeta ${
-      cardAlias ? cardAlias + " " : ""
-    }terminación ${last4 || "****"}`;
+      // 2. Crear Método de Pago
+      const last4 = cardNumber.slice(-4);
+      const paymentRes = await paymentApi.create({
+        type: "credit_card",
+        cardNumber, // El backend debería manejar select:false
+        cardHolderName: cardHolder,
+        expiryDate: cardExpiry,
+        brand: "Visa", // Hardcoded o detección simple
+        last4,
+        isDefault: saveAsDefault
+      });
+      const paymentMethodId = paymentRes._id;
 
-    const order = {
-      id: `ORD-${Date.now()}`,
-      user: user ? { id: user.id, name: user.name, email: user.email } : null,
-      items,
-      subtotal: totalPrice,
-      iva,
-      shippingCost,
-      total,
-      shippingAddress: address,
-      paymentMethod: "card",
-      paymentDetails: {
-        cardAlias,
-        cardHolder,
-        cardLast4: last4,
-        cardExpiry,
-        saveAsDefault,
-      },
-      paymentMethodSummary,
-      createdAt: new Date().toISOString(),
-    };
+      // 3. Crear Orden
+      const orderData = {
+        products: items.map(item => ({
+          productId: item.id,
+          quantity: item.quantity
+        })),
+        shippingAddress: shippingAddressId,
+        paymentMethod: paymentMethodId,
+        shippingCost: SHIPPING_COST
+      };
 
-    // Guardar orden
-    appendOrderToHistory(order);
-    localStorage.setItem(STORAGE_KEYS.lastOrder, JSON.stringify(order));
+      const finalOrder = await orderApi.create(orderData);
 
-    // Vaciar carrito
-    clearCart();
+      // Limpiar carrito y navegar
+      clearCart();
+      navigate("/confirmation", { state: { order: finalOrder } });
 
-    setSubmitting(false);
-    navigate("/confirmation");
+    } catch (error) {
+      console.error("Order completion failed:", error);
+      setErrorMsg(error.response?.data?.error || "Hubo un error al procesar tu compra. Por favor intenta de nuevo.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <main className="page container checkout-page">
       <Heading level={2}>Checkout</Heading>
       <p className="checkout-page__intro">
-        Ingresa tus datos básicos para finalizar tu compra. Este flujo es simulado y no
-        realiza cobros reales.
+        Ingresa tus datos de envío y pago para completar la orden.
       </p>
 
       <form onSubmit={handleSubmit} className="checkout-form">
-        <TextInput
-          id="name"
-          label="Nombre completo"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Tu nombre"
-          required
-        />
-        <TextInput
-          id="email"
-          type="email"
-          label="Correo electrónico"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="tucorreo@ejemplo.com"
-          required
-        />
-        <TextInput
-          id="address"
-          label="Dirección de envío"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          placeholder="Calle, número, colonia, ciudad, estado"
-          required
-        />
-
-        {/* Separador antes del método de pago */}
-        <hr className="section-divider" />
-
-        {/* 🔹 Sección de método de pago (datos de tarjeta) */}
-        <section className="checkout-payment card-section">
-          <p className="checkout-payment__title">Método de pago (simulado)</p>
-          <p className="checkout-payment__hint">
-            No se realizan cargos reales. Puedes ingresar datos de ejemplo.
-          </p>
-
-          <div className="payment-form">
-            {/* Alias */}
+        <section className="checkout-section">
+          <Heading level={3}>Información de Envío</Heading>
+          <div className="form-grid">
             <TextInput
-              id="cardAlias"
-              label="Alias de la tarjeta"
-              value={cardAlias}
-              onChange={(e) => setCardAlias(e.target.value)}
-              placeholder="Ej. Bancomer, Nómina, Crédito oro"
+              id="name"
+              label="Nombre del destinatario"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Nombre completo"
               required
             />
+            <TextInput
+              id="phone"
+              label="Teléfono"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="10-15 dígitos"
+              required
+            />
+            <TextInput
+              id="address"
+              label="Calle y número"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Ej. Av. Reforma 123"
+              required
+            />
+            <div className="form-row">
+              <TextInput
+                id="city"
+                label="Ciudad"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="Ciudad"
+                required
+              />
+              <TextInput
+                id="state"
+                label="Estado"
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+                placeholder="Estado"
+                required
+              />
+              <TextInput
+                id="postalCode"
+                label="Código Postal"
+                value={postalCode}
+                onChange={(e) => setPostalCode(e.target.value)}
+                placeholder="5-6 dígitos"
+                required
+              />
+            </div>
+          </div>
+        </section>
 
-            {/* Número */}
+        <hr className="section-divider" />
+
+        <section className="checkout-section">
+          <Heading level={3}>Método de Pago</Heading>
+          <div className="payment-form">
+            <TextInput
+              id="cardHolder"
+              label="Nombre en la tarjeta"
+              value={cardHolder}
+              onChange={(e) => setCardHolder(e.target.value)}
+              placeholder="Tal cual aparece"
+              required
+            />
             <TextInput
               id="cardNumber"
               label="Número de tarjeta"
-              type="text"
               value={cardNumber}
               onChange={(e) => setCardNumber(e.target.value)}
-              placeholder="4444 4444 4444 5555"
+              placeholder="0000 0000 0000 0000"
               required
             />
-
-            {/* Titular */}
-            <TextInput
-              id="cardHolder"
-              label="Nombre del titular"
-              value={cardHolder}
-              onChange={(e) => setCardHolder(e.target.value)}
-              placeholder="Nombre tal como aparece en la tarjeta"
-              required
-            />
-
-            {/* Expiración y CVV */}
             <div className="payment-form__inline">
               <TextInput
                 id="cardExpiry"
-                label="Fecha de expiración"
-                type="text"
+                label="Vencimiento"
                 value={cardExpiry}
                 onChange={(e) => setCardExpiry(e.target.value)}
-                placeholder="MM/AA"
+                placeholder="MM/YY"
                 required
               />
               <TextInput
@@ -194,28 +209,18 @@ export function CheckoutPage() {
                 required
               />
             </div>
-
-            {/* Checkbox */}
-            <label className="payment-form__checkbox">
-              <input
-                type="checkbox"
-                checked={saveAsDefault}
-                onChange={(e) => setSaveAsDefault(e.target.checked)}
-              />
-              <span>Establecer como método de pago predeterminado (simulado)</span>
-            </label>
           </div>
         </section>
 
-        {/* Separador después del método de pago */}
-        <hr className="section-divider" />
+        {errorMsg && <p className="form-error">{errorMsg}</p>}
 
         <div className="checkout-form__actions">
           <Button type="submit" disabled={submitting}>
-            {submitting ? "Procesando compra..." : "Confirmar compra"}
+            {submitting ? "Procesando..." : "Confirmar Compra"}
           </Button>
         </div>
       </form>
     </main>
   );
 }
+

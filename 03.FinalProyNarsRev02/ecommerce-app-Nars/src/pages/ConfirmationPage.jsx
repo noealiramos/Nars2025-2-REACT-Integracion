@@ -1,23 +1,32 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Heading } from "../components/atoms/Heading";
 import { Text } from "../components/atoms/Text";
-import { STORAGE_KEYS } from "../utils/storageHelpers";
 import "./ConfirmationPage.css";
 
 export function ConfirmationPage() {
+  const location = useLocation();
   const [order, setOrder] = useState(null);
 
   useEffect(() => {
-    const raw = localStorage.getItem(STORAGE_KEYS.lastOrder);
-    if (raw) {
-      try {
-        setOrder(JSON.parse(raw));
-      } catch {
-        setOrder(null);
-      }
+    if (location.state?.order) {
+      const o = location.state.order;
+      // Normalizar campos del backend si es necesario
+      setOrder({
+        ...o,
+        id: o._id || o.id,
+        total: o.totalPrice || o.total,
+        subtotal: o.totalPrice ? o.totalPrice - (o.shippingCost || 0) : o.subtotal, // Cálculo simple si falta
+        items: o.products ? o.products.map(p => ({
+          ...p,
+          name: p.productId?.name || "Producto",
+          price: p.price,
+          quantity: p.quantity,
+          id: p.productId?._id || p.productId
+        })) : o.items
+      });
     }
-  }, []);
+  }, [location.state]);
 
   const formatMoney = (value) =>
     new Intl.NumberFormat("es-MX", {

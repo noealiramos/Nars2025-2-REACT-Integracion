@@ -9,10 +9,12 @@ La tienda ficticia **Ramdi Jewerly** ofrece joyería elegante, moderna y accesib
 ## 🚀 Tecnologías utilizadas
 
 - **React + Vite**
+- **Axios** (Integración con API real y manejo de JWT/Refresh Tokens)
 - **React Router DOM 6**
 - **Context API**
-- **localStorage** (carrito, sesión, última orden)
-- **CSS modularizado por componente** (atoms, molecules, organisms, pages)
+- **Cypress** (Pruebas End-to-End)
+- **CSS modularizado por componente** (Atomic Design)
+- **localStorage** (Carrito provisional)
 
 ---
 
@@ -98,17 +100,9 @@ La UI sigue un estilo:
 ---
 
 ## ✅ Estado actual del proyecto
-
-El proyecto cumple los puntos clave de la rúbrica:
-
-- Context API para carrito y autenticación  
-- Persistencia con localStorage  
-- Rutas protegidas  
-- Flujo completo de checkout  
-- Página de confirmación  
-- UI coherente  
-- Código ordenado  
-
----
-
-
+| Componente | Estado |
+| :--- | :--- |
+| **API Client** | Operativo (JWT + Refresh) |
+| **Catálogo** | Dinámico desde API |
+| **Checkout** | Integrado con Backend |
+| **Pruebas** | Cypress configurado |

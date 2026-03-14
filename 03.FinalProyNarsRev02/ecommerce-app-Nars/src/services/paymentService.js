@@ -1,6 +1,11 @@
-import paymentMethods from "../data/paymentMethods";
+import { paymentApi } from "../api/paymentApi";
 
 export const fetchPaymentMethodsByUser = async (userId) => {
-  await new Promise((resolve) => setTimeout(resolve, 200));
-  return paymentMethods.filter((p) => p.userId === userId && p.active);
+  try {
+    const data = await paymentApi.getByUser(userId);
+    return Array.isArray(data) ? data : data.paymentMethods || [];
+  } catch (error) {
+    console.error("Error fetching payment methods:", error);
+    return [];
+  }
 };

@@ -1,16 +1,49 @@
-import products from "../data/products";
+import { productApi } from "../api/productApi";
 
-export const fetchProducts = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  return products;
+const mapProduct = (p) => ({
+  ...p,
+  id: p._id || p.id,
+});
+
+export const fetchProducts = async (params = {}) => {
+  try {
+    const data = await productApi.getAll(params);
+    const products = Array.isArray(data) ? data : data.products || [];
+    return products.map(mapProduct);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
 };
 
 export const getProductById = async (id) => {
-  const list = await fetchProducts();
-  return list.find((p) => p.id === id);
+  try {
+    const data = await productApi.getById(id);
+    return mapProduct(data);
+  } catch (error) {
+    console.error(`Error fetching product ${id}:`, error);
+    throw error;
+  }
 };
 
 export const getProductsByCategory = async (categoryId) => {
-  const list = await fetchProducts();
-  return list.filter((p) => p.categoryId === categoryId);
+  try {
+    const data = await productApi.getByCategory(categoryId);
+    const products = Array.isArray(data) ? data : data.products || [];
+    return products.map(mapProduct);
+  } catch (error) {
+    console.error(`Error fetching products for category ${categoryId}:`, error);
+    throw error;
+  }
+};
+
+export const searchProducts = async (query) => {
+  try {
+    const data = await productApi.search(query);
+    const products = Array.isArray(data) ? data : data.products || [];
+    return products.map(mapProduct);
+  } catch (error) {
+    console.error(`Error searching products for query ${query}:`, error);
+    throw error;
+  }
 };

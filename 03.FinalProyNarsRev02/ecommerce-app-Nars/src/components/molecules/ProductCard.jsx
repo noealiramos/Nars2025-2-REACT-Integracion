@@ -1,5 +1,6 @@
 import { Button } from "../atoms/Button";
 import { Text } from "../atoms/Text";
+import { Heading } from "../atoms/Heading";
 import { Link } from "react-router-dom";
 import "./ProductCard.css";
 
@@ -27,19 +28,23 @@ export function ProductCard({ product, onAddToCart }) {
       </Link>
 
       <div className="product-card__body">
-        <h3 className="product-card__name">{name}</h3>
+        <Heading level={3} className="product-card__name">
+          {name}
+        </Heading>
 
         {material && (
-          <p className="product-card__material">
+          <Text size="sm" className="product-card__material">
             Material: <span>{material}</span>
-          </p>
+          </Text>
         )}
 
-        <Text className="product-card__price">{formattedPrice}</Text>
+        <Text weight="bold" className="product-card__price">
+          {formattedPrice}
+        </Text>
 
         <div className="product-card__actions">
           <Button
-            variant="secondary"
+            variant="primary"
             type="button"
             onClick={() => onAddToCart(product)}
           >

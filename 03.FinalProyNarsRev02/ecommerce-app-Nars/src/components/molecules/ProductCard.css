@@ -1,14 +1,18 @@
 .product-card {
   display: flex;
   flex-direction: column;
-  border-radius: 0.9rem;
-  border: 1px solid #1f2937;
-  background: radial-gradient(circle at top, #020617, #020617 40%, #020617);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--elev-2);
   overflow: hidden;
-
-  /* Importante para que todas las tarjetas tengan el mismo tamaño */
   height: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--elev-3);
 }
 
 /* === ÁREA DE IMAGEN (altura fija) === */
@@ -16,10 +20,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at top, #111827, #020617);
+  background: var(--bg);
   position: relative;
-
-  height: 230px; /* Ajusta si quieres más alto o más bajo */
+  height: 230px;
   overflow: hidden;
 }
 
@@ -36,66 +39,72 @@
   align-items: center;
   justify-content: center;
   font-size: 0.7rem;
-  color: #9ca3af;
+  color: var(--muted);
 }
 
 /* === CUERPO DE LA TARJETA === */
 .product-card__body {
-  padding: 0.9rem 1rem 1rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  flex: 1; /* Para empujar los botones hacia abajo */
+  gap: 0.5rem;
+  flex: 1;
 }
 
 .product-card__name {
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
-  color: #f9fafb;
+  color: var(--text);
   margin: 0;
-  min-height: 2.4rem; /* ayuda a alinear títulos de largo distinto */
+  min-height: 2.8rem;
+  line-height: 1.4;
 }
 
 .product-card__material {
-  font-size: 0.8rem;
-  color: #9ca3af;
+  font-size: 0.85rem;
+  color: var(--muted);
   margin: 0;
 }
 
 .product-card__material span {
-  color: #e5e7eb;
+  color: var(--text);
+  font-weight: 500;
 }
 
 .product-card__price {
-  color: #fbbf24;
-  font-weight: 600;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1rem;
   margin-top: 0.2rem;
 }
 
 /* === BOTONES ABAJO SIEMPRE === */
 .product-card__actions {
-  margin-top: auto; /* empuja hacia abajo */
+  margin-top: auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
+  align-items: stretch;
+  gap: 0.8rem;
+  padding-top: 1rem;
 }
 
 .product-card__link {
-  border-radius: 999px;
-  border: 1px solid #374151;
-  padding: 0.45rem 0.8rem;
-  font-size: 0.78rem;
-  color: #e5e7eb;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--muted);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition: all 0.2s ease;
+  text-decoration: none;
 }
 
 .product-card__link:hover {
-  background-color: #111827;
-  border-color: #4b5563;
+  background-color: var(--bg);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 

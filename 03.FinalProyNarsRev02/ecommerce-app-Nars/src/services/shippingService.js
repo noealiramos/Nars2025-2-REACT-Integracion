@@ -1,6 +1,11 @@
-import shippingAddresses from "../data/shippingAddresses";
+import { shippingApi } from "../api/shippingApi";
 
 export const fetchShippingAddressesByUser = async (userId) => {
-  await new Promise((resolve) => setTimeout(resolve, 200));
-  return shippingAddresses.filter((a) => a.userId === userId);
+  try {
+    const data = await shippingApi.getByUser(userId);
+    return Array.isArray(data) ? data : data.shippingAddresses || [];
+  } catch (error) {
+    console.error("Error fetching shipping addresses:", error);
+    return [];
+  }
 };

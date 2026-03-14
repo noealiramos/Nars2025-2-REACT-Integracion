@@ -8,7 +8,12 @@ export function TextInput({ label, id, error, ...props }) {
           {label}
         </label>
       )}
-      <input id={id} className="form-input" {...props} />
+      <input 
+        id={id} 
+        className="form-input" 
+        data-testid={props["data-testid"] || `input-${id}`}
+        {...props} 
+      />
       {error && <p className="form-error">{error}</p>}
     </div>
   );

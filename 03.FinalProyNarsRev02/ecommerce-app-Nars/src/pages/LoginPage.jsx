@@ -48,6 +48,7 @@ export function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="tucorreo@ejemplo.com"
             required
+            data-testid="input-email"
           />
           <TextInput
             id="password"
@@ -57,9 +58,15 @@ export function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
             required
+            data-testid="input-password"
           />
           {error && <p className="login-form__error">{error}</p>}
-          <Button type="submit" className="login-form__button" disabled={submitting}>
+          <Button 
+            type="submit" 
+            className="login-form__button" 
+            disabled={submitting}
+            data-testid="btn-entrar"
+          >
             {submitting ? "Validando..." : "Entrar"}
           </Button>
         </form>

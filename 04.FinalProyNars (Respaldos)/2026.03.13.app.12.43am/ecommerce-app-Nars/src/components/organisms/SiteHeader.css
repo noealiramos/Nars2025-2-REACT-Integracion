@@ -1,0 +1,169 @@
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: linear-gradient(to right, rgba(15, 23, 42, 0.96), rgba(30, 64, 175, 0.92));
+  border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+  backdrop-filter: blur(14px);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0;
+}
+
+.site-header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+}
+
+.site-header__logo {
+    width: 5rem;       /* mismo ancho */
+  height: 5rem;      /* mismo alto => base del círculo */
+  border-radius: 50%;  /* lo hace circular */
+  object-fit: cover;   /* rellena sin deformar */
+  border: 2px solid #fbbf24;  /* opcional: borde dorado elegante */
+  overflow: hidden;
+}
+
+.site-header__brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.4;
+}
+
+.site-header__brand-name {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #f9fafb;
+}
+
+.site-header__brand-tagline {
+  font-size: 0.85rem;
+  color: #cbd5f5;
+}
+
+.site-header__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.site-header__link {
+  position: relative;
+  padding: 0.3rem 0.35rem;
+  border-bottom: 2px solid transparent;
+  color: #e5e7eb;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.site-header__link--icon {
+  padding-right: 0.8rem;
+}
+
+.site-header__link--active {
+  border-bottom-color: #fbbf24;
+  color: #fbbf24;
+}
+
+.site-header__link:hover {
+  color: #fbbf24;
+}
+
+.site-header__icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  position: relative;
+}
+
+/* Íconos del header (carrito y usuario) */
+.site-header__icon {
+  width: 22px !important;   /* Aumenta el tamaño */
+  height: 22px !important;
+  fill: #fbbf24 !important;  /* Color dorado */
+  margin-right: 4px;
+  vertical-align: middle;
+  opacity: 0.95;
+  transition: transform 0.15s ease;
+}
+
+/* Efecto hover elegante */
+.site-header__link:hover .site-header__icon,
+.site-header__user:hover .site-header__icon {
+  transform: scale(1.15);
+}
+
+
+.site-header__cart-badge {
+  position: absolute;
+  top: -0.4rem;
+  right: -0.75rem;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 999px;
+  background-color: #fbbf24;
+  color: #000;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.site-header__user {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.site-header__user-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: #cbd5f5;
+}
+
+.site-header__user-name {
+  font-weight: 600;
+  color: #f9fafb;
+}
+
+.site-header__logout {
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  color: #e5e7eb;
+  cursor: pointer;
+}
+
+.site-header__logout:hover {
+  color: #f87171;
+}
+
+@media (max-width: 700px) {
+  .site-header__inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding-bottom: 0.7rem;
+  }
+
+  .site-header__nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .site-header__user-info {
+    display: none;
+  }
+}

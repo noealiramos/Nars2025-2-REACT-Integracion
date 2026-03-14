@@ -16,6 +16,15 @@ export function AuthProvider({ children }) {
       setIsAuthenticated(true);
     }
     setLoading(false);
+
+    // Listener para errores de autenticación (ej: refresh token expirado)
+    const handleAuthError = () => {
+      setUser(null);
+      setIsAuthenticated(false);
+    };
+
+    window.addEventListener("auth-error", handleAuthError);
+    return () => window.removeEventListener("auth-error", handleAuthError);
   }, []);
 
   const login = async (email, password) => {

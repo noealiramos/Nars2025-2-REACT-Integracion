@@ -11,7 +11,11 @@ export function Button({ children, variant = "primary", className = "", ...props
 
   const finalClass = [baseClass, variantClass, className].filter(Boolean).join(" ");
   return (
-    <button className={finalClass} {...props}>
+    <button 
+      className={finalClass} 
+      data-testid={props["data-testid"] || `btn-${children?.toString().toLowerCase().replace(/\s+/g, '-')}`}
+      {...props}
+    >
       {children}
     </button>
   );

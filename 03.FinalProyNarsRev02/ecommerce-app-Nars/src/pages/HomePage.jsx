@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { fetchProducts } from "../services/productService";
+import { useSearchParams } from "react-router-dom";
+import { fetchProducts, searchProducts } from "../services/productService";
 import { ProductList } from "../components/organisms/ProductList";
 import { useCart } from "../contexts/CartContext";
 import { Heading } from "../components/atoms/Heading";
@@ -11,10 +12,18 @@ export function HomePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { addItem } = useCart();
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("search");
 
   useEffect(() => {
     let mounted = true;
-    fetchProducts()
+    setLoading(true);
+
+    const loadProducts = searchQuery
+      ? searchProducts(searchQuery)
+      : fetchProducts();
+
+    loadProducts
       .then((data) => {
         if (mounted) setProducts(data);
       })
@@ -24,10 +33,11 @@ export function HomePage() {
       .finally(() => {
         if (mounted) setLoading(false);
       });
+
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [searchQuery]);
 
   const handleAddToCart = (product) => {
     addItem(product, 1);
