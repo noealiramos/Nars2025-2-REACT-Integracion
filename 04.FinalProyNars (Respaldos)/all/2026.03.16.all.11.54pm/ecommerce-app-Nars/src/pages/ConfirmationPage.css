@@ -1,0 +1,313 @@
+.confirmation-page {
+  text-align: center;
+}
+
+.confirmation-page__icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.confirmation-page__icon-svg {
+  width: 2.3rem;
+  height: 2.3rem;
+  color: #fbbf24;
+}
+
+.confirmation-page__intro {
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+  color: #9ca3af;
+}
+
+.confirmation-page__intro--center {
+  text-align: center;
+}
+
+/* ===================== */
+/*  ESTILOS ANTIGUOS CARD */
+/* (se quedan por compat) */
+/* ===================== */
+
+.confirmation-card {
+  margin: 1rem auto 0;
+  max-width: 32rem;
+  border-radius: 0.9rem;
+  border: 1px solid #1f2937;
+  background: radial-gradient(circle at top left, #020617, #020617 45%, #020617);
+  padding: 1rem 1.1rem;
+  text-align: left;
+  font-size: 0.86rem;
+  color: #e5e7eb;
+}
+
+.confirmation-card__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.confirmation-card__row--small {
+  font-size: 0.78rem;
+  color: #9ca3af;
+}
+
+.confirmation-card__section {
+  margin-top: 0.45rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid #111827;
+}
+
+.confirmation-card__section p {
+  margin: 0.1rem 0;
+}
+
+.confirmation-card__section span {
+  color: #f9fafb;
+  font-weight: 500;
+}
+
+.confirmation-card__section h3 {
+  margin: 0 0 0.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.confirmation-card__section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.confirmation-card__section li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+
+.confirmation-card__section--totals {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.confirmation-card__section--totals > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.confirmation-card__muted {
+  color: #9ca3af;
+}
+
+.confirmation-card__total {
+  margin-top: 0.2rem;
+  font-weight: 600;
+  color: #fbbf24;
+}
+
+.confirmation-page__actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.confirmation-page__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background-color: #fbbf24;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #000;
+  text-decoration: none;
+}
+
+.confirmation-page__button:hover {
+  background-color: #f59e0b;
+}
+
+/* Ícono principal de confirmación */
+.confirmation-icon {
+  width: 140px;          /* tamaño adecuado */
+  height: 140px;
+  fill: #fbbf24;         /* color dorado */
+  display: block;
+  margin: 0 auto 1rem auto; /* centrado con espacio inferior */
+  opacity: 0.95;
+  filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.4)); /* light glow */
+}
+
+/* Contenedor principal */
+.confirmation-wrapper {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+/* Ajuste del título */
+.confirmation-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #f9fafb;
+  margin-top: 0.5rem;
+}
+
+/* Subtextos */
+.confirmation-text {
+  font-size: 0.9rem;
+  color: #d1d5db;
+  margin-top: 0.4rem;
+}
+
+/* Ajustar separación general */
+.confirmation-container {
+  margin-top: 1.2rem;
+}
+
+/* ============================= */
+/*  NUEVO RESUMEN (order-summary) */
+/* ============================= */
+
+.order-summary {
+  margin: 0.8rem auto 0;       /* un poco pegado al texto intro */
+  max-width: 60rem;
+  text-align: left;
+  font-size: 0.9rem;
+  color: #e5e7eb;
+}
+
+/* Cada bloque: datos generales / productos / totales */
+.order-summary__section {
+  margin-top: 0.3rem;          /* antes implícito (más grande) */
+}
+
+/* Más espacio sólo entre bloques distintos */
+.order-summary__section + .order-summary__section {
+  margin-top: 0.7rem;
+}
+
+/* Subtítulo "Productos" */
+.order-summary__subtitle {
+  margin-top: 0.3rem;
+  margin-bottom: 0.4rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Filas izquierda/derecha (ID de orden, Cliente, etc.) */
+.order-summary__row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.15rem 0;           /* antes 0.25rem, menos alto */
+  gap: 0.4rem;
+}
+
+/* Bloque de totales */
+.order-summary__section--totals {
+  margin-top: 0.6rem;
+}
+
+/* Separador elegante antes del total final */
+.order-summary__separator {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    #4b5563,
+    transparent
+  );
+  margin: 0.4rem 0 0.6rem 0;   /* un poco más compacto */
+}
+
+/* === LISTA DE PRODUCTOS (bullet + nombre + "1 = $540.00") === */
+
+.order-summary__items {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+/* Cada fila de producto */
+.order-summary__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;                 /* antes 1.5rem, más juntos */
+  margin-bottom: 0.1rem;       /* antes 0.25rem */
+}
+
+/* Contenedor del bullet + nombre */
+.order-summary__item-left {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Bullet dorado pegado al texto */
+.order-summary__bullet {
+  color: #fbbf24;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* Nombre del producto a la izquierda */
+.order-summary__item-name {
+  flex: 1;
+  color: #e5e7eb;
+}
+
+/* "1 = $540.00" a la derecha */
+.order-summary__item-qtyprice {
+  white-space: nowrap;
+  color: #fbbf24;      /* dorado tipo palomita */
+  font-weight: 600;
+}
+
+/* ============================= */
+/*  Compatibilidad estilos viejos */
+/* ============================= */
+
+/* Nombre del producto (layout anterior, por compatibilidad) */
+.confirmation-product-name {
+  margin-top: 0.4rem;
+  font-size: 1rem;
+  color: #e5e7eb;
+}
+
+/* Precio unitario debajo */
+.confirmation-product-price {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  margin-bottom: 0.8rem;
+}
+
+/* Tabla de totales (layout anterior) */
+.confirmation-totals {
+  margin-top: 1rem;
+  display: inline-block;
+  text-align: left;
+  font-size: 0.95rem;
+  color: #e5e7eb;
+}
+
+/* Cada fila del desglose (layout anterior) */
+.confirmation-totals-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  width: 260px;
+  margin: 0.2rem auto;
+}
+
+/* Total final más grande (layout anterior) */
+.confirmation-total-final {
+  margin-top: 0.8rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #fbbf24;
+  text-align: center;
+}

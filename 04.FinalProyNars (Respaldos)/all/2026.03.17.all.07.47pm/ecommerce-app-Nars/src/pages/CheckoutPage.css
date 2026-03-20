@@ -1,0 +1,128 @@
+.checkout-page__intro {
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+  color: #9ca3af;
+  max-width: 32rem;
+}
+
+.checkout-form {
+  margin-top: 0.9rem;
+  border-radius: 0.9rem;
+  border: 1px solid #1f2937;
+  background: radial-gradient(circle at top left, #020617, #020617 45%, #020617);
+  padding: 1rem 1.1rem;
+}
+
+/* ACCIONES */
+.checkout-form__actions {
+  margin-top: 0.8rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ---------------------------------------------
+   SECCIÓN — TARJETA DE PAGO (separada visualmente)
+----------------------------------------------*/
+
+.card-section {
+  margin-top: 1.2rem;
+  padding: 1rem;
+  border-radius: 0.9rem;
+  border: 1px solid #1f2937;
+  background: rgba(15, 23, 42, 0.45); /* más claro que el fondo */
+}
+
+/* Título de la tarjeta */
+.checkout-payment__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f9fafb;
+  margin-bottom: 0.2rem;
+}
+
+/* Texto de ayuda */
+.checkout-payment__hint {
+  margin-top: 0.1rem;
+  font-size: 0.78rem;
+  color: #9ca3af;
+}
+
+/* Contenedor del formulario de tarjeta */
+.payment-form {
+  margin-top: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* Expiración + CVV */
+.payment-form__inline {
+  display: flex;
+  gap: 0.6rem;
+}
+
+@media (max-width: 640px) {
+  .payment-form__inline {
+    flex-direction: column;
+  }
+}
+
+/* Checkbox */
+.payment-form__checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin-top: 0.3rem;
+}
+
+.payment-form__checkbox input {
+  width: 14px;
+  height: 14px;
+}
+
+/* ---------------------------------------------
+   Separador horizontal elegante 
+----------------------------------------------*/
+
+.section-divider {
+  border: none;
+  height: 1px;
+  margin: 1.4rem 0;
+  background: linear-gradient(
+    to right,
+    transparent,
+    #4b5563,
+    transparent
+  );
+}
+
+
+
+/* Espacio entre productos */
+.order-summary__item {
+  margin-bottom: 0.8rem; /* aire entre cada producto */
+}
+
+/* Espacio entre el precio y la lista */
+.order-summary__items {
+  margin-bottom: 1rem;
+}
+
+/* Espacio entre cada línea del subtotal / iva / envío */
+.order-summary__row {
+  margin: 0.25rem 0;
+}
+
+/* Más espacio antes del total final */
+.order-summary__row--total {
+  margin-top: 0.6rem;
+  font-size: 1.05rem;
+}
+
+/* Que el total resaltado se vea separado */
+.order-summary__section--totals {
+  margin-top: 0.8rem;
+}
+

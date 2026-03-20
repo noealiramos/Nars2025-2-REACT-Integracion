@@ -1,0 +1,39 @@
+.notfound-page {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.notfound-page__content {
+  max-width: 26rem;
+}
+
+.notfound-page h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.notfound-page p {
+  font-size: 0.9rem;
+  color: #9ca3af;
+  margin-bottom: 0.8rem;
+}
+
+.notfound-page__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background-color: #fbbf24;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #000;
+  text-decoration: none;
+}
+
+.notfound-page__button:hover {
+  background-color: #f59e0b;
+}

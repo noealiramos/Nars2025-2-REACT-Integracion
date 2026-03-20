@@ -1,0 +1,138 @@
+Actúa como un Arquitecto de Software Senior + QA Automation Engineer especializado en React, Node.js (Express) y testing E2E con Cypress.
+
+CONTEXTO DEL PROYECTO:
+Estoy trabajando en un ecommerce con:
+- Frontend: React + Vite
+- Backend: Express + MongoDB (ya funcional)
+- Testing: Cypress E2E
+- Integración real (NO mocks)
+
+El proyecto ya tiene avances en autenticación y flujo de checkout, pero se detectaron problemas de integración y ahora necesito estabilizar y continuar con la siguiente fase.
+
+OBJETIVOS PRINCIPALES:
+
+1) FIX CRÍTICO - PAGINACIÓN (YA DETECTADO)
+- El backend devuelve datos en formato paginado:
+  {
+    items: [...],
+    total,
+    page,
+    pages
+  }
+- El frontend espera arrays directos (products)
+
+TAREAS:
+- Analizar productApi.js y HomePage.jsx
+- Implementar un mapper consistente:
+  backend.items → frontend.products
+- Asegurar compatibilidad en TODAS las vistas que consumen productos
+- Evitar romper otras funcionalidades
+
+---
+
+2) IMPLEMENTACIÓN - ORDERS UI (SIGUIENTE FASE)
+Crear o completar:
+
+- OrdersPage.jsx (historial de órdenes del usuario)
+- OrderDetailPage.jsx (detalle de una orden)
+
+REQUISITOS:
+- Consumir endpoints reales del backend (/api/orders)
+- Manejar estados:
+  - loading
+  - error
+  - empty state
+- Mostrar:
+  - productos
+  - total
+  - estado (paid, delivered, etc.)
+  - fechas
+- Navegación con React Router
+- UI consistente con el resto del proyecto
+
+---
+
+3) TESTING E2E (CYPRESS)
+Extender la suite existente:
+
+Crear o completar:
+- orders.cy.js
+
+CASOS:
+- Usuario autenticado puede ver sus órdenes
+- Usuario puede ver detalle de una orden
+- Manejo de lista vacía
+- Validación contra API real (NO mocks)
+
+IMPORTANTE:
+- Usar selectores robustos (data-cy)
+- Evitar flaky tests
+- Reutilizar login si ya existe
+
+---
+
+4) HARDENING DE INTEGRACIÓN
+- Validar manejo de errores en apiClient
+- Confirmar compatibilidad con JWT + refresh tokens
+- Evitar crashes silenciosos
+- Logs claros en consola para debugging
+
+---
+
+5) DOCUMENTACIÓN Y CONTROL DE AVANCE (MUY IMPORTANTE)
+Crear/actualizar archivos:
+
+A) QA_PROGRESS.md
+- Estado de cada fase:
+  - Auth ✅
+  - Checkout ✅
+  - Orders ⏳
+- Bugs detectados y corregidos
+- Evidencia de pruebas
+
+B) INTEGRATION_FIXES.md
+- Explicar el problema de paginación
+- Qué se cambió
+- Impacto en frontend
+
+C) ORDERS_FEATURE.md
+- Descripción funcional
+- Endpoints usados
+- Decisiones técnicas
+
+---
+
+6) CRITERIOS DE CALIDAD (OBLIGATORIOS)
+- Código limpio y modular
+- Buen naming
+- Manejo de errores consistente
+- Sin console.logs innecesarios
+- Componentes reutilizables
+- No romper funcionalidades existentes
+
+---
+
+7) ENTREGA ESPERADA
+- Código listo para producción
+- Archivos creados/modificados
+- Tests pasando
+- Documentación clara
+
+---
+
+IMPORTANTE:
+- NO usar mocks
+- SIEMPRE trabajar contra la API real
+- Explicar brevemente cada cambio importante
+- Priorizar estabilidad sobre rapidez
+
+---
+
+COMIENZA POR:
+1) Fix de paginación
+2) Validar HomePage funcionando correctamente
+3) Continuar con Orders UI
+4) Luego Cypress
+5) Finalmente documentación
+
+Confirma avances por fase antes de continuar.
