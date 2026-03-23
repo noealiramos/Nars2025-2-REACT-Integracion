@@ -1,5 +1,6 @@
 
 import bcrypt from 'bcrypt';
+import { randomUUID } from 'crypto';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
 import RefreshToken from '../models/refreshToken.js';
@@ -11,7 +12,11 @@ const generateAccessToken = (user) => {
 };
 
 const generateRefreshToken = async (user) => {
-  const token = jwt.sign({ userId: user._id.toString() }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  const token = jwt.sign(
+    { userId: user._id.toString() },
+    process.env.JWT_SECRET,
+    { expiresIn: '7d', jwtid: randomUUID() }
+  );
   
   // Guardamos en DB para permitir revocación
   await RefreshToken.create({

@@ -6,11 +6,8 @@ export async function login(email, password) {
   try {
     const data = await authApi.login(email, password);
     
-    // El backend devuelve { accessToken, refreshToken, user }
     if (data.accessToken) {
-      localStorage.setItem(STORAGE_KEYS.accessToken, data.accessToken);
-      localStorage.setItem(STORAGE_KEYS.refreshToken, data.refreshToken);
-      localStorage.setItem(STORAGE_KEYS.userData, JSON.stringify(data.user));
+      persistAuthSession(data);
       return { success: true, user: data.user };
     }
 
@@ -24,6 +21,12 @@ export async function login(email, password) {
       error: error.response?.data?.message || "Email o contraseña incorrectos",
     };
   }
+}
+
+export function persistAuthSession(data) {
+  localStorage.setItem(STORAGE_KEYS.accessToken, data.accessToken);
+  localStorage.setItem(STORAGE_KEYS.refreshToken, data.refreshToken);
+  localStorage.setItem(STORAGE_KEYS.userData, JSON.stringify(data.user));
 }
 
 export async function logout() {

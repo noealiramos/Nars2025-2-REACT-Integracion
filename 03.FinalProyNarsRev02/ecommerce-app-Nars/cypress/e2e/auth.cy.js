@@ -43,14 +43,10 @@ describe('Flujos de Autenticación', () => {
     cy.get('[data-testid="input-password"]').type(testUser.password)
     
     cy.intercept('POST', '**/api/auth/register').as('registerReq')
-    cy.intercept('POST', '**/api/auth/login').as('autoLoginReq')
     
     cy.get('[data-testid="btn-crear-cuenta"]').click()
     
     cy.wait('@registerReq').its('response.statusCode').should('eq', 201)
-    
-    // Validamos redirección correcta y UI logueada a través de login interno
-    cy.wait('@autoLoginReq').its('response.statusCode').should('eq', 200)
 
     cy.url().should('not.include', '/register')
     cy.get('.site-header').should('contain', testUser.displayName)

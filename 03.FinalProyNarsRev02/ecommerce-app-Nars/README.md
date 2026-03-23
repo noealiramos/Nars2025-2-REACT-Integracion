@@ -1,108 +1,101 @@
-# Ramdi Jewerly – E-commerce en React (Proyecto Final React I)
+# Ramdi Jewelry - Frontend E-commerce React
 
-Este proyecto es un **e-commerce funcional**, desarrollado como entrega final del curso **React I** en la escuela *Inadaptados*.  
+Aplicacion frontend del e-commerce de joyeria Ramdi Jewelry. Consume una API real para catalogo, autenticacion, checkout y ordenes, y mantiene estado de sesion y carrito en el navegador para mejorar la experiencia del usuario.
 
-La tienda ficticia **Ramdi Jewerly** ofrece joyería elegante, moderna y accesible.
+## Stack
 
----
+- React 18 + Vite
+- React Router DOM 6
+- Axios
+- Context API
+- Cypress
+- CSS modular por componente
 
-## 🚀 Tecnologías utilizadas
+## Requisitos
 
-- **React + Vite**
-- **Axios** (Integración con API real y manejo de JWT/Refresh Tokens)
-- **React Router DOM 6**
-- **Context API**
-- **Cypress** (Pruebas End-to-End)
-- **CSS modularizado por componente** (Atomic Design)
-- **localStorage** (Carrito provisional)
+- Node.js 18+
+- Backend `ecommerce-api-Nars` corriendo en `http://localhost:3000`
+- Variable opcional `VITE_API_URL` si la API no usa `http://localhost:3000/api`
 
----
-
-## 📦 Instalación
+## Instalacion
 
 ```bash
 npm install
-npm start       # Ejecuta Vite y abre http://localhost:5173/
 ```
 
-Scripts disponibles:
+## Scripts
 
 ```bash
-npm run dev     # entorno de desarrollo
-npm run build   # build de producción
-npm run preview # vista previa del build
+npm run dev
+npm run build
+npm run preview
+npm start
 ```
 
----
+## Variables de entorno
 
-## 🧩 Estructura del proyecto
+Crear un archivo `.env` si necesitas cambiar la URL del backend:
 
-- `/src/components/atoms` → Button, Text, Heading, TextInput  
-- `/src/components/molecules` → ProductCard, CartItem  
-- `/src/components/organisms` → SiteHeader, CartSummary  
-- `/src/pages` → HomePage, ProductDetailPage, CartPage, CheckoutPage, ConfirmationPage  
-- `/src/contexts` → CartContext, AuthContext  
-- `/src/services` → productService, userService, authService  
-- `/src/data` → products.js, users.js
+```bash
+VITE_API_URL=http://localhost:3000/api
+```
 
----
+## Funcionalidades actuales
 
-## 🛒 Flujo principal del usuario
+- Catalogo dinamico consumido desde la API
+- Vista de detalle de producto
+- Carrito persistido en `localStorage`
+- Registro e inicio de sesion contra backend
+- Manejo de `accessToken` y `refreshToken`
+- Checkout protegido por autenticacion
+- Confirmacion de compra
+- Historial de ordenes y detalle por orden
+- Manejo centralizado de errores de API
 
-1. Ver productos en `/`
-2. Ver detalle en `/product/:id`
-3. Agregar productos al carrito
-4. Revisar el carrito en `/cart`
-   - Cambiar cantidades  
-   - Vaciar carrito  
-   - Mensaje especial si el carrito está vacío  
-5. Iniciar sesión (login simulado) en `/login`
-6. Acceder a `/checkout` (ruta protegida)
-   - Capturar datos personales  
-   - Seleccionar método de pago  
-7. Ver confirmación en `/confirmation`
-   - Resumen de productos  
-   - Totales, envío, IVA  
-   - Método de pago  
-   - Ícono dorado de confirmación  
+## Rutas principales
 
----
+- `/` catalogo
+- `/product/:id` detalle de producto
+- `/cart` carrito
+- `/checkout` checkout protegido
+- `/confirmation` confirmacion de compra
+- `/orders` historial de ordenes
+- `/orders/:id` detalle de orden
+- `/login` acceso
+- `/register` registro
 
-## 🔐 Autenticación
+## Arquitectura
 
-El login se simula con usuarios predefinidos en `/src/data/users.js`.  
-Se usa **Context API + localStorage** para persistir:
+- `src/api` clientes HTTP y llamadas por dominio
+- `src/services` logica de consumo y transformacion de datos
+- `src/contexts/AuthContext.jsx` sesion del usuario
+- `src/contexts/CartContext.jsx` estado del carrito
+- `src/components` estructura Atomic Design
+- `src/pages` vistas principales y protegidas
 
-- Token simulado  
-- Datos del usuario logueado  
-- Carrito  
-- Última orden  
+## Autenticacion
 
----
+La autenticacion usa la API real. El frontend:
 
-## 🎨 Estilos
+- guarda `accessToken`, `refreshToken` y datos del usuario en `localStorage`
+- adjunta el token Bearer a las solicitudes protegidas
+- intenta renovar sesion automaticamente ante respuestas `401`
+- dispara un evento `auth-error` cuando la renovacion falla para limpiar la sesion
 
-El proyecto utiliza exclusivamente **CSS semántico**, distribuido por capas:
+## Pruebas E2E
 
-- `atoms/*.css`  
-- `molecules/*.css`  
-- `organisms/*.css`  
-- `pages/*.css`  
-- `index.css` (reset, tipografías, helpers)
+Los escenarios de Cypress estan en `cypress/e2e` e incluyen:
 
-La UI sigue un estilo:
+- flujo principal de compra
+- autenticacion
+- carrito
+- ordenes
+- validaciones de login y checkout
 
-- Oscuro
-- Dorado elegante (#fbbf24)
-- Componentes alineados y consistentes  
-- Header sticky con logo circular
+Para ejecutarlas, el frontend debe estar disponible en `http://localhost:5173` y el backend en `http://localhost:3000`.
 
----
+## Estado actual
 
-## ✅ Estado actual del proyecto
-| Componente | Estado |
-| :--- | :--- |
-| **API Client** | Operativo (JWT + Refresh) |
-| **Catálogo** | Dinámico desde API |
-| **Checkout** | Integrado con Backend |
-| **Pruebas** | Cypress configurado |
+- `npm run build` genera el build de produccion correctamente
+- Cypress esta configurado para pruebas E2E
+- El proyecto ya no usa login simulado: la autenticacion esta integrada con backend

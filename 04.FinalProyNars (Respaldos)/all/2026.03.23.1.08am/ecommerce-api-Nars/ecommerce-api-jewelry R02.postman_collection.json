@@ -1,0 +1,3899 @@
+{
+	"info": {
+		"_postman_id": "7dd95005-297e-4b35-9bb4-7bfa2edf959c",
+		"name": "ecommerce-api-jewelry R02",
+		"description": "Colección generada automáticamente a partir del código fuente (rev02). Incluye endpoints agrupados por módulo y variables de entorno.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45787553"
+	},
+	"item": [
+		{
+			"name": "NARS Testing",
+			"item": [
+				{
+					"name": "0.General Healt okRev",
+					"item": [
+						{
+							"name": "GET /api/health R19",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/health",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"health"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "1.Login Auth okRev",
+					"item": [
+						{
+							"name": "http://localhost:3000/ R19",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:3000/api/auth/login (CUSTOMERnoe.saldivar) R19",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"noe.saldivar@mail.com\",\r\n  \"password\": \"Admin123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/auth/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:3000/api/auth/login (CUSTOMERosotrava) R19",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"oso.trava@mail.com\",\r\n  \"password\": \"Oso123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/auth/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:3000/api/auth/login (CUSTOMERjorgelucas) R19 Copy",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"george.lucas@mail.com\",\r\n  \"password\": \"Star123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/auth/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:3000/api/auth/login (ADMIN) R19",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"ali.ramos@mail.com\",\r\n    \"password\": \"Admin123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/auth/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:3000/api/auth/register R19",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"displayName\": \"Buzz LightYear\",\r\n  \"email\": \"buzz.lighyear@mail.com\",\r\n  \"password\": \"Buzz123\",\r\n  \"phone\": \"446456717\",\r\n  \"role\": \"customer\",\r\n  \"avatar\": \"https://placehold.co.Buzz/200x200.png\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/auth/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "1.1.Users okRev",
+					"item": [
+						{
+							"name": "Me R19",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjZlMTU3NzgxZjNiNDliNTA4ZmIiLCJkaXNwbGF5TmFtZSI6Ik5vZSBTYWxkaXZhciBvayIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTY2ODU1NiwiZXhwIjoxNzU1NjcyMTU2fQ._fTSPHPohqxhYIir39a24q4hdhz3mRgxk1dlfT_2eE4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/users/me",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"users",
+										"me"
+									]
+								},
+								"description": "Campos opcionales: displayName (2-50), phone (<=10), avatar (URL)"
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH /me — actualizar perfil R19",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjZlMTU3NzgxZjNiNDliNTA4ZmIiLCJkaXNwbGF5TmFtZSI6Ik5vZSBTYWxkaXZhciBvayIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTY2ODU1NiwiZXhwIjoxNzU1NjcyMTU2fQ._fTSPHPohqxhYIir39a24q4hdhz3mRgxk1dlfT_2eE4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n        \"displayName\": \"Noe Saldivar ok Rev1\",\n        \"email\": \"noe.saldivar@mail.com\",\n        \"role\": \"customer\",\n        \"phone\": \"4491238777\",\n        \"avatar\": \"https://placehold.co.NoeRamos/200x200.png\",\n        \"active\": true\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/users/me",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"users",
+										"me"
+									]
+								},
+								"description": "Campos opcionales: displayName (2-50), phone (<=10), avatar (URL)"
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH /me/password — cambiar contraseña R19",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjZlMTU3NzgxZjNiNDliNTA4ZmIiLCJkaXNwbGF5TmFtZSI6Ik5vZSBTYWxkaXZhciBvayIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTY2ODU1NiwiZXhwIjoxNzU1NjcyMTU2fQ._fTSPHPohqxhYIir39a24q4hdhz3mRgxk1dlfT_2eE4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"currentPassword\": \"Admin1234\",\n  \"newPassword\": \"Admin123\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/users/me/password",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"users",
+										"me",
+										"password"
+									]
+								},
+								"description": "Requiere currentPassword y newPassword (>=6)"
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH /deactivate — desactivar cuenta propia R19",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjZlMTU3NzgxZjNiNDliNTA4ZmIiLCJkaXNwbGF5TmFtZSI6Ik5vZSBTYWxkaXZhciBvayIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTY2ODU1NiwiZXhwIjoxNzU1NjcyMTU2fQ._fTSPHPohqxhYIir39a24q4hdhz3mRgxk1dlfT_2eE4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"active\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/users/deactivate",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"users",
+										"deactivate"
+									]
+								},
+								"description": "Desactiva el usuario autenticado (soft)"
+							},
+							"response": []
+						},
+						{
+							"name": "Activar o Desactivar usuario por ADMIN R19",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTY2NzE2NCwiZXhwIjoxNzU1NjcwNzY0fQ.B30BZFVt8uFmlN66sqW_ptIweOeGHVEn3Om3FIOBxNY",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/users/{{userID}}/toggle-status",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"users",
+										"{{userID}}",
+										"toggle-status"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "1.2.Admin (gestión de usuarios) okRev",
+					"item": [
+						{
+							"name": "GET / — listar usuarios (Admin) R20",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTg0OTIyNywiZXhwIjoxNzU1ODUyODI3fQ.cIpVKxkDVyBGljSPjdsSPA1T5R3sI3ywHVzRjHCP7Ug",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/users",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"users"
+									]
+								},
+								"description": "Filtros soportados: active (bool), role [admin|customer|guest], q (string), paginación page/limit"
+							},
+							"response": []
+						},
+						{
+							"name": "Búsqueda rápida en displayName, email, phone (Admin) R20",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTY2NzE2NCwiZXhwIjoxNzU1NjcwNzY0fQ.B30BZFVt8uFmlN66sqW_ptIweOeGHVEn3Om3FIOBxNY",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/users/search?q=mail",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"users",
+										"search"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "mail"
+										}
+									]
+								},
+								"description": "Requiere query param: q"
+							},
+							"response": []
+						},
+						{
+							"name": "GET /:userId — detalle por id (Admin) R20",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTY2NzE2NCwiZXhwIjoxNzU1NjcwNzY0fQ.B30BZFVt8uFmlN66sqW_ptIweOeGHVEn3Om3FIOBxNY",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/users/{{userid}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"users",
+										"{{userid}}"
+									]
+								},
+								"description": "Admin"
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH /:userId — actualizar usuario (Admin) R20",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTY2NzE2NCwiZXhwIjoxNzU1NjcwNzY0fQ.B30BZFVt8uFmlN66sqW_ptIweOeGHVEn3Om3FIOBxNY",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n   \"displayName\": \"Noe Saldivar ok Rev2\",\n   \"email\": \"noe@escorp.com\",\n   \"role\": \"customer\",\n   \"phone\": \"4491238777\",\n   \"avatar\": \"https://placehold.co.NoeRamos/200x200.png\",\n   \"active\": true\n}      "
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/users/{{userid}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"users",
+										"{{userid}}"
+									]
+								},
+								"description": "Campos opcionales; role ∈ [admin, customer, guest]"
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH /:userId - status — activar/desactivar (Admin) R20",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTY2NzE2NCwiZXhwIjoxNzU1NjcwNzY0fQ.B30BZFVt8uFmlN66sqW_ptIweOeGHVEn3Om3FIOBxNY",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/users/{{userid}}/toggle-status",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"users",
+										"{{userid}}",
+										"toggle-status"
+									]
+								},
+								"description": "Alterna active true/false"
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE /:userId — borrado físico (Admin) R20",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTY3MDQ0MCwiZXhwIjoxNzU1Njc0MDQwfQ.bitgslsFMCJK5op-pkSG7VACm5i6cuzsE-V7B7-HG0c",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/users/{{userid}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"users",
+										"{{userid}}"
+									]
+								},
+								"description": "Elimina permanentemente al usuario"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "2.Categories okRev",
+					"item": [
+						{
+							"name": "GET /api/categories (list Open) R20",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/categories",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST /api/categories (Admin) R20",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTc1NTA0OCwiZXhwIjoxNzU1NzU4NjQ4fQ.Et2za7jEZY4k0LWm35sZcyB9xIzvM30JgcNdHToqIVU",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Relojes de madera\",\r\n  \"description\": \"Relojes de madera personalizados en laser.\",\r\n  \"imageURL\": \"https://placehold.co.RelojesPersonalizados/800x600.png\",\r\n  \"parentCategory\": null\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/categories",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET /api/categories/:id (Open) R20",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/categories/{{categoryId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"categories",
+										"{{categoryId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET /api/categories/search (Open) R20",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/categories/search?q=anillos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"categories",
+										"search"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "anillos"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT /api/categories/:id (Admin) R20",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTY3MTY4MywiZXhwIjoxNzU1Njc1MjgzfQ.xmryZV1AyAN1RDLdO_nwAw5S7zHaWOmZ6MNiHmqm7Hs",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Anillos\",\r\n  \"description\": \"Aros para dedos en diseños lisos, ajustables o con incrustaciones. Disponibles en plata, oro, acero o latón; opciones de grabado, tallas estándar y anillos de promesa/compromiso.\",\r\n  \"imageURL\": \"https://placehold.co.Anillos/800x600.png\",\r\n  \"parentCategory\": null\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/categories/{{categoryId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"categories",
+										"{{categoryId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH /api/categories/:id NG - REV",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTY3MTY4MywiZXhwIjoxNzU1Njc1MjgzfQ.xmryZV1AyAN1RDLdO_nwAw5S7zHaWOmZ6MNiHmqm7Hs",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\n  \"description\": \"Actualizado1\"\n\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/categories/{{categoryId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"categories",
+										"{{categoryId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE /api/categories/:id (Admin) R20",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTY3MTY4MywiZXhwIjoxNzU1Njc1MjgzfQ.xmryZV1AyAN1RDLdO_nwAw5S7zHaWOmZ6MNiHmqm7Hs",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/categories/{{categoryId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"categories",
+										"{{categoryId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "3.Products okRev",
+					"item": [
+						{
+							"name": "GET /api/products list R20",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/products",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST /api/products (Admin) R20",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTc1NTA0OCwiZXhwIjoxNzU1NzU4NjQ4fQ.Et2za7jEZY4k0LWm35sZcyB9xIzvM30JgcNdHToqIVU",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Pulsera latón con amatista\",\n    \"description\": \"Pulsera ajustable con piedra amatista.\",\n    \"price\": 430.00,\n    \"stock\": 21,\n    \"category\": \"68a57412a1f69c1bbfa577b1\",\n    \"material\": \"Latón\",\n    \"design\": \"Con piedra mineral\",\n    \"stone\": \"Amatista\",\n    \"imagesUrl\": [\"https://placehold.co.Pulseras/pulseraLatonAmatista/600x600.png\"]\n\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/products",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET /api/products/search (name & open) R20",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/products/search?q={{findInName}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"search"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "{{findInName}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT /api/products/:id (Admin) R20",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTY3NjE2NCwiZXhwIjoxNzU1Njc5NzY0fQ.rKSYJhCqtnTVecJh7YfnZuLqWmzSsQqa_bt6vx88vLI",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\n            \"name\": \"Anillo de plata esterlinaA\",\n            \"description\": \"Hecho a mano con elegantes detalles\",\n            \"price\": 555,\n            \"stock\": 21,\n            \"imagesUrl\": [\n                \"https://placehold.co.AnillodePlata/600x600.png\"]\n}\n"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/products/{{productId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"{{productId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT /api/products/:id (Admin) R20 Update - Patch",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTY3NjE2NCwiZXhwIjoxNzU1Njc5NzY0fQ.rKSYJhCqtnTVecJh7YfnZuLqWmzSsQqa_bt6vx88vLI",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\n            \"stock\": 25\n\n}\n"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/products/{{productId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"{{productId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE /api/products/:id (Admin) R20",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTc1NTA0OCwiZXhwIjoxNzU1NzU4NjQ4fQ.Et2za7jEZY4k0LWm35sZcyB9xIzvM30JgcNdHToqIVU",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/products/{{productId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"{{productId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET /api/products/:id R20",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTY3MTY4MywiZXhwIjoxNzU1Njc1MjgzfQ.xmryZV1AyAN1RDLdO_nwAw5S7zHaWOmZ6MNiHmqm7Hs",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/products?Id={{productId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"products"
+									],
+									"query": [
+										{
+											"key": "Id",
+											"value": "{{productId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET /api/products/category/:idCategory R20",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTc1NTA0OCwiZXhwIjoxNzU1NzU4NjQ4fQ.Et2za7jEZY4k0LWm35sZcyB9xIzvM30JgcNdHToqIVU",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/products?category={{categoryId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"products"
+									],
+									"query": [
+										{
+											"key": "category",
+											"value": "{{categoryId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET /api/products/search R20",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/products/search?q={{findInName}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"products",
+										"search"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "{{findInName}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "4.Cart okRev",
+					"item": [
+						{
+							"name": "POST /api/cart/add-product (Customer) R21",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjdmNGExZjY5YzFiYmZhNTc3ODciLCJkaXNwbGF5TmFtZSI6Ik5vZSBTYWxkaXZhciIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTg0NTY4OCwiZXhwIjoxNzU1ODQ5Mjg4fQ.maU5J7660mSyea18pwfidDgP-MiRNeFU1JxjjCQtthU",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"productId\": \"68a6bcd45aceec4975c87eb8\",\n  \"quantity\": 2\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/cart/add-product",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"cart",
+										"add-product"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET /api/cart (Admin) R21",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTg0MTU2NywiZXhwIjoxNzU1ODQ1MTY3fQ.206oocAGwLcP_uZJx1Oc-JlWKaHCzP0BxpOWX8BZDzc",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/cart",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"cart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET /api/cart/user/:id - (cada user) R21",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjdmNGExZjY5YzFiYmZhNTc3ODciLCJkaXNwbGF5TmFtZSI6Ik5vZSBTYWxkaXZhciIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTg0NTY4OCwiZXhwIjoxNzU1ODQ5Mjg4fQ.maU5J7660mSyea18pwfidDgP-MiRNeFU1JxjjCQtthU",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/cart/user/{{userid}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"cart",
+										"user",
+										"{{userid}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST check out R22",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjdmNGExZjY5YzFiYmZhNTc3ODciLCJkaXNwbGF5TmFtZSI6Ik5vZSBTYWxkaXZhciIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTg0NTY4OCwiZXhwIjoxNzU1ODQ5Mjg4fQ.maU5J7660mSyea18pwfidDgP-MiRNeFU1JxjjCQtthU",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"shippingAddress\": \"68a8153b5c2f70b91cec4f0e\",\n  \"paymentMethod\": \"68a815c15c2f70b91cec4f13\",\n  \"shippingCost\": 300\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/orders/checkout",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"orders",
+										"checkout"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST /api/cart (adiciona cart x admin a \"y\" usuario) R21",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTc2Mzc4NiwiZXhwIjoxNzU1NzY3Mzg2fQ.L5bQkV8KZz9sPmtee_DzzeEGE85kXokkml7N53wdGHQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"user\": \"68a55971a1f69c1bbfa5773f\",        \n  \"products\": [\n    { \"product\": \"68a57926a1f69c1bbfa577c2\", \"quantity\": 2 },\n    { \"product\": \"68a6bbd25aceec4975c87ea2\", \"quantity\": 3 }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/cart",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"cart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE /api/cart/:id R21",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NThjYmExZjY5YzFiYmZhNTc3MzYiLCJkaXNwbGF5TmFtZSI6Ikdlb3JnZSBMdWNhcyIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTgxODgyOCwiZXhwIjoxNzU1ODIyNDI4fQ.C2ZLYwGxyVe2NsQISy60QKX_FxcdWGliA-aUkWMOS4I",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/cart/{{cartId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"cart",
+										"{{cartId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET /api/cart/:id (Admin) R21",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTgzODU4OSwiZXhwIjoxNzU1ODQyMTg5fQ.i3Dfx3muOD0d2QMYMiI0EyS5NdI_ZVHf0ZCY6oOeq_w",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/cart/{{idCart}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"cart",
+										"{{idCart}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT /api/cart/:id (reemplazo completo)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTc2MzY3MSwiZXhwIjoxNzU1NzY3MjcxfQ.WTEqHgFv0SP5s74xk--a28W0g_yzIs5XNQnlMxgxPMw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"user\": \"68a56623a1f69c1bbfa5777a\",\n  \"products\": [\n    {\n      \"product\": \"68a6bcec5aceec4975c87ebe\",\n      \"quantity\": 2\n    }\n  ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/cart/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"cart",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "5.ShippingAddress okRev",
+					"item": [
+						{
+							"name": "Obtener direcciones del usuario R21",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjdmNGExZjY5YzFiYmZhNTc3ODciLCJkaXNwbGF5TmFtZSI6Ik5vZSBTYWxkaXZhciIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTg0NTY4OCwiZXhwIjoxNzU1ODQ5Mjg4fQ.maU5J7660mSyea18pwfidDgP-MiRNeFU1JxjjCQtthU",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/shipping-addresses/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"shipping-addresses",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener dirección de user por addressID R21",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTgxODg4NSwiZXhwIjoxNzU1ODIyNDg1fQ.joraFMFztJYltTIBcuj9kOXsT5jftT_anDIlhY1Ea9A",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/shipping-addresses/{{userAddressId}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"shipping-addresses",
+										"{{userAddressId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Crear dirección de envío R21",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjdmNGExZjY5YzFiYmZhNTc3ODciLCJkaXNwbGF5TmFtZSI6Ik5vZSBTYWxkaXZhciIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTg0NTY4OCwiZXhwIjoxNzU1ODQ5Mjg4fQ.maU5J7660mSyea18pwfidDgP-MiRNeFU1JxjjCQtthU",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Direccion de envio de customer Noe ALi Ramos\",\n  \"address\": \"Paseo de la Asuncion 407\",\n  \"city\": \"Aguascalientes\",\n  \"state\": \"Aguascalientes\",\n  \"postalCode\": \"20218\",\n  \"country\": \"México\",\n  \"phone\": \"4491237787\",\n  \"isDefault\": true,\n  \"addressType\": \"home\"\n}\n"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/shipping-addresses",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"shipping-addresses"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Establecer dirección como predeterminada R21",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTgxODg4NSwiZXhwIjoxNzU1ODIyNDg1fQ.joraFMFztJYltTIBcuj9kOXsT5jftT_anDIlhY1Ea9A",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/shipping-addresses/{{userAddressId}}/default",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"shipping-addresses",
+										"{{userAddressId}}",
+										"default"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Actualizar dirección por userAddressId R21",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTgxODg4NSwiZXhwIjoxNzU1ODIyNDg1fQ.joraFMFztJYltTIBcuj9kOXsT5jftT_anDIlhY1Ea9A",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\n            \"name\": \"Direccion de customer Oswaldo Trava\",\n            \"address\": \"Av. Central OjoCaliente, Col. Centro #321\",\n            \"city\": \"Queretato\",\n            \"state\": \"Queretaro\",\n            \"postalCode\": \"34881\",\n            \"country\": \"México\",\n            \"phone\": \"4491234567\"\n            \n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/shipping-addresses/{{userAddressId}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"shipping-addresses",
+										"{{userAddressId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Eliminar dirección por userAddressId R21",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTgxODg4NSwiZXhwIjoxNzU1ODIyNDg1fQ.joraFMFztJYltTIBcuj9kOXsT5jftT_anDIlhY1Ea9A",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/shipping-addresses/{{userAddressId}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"shipping-addresses",
+										"{{userAddressId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "6.PaymentMethod okRev",
+					"item": [
+						{
+							"name": "Listar (admin) - Todos R21",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTgxODYwOCwiZXhwIjoxNzU1ODIyMjA4fQ.5Z6oYRiPTme_pswdwbVj15qSN4GhryFoub4bntGBvKk",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/payment-methods?active=true&page=1&limit=10",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"payment-methods"
+									],
+									"query": [
+										{
+											"key": "active",
+											"value": "true"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Listar PaymentMethod (Active) por userId R21",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTg0MzA2NiwiZXhwIjoxNzU1ODQ2NjY2fQ.O79tyHlle72x4FQaD_RrUtA52H4G5Yjl3rJZR6J3630",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/payment-methods/user/{{userID}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"payment-methods",
+										"user",
+										"{{userID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Listar PaymentMethod (InActive) por userId R21",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjdmNGExZjY5YzFiYmZhNTc3ODciLCJkaXNwbGF5TmFtZSI6Ik5vZSBTYWxkaXZhciIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTg0NTY4OCwiZXhwIjoxNzU1ODQ5Mjg4fQ.maU5J7660mSyea18pwfidDgP-MiRNeFU1JxjjCQtthU",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/payment-methods/user/{{userID}}?active=false",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"payment-methods",
+										"user",
+										"{{userID}}"
+									],
+									"query": [
+										{
+											"key": "active",
+											"value": "false"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Owner/Admin - Métodos por usuario (active=true) R21",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTgzODU4OSwiZXhwIjoxNzU1ODQyMTg5fQ.i3Dfx3muOD0d2QMYMiI0EyS5NdI_ZVHf0ZCY6oOeq_w",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/payment-methods/user/{{userId}}?active=true&page=1&limit=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"payment-methods",
+										"user",
+										"{{userId}}"
+									],
+									"query": [
+										{
+											"key": "active",
+											"value": "true"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								},
+								"description": "Lista métodos activos del usuario."
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Default de Usuario R21",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTgzODU4OSwiZXhwIjoxNzU1ODQyMTg5fQ.i3Dfx3muOD0d2QMYMiI0EyS5NdI_ZVHf0ZCY6oOeq_w",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/api/payment-methods/default/{{userID}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"payment-methods",
+										"default",
+										"{{userID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener PaymentMethod por PaymentMethodId R21",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTgxODg4NSwiZXhwIjoxNzU1ODIyNDg1fQ.joraFMFztJYltTIBcuj9kOXsT5jftT_anDIlhY1Ea9A",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/payment-methods/{{pmId}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"payment-methods",
+										"{{pmId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Crear - Credit Card por userToken R21",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjdmNGExZjY5YzFiYmZhNTc3ODciLCJkaXNwbGF5TmFtZSI6Ik5vZSBTYWxkaXZhciIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTg0NTY4OCwiZXhwIjoxNzU1ODQ5Mjg4fQ.maU5J7660mSyea18pwfidDgP-MiRNeFU1JxjjCQtthU",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"type\": \"credit_card\",\n    \"cardHolderName\": \"Noe Ali Ramos Saldivar\",\n    \"expiryDate\": \"01/30\",\n    \"brand\": \"BBVA\",\n    \"last4\": \"1234\",\n    \"isDefault\": true,\n    \"active\": true\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/payment-methods",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"payment-methods"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Crear - PayPal por userToken R21",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTgxODg4NSwiZXhwIjoxNzU1ODIyNDg1fQ.joraFMFztJYltTIBcuj9kOXsT5jftT_anDIlhY1Ea9A",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"type\": \"paypal\",\n  \"paypalEmail\": \"oso.trava@mail.com\",\n  \"isDefault\": false,    \n  \"active\": true\n}\n"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/payment-methods",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"payment-methods"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Crear - Bank Transfer R21",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTgxODg4NSwiZXhwIjoxNzU1ODIyNDg1fQ.joraFMFztJYltTIBcuj9kOXsT5jftT_anDIlhY1Ea9A",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"type\": \"bank_transfer\",\n  \"bankName\": \"BBVA\",\n  \"accountNumber\": \"012345612341234567\",\n  \"isDefault\": false,\n  \"active\": true\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/payment-methods",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"payment-methods"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Actualizar Paypal R21",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTgzODkzMywiZXhwIjoxNzU1ODQyNTMzfQ.xbo6HGdB6SdsmowwXpzuIdH09LpOtor_PwuAT9u0IxM",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"type\": \"paypal\",\n  \"paypalEmail\": \"oso.trava@mail.com\",\n  \"isDefault\": false,\n  \"active\": true\n}\n"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/payment-methods/{{paymentMethodId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"payment-methods",
+										"{{paymentMethodId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Set Default R21",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTgzODU4OSwiZXhwIjoxNzU1ODQyMTg5fQ.i3Dfx3muOD0d2QMYMiI0EyS5NdI_ZVHf0ZCY6oOeq_w",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/payment-methods/{{pml}}/set-default",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"payment-methods",
+										"{{pml}}",
+										"set-default"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Desactivar paymentMethos (PATCH) Rev21",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTgzODU4OSwiZXhwIjoxNzU1ODQyMTg5fQ.i3Dfx3muOD0d2QMYMiI0EyS5NdI_ZVHf0ZCY6oOeq_w",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/payment-methods/{{pmId}}/deactivate",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"payment-methods",
+										"{{pmId}}",
+										"deactivate"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Eliminar (Soft DELETE) R21",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTgzODU4OSwiZXhwIjoxNzU1ODQyMTg5fQ.i3Dfx3muOD0d2QMYMiI0EyS5NdI_ZVHf0ZCY6oOeq_w",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/api/payment-methods/{{pmId}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"payment-methods",
+										"{{pmId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "7.Orders okRev",
+					"item": [
+						{
+							"name": "Owner/Admin - Órdenes por usuario R22",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTg0Njc5OSwiZXhwIjoxNzU1ODUwMzk5fQ.ptYdS-thdPsmOrLxxFEZWtqSSdYK4YWOhj8IaXlsLTU",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/orders/user/{{userId}}?status=pending&paymentStatus=pending&sort=createdAt&order=desc&page=1&limit=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"orders",
+										"user",
+										"{{userId}}"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "pending"
+										},
+										{
+											"key": "paymentStatus",
+											"value": "pending"
+										},
+										{
+											"key": "sort",
+											"value": "createdAt"
+										},
+										{
+											"key": "order",
+											"value": "desc"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								},
+								"description": "Lista órdenes del usuario indicado. Cualquier user autenticado puede consultar su propio userId; admin puede consultar cualquiera."
+							},
+							"response": []
+						},
+						{
+							"name": "Admin - Cambiar paymentStatus Paid R22",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTg0Njg3OSwiZXhwIjoxNzU1ODUwNDc5fQ.4mudqmojEw5-VLZy8MBUzpSWOwK_3cbeE4Z3mTDk-mg",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{tokenAdmin}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"paymentStatus\": \"paid\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/orders/{{orderId}}/payment-status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"orders",
+										"{{orderId}}",
+										"payment-status"
+									]
+								},
+								"description": "Valid payment statuses: pending, paid, failed, refunded."
+							},
+							"response": []
+						},
+						{
+							"name": "Admin - Actualizar orden (PUT) Processing R22",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTg0Njg3OSwiZXhwIjoxNzU1ODUwNDc5fQ.4mudqmojEw5-VLZy8MBUzpSWOwK_3cbeE4Z3mTDk-mg",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{tokenAdmin}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"processing\"\n  }"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/orders/{{orderId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"orders",
+										"{{orderId}}"
+									]
+								},
+								"description": "Actualiza campos permitidos: status, paymentStatus, shippingCost. Recalcula totalPrice si cambia shippingCost."
+							},
+							"response": []
+						},
+						{
+							"name": "Admin - Cambiar status Shipped R22",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTg0Njg3OSwiZXhwIjoxNzU1ODUwNDc5fQ.4mudqmojEw5-VLZy8MBUzpSWOwK_3cbeE4Z3mTDk-mg",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{tokenAdmin}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"shipped\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/orders/{{orderId}}/status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"orders",
+										"{{orderId}}",
+										"status"
+									]
+								},
+								"description": "Valid statuses: pending, processing, shipped, delivered, cancelled."
+							},
+							"response": []
+						},
+						{
+							"name": "Admin - Cambiar status Delivered R22",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTg0Njg3OSwiZXhwIjoxNzU1ODUwNDc5fQ.4mudqmojEw5-VLZy8MBUzpSWOwK_3cbeE4Z3mTDk-mg",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{tokenAdmin}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"delivered\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/orders/{{orderId}}/status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"orders",
+										"{{orderId}}",
+										"status"
+									]
+								},
+								"description": "Valid statuses: pending, processing, shipped, delivered, cancelled."
+							},
+							"response": []
+						},
+						{
+							"name": "Admin - Listar órdenes (con filtros/paginación) R22",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTg0Njg3OSwiZXhwIjoxNzU1ODUwNDc5fQ.4mudqmojEw5-VLZy8MBUzpSWOwK_3cbeE4Z3mTDk-mg",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{tokenAdmin}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/orders?status=pending&paymentStatus=pending&sort=createdAt&order=desc&page=1&limit=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"orders"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "pending"
+										},
+										{
+											"key": "paymentStatus",
+											"value": "pending"
+										},
+										{
+											"key": "sort",
+											"value": "createdAt"
+										},
+										{
+											"key": "order",
+											"value": "desc"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								},
+								"description": "Requiere rol admin. Ajusta query params según necesites."
+							},
+							"response": []
+						},
+						{
+							"name": "Owner/Admin - Obtener orden por ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/orders/{{orderId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"orders",
+										"{{orderId}}"
+									]
+								},
+								"description": "Owner (misma cuenta) o admin."
+							},
+							"response": []
+						},
+						{
+							"name": "Admin - Cancelar orden R22",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTg0Njg3OSwiZXhwIjoxNzU1ODUwNDc5fQ.4mudqmojEw5-VLZy8MBUzpSWOwK_3cbeE4Z3mTDk-mg",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{tokenAdmin}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/orders/{{orderId}}/cancel",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"orders",
+										"{{orderId}}",
+										"cancel"
+									]
+								},
+								"description": "Cancela salvo estados delivered/cancelled. Si estaba paid, pasa a refunded."
+							},
+							"response": []
+						},
+						{
+							"name": "Admin - Eliminar orden (solo canceladas) R22",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTg0Njg3OSwiZXhwIjoxNzU1ODUwNDc5fQ.4mudqmojEw5-VLZy8MBUzpSWOwK_3cbeE4Z3mTDk-mg",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{tokenAdmin}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/orders/{{orderId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"orders",
+										"{{orderId}}"
+									]
+								},
+								"description": "Eliminar definitivamente. Solo si status === cancelled."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "8.Reviews okRev",
+					"item": [
+						{
+							"name": "GET /api/reviews?productId= userlogged R22",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTg0Njc5OSwiZXhwIjoxNzU1ODUwMzk5fQ.ptYdS-thdPsmOrLxxFEZWtqSSdYK4YWOhj8IaXlsLTU",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/reviews/product/{{productId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"reviews",
+										"product",
+										"{{productId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET /api/reviews/my-reviews userlogged R22",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjdmNGExZjY5YzFiYmZhNTc3ODciLCJkaXNwbGF5TmFtZSI6Ik5vZSBTYWxkaXZhciIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTg0NTY4OCwiZXhwIjoxNzU1ODQ5Mjg4fQ.maU5J7660mSyea18pwfidDgP-MiRNeFU1JxjjCQtthU",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/reviews/my-reviews",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"reviews",
+										"my-reviews"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST /api/reviews R22",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const json = pm.response.json();",
+											"const getId = (o) => (o && (o._id || o.id || (o.data && (o.data._id || o.data.id)) || (o.result && (o.result._id || o.result.id)))) || null;",
+											"const id = getId(json);",
+											"if (id) {",
+											"  pm.collectionVariables.set(\"reviewId\", id);",
+											"  pm.test(\"Captured reviewId\", function () {",
+											"    pm.expect(pm.collectionVariables.get(\"reviewId\")).to.be.a(\"string\");",
+											"  });",
+											"} else {",
+											"  console.warn(\"No ID found to capture for reviewId. Response:\", json);",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjdmNGExZjY5YzFiYmZhNTc3ODciLCJkaXNwbGF5TmFtZSI6Ik5vZSBTYWxkaXZhciIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTg0NTY4OCwiZXhwIjoxNzU1ODQ5Mjg4fQ.maU5J7660mSyea18pwfidDgP-MiRNeFU1JxjjCQtthU",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"product\": \"68a6bce05aceec4975c87ebb\",\n  \"rating\": 5,\n  \"comment\": \"Me gustaron mucho\"\n  }"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/reviews",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"reviews"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE /api/reviews/:id (Admin) R22",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE0MjY0NjU3NzgxZjNiNDliNTA4ZjgiLCJkaXNwbGF5TmFtZSI6IkFsaSBSYW1vcyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NTg0OTIyNywiZXhwIjoxNzU1ODUyODI3fQ.cIpVKxkDVyBGljSPjdsSPA1T5R3sI3ywHVzRjHCP7Ug",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/reviews/{{reviewId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"reviews",
+										"{{reviewId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "9.Wishlist okRev",
+					"item": [
+						{
+							"name": "GET /api/wishlist (mine) R22",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTg0OTM0NiwiZXhwIjoxNzU1ODUyOTQ2fQ.28lsBragYYnaTf3A7DidUm_bx6dMlZO-_YzyRFDF5eA",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/wishlist",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"wishlist"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST /api/wishlist (add) R22",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTg0OTM0NiwiZXhwIjoxNzU1ODUyOTQ2fQ.28lsBragYYnaTf3A7DidUm_bx6dMlZO-_YzyRFDF5eA",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"productId\": \"68a6bd4f5aceec4975c87ed6\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/wishlist/add",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"wishlist",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE /api/wishlist/:productId (remove)",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/wishlist/remove/{{productId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"wishlist",
+										"remove",
+										"{{productId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Notifications",
+					"item": [
+						{
+							"name": "GET /api/notifications",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/notifications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"notifications"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST /api/notifications",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"user\": \"USER_ID\",\n  \"title\": \"Nuevo pedido\",\n  \"message\": \"Se generó un nuevo pedido\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/notifications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"notifications"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE /api/notifications/:id",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/notifications/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"notifications",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET /api/notifications/:id",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/notifications/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"notifications",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT /api/notifications/:id",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"user\": \"USER_ID\",\n  \"title\": \"Nuevo pedido\",\n  \"message\": \"Se generó un nuevo pedido\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/notifications/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"notifications",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH /api/notifications/:id/mark-read",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"user\": \"USER_ID\",\n  \"title\": \"Nuevo pedido\",\n  \"message\": \"Se generó un nuevo pedido\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/notifications/:id/mark-read",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"notifications",
+										":id",
+										"mark-read"
+									],
+									"variable": [
+										{
+											"key": "id"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET /api/notifications/unread/:userId",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/notifications/unread/:userId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"notifications",
+										"unread",
+										":userId"
+									],
+									"variable": [
+										{
+											"key": "userId"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET /api/notifications/user/:userId",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/notifications/user/:userId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"notifications",
+										"user",
+										":userId"
+									],
+									"variable": [
+										{
+											"key": "userId"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH /api/notifications/user/:userId/mark-all-read",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"user\": \"USER_ID\",\n  \"title\": \"Nuevo pedido\",\n  \"message\": \"Se generó un nuevo pedido\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/notifications/user/:userId/mark-all-read",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"notifications",
+										"user",
+										":userId",
+										"mark-all-read"
+									],
+									"variable": [
+										{
+											"key": "userId"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Not Used BackUP",
+					"item": [
+						{
+							"name": "Crear orden (checkout KISS) okRev",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE1NjYyM2ExZjY5YzFiYmZhNTc3N2EiLCJkaXNwbGF5TmFtZSI6Ik9zbyBUcmF2YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1NTgzODU4OSwiZXhwIjoxNzU1ODQyMTg5fQ.i3Dfx3muOD0d2QMYMiI0EyS5NdI_ZVHf0ZCY6oOeq_w",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"products\": [\n    {\n      \"productId\": \"{{productId1}}\",\n      \"quantity\": 1,\n      \"price\": 1490\n    },\n    {\n      \"productId\": \"{{productId2}}\",\n      \"quantity\": 1,\n      \"price\": 1230\n    }\n  ],\n  \"shippingAddress\": \"{{shippingAddressId}}\",\n  \"paymentMethod\": \"{{paymentMethodId}}\",\n  \"shippingCost\": 10\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/orders",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"orders"
+									]
+								},
+								"description": "Crea una orden con precios enviados desde cliente (demo). En producción, ideal tomar precio desde DB."
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000"
+		},
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
+}

@@ -5,7 +5,7 @@ import { Button } from "../components/atoms/Button";
 import { Heading } from "../components/atoms/Heading";
 import { Text } from "../components/atoms/Text";
 import { authApi } from "../api/authApi";
-import { STORAGE_KEYS } from "../utils/storageHelpers";
+import { persistAuthSession } from "../services/authService";
 import { useAuth } from "../contexts/AuthContext";
 import "./LoginPage.css"; // Reusamos estilos base de login
 
@@ -17,7 +17,7 @@ export function RegisterPage() {
   const [error, setError] = useState(null);
   
   const navigate = useNavigate();
-  const { login } = useAuth(); // Podríamos hacer auto-login después de registro
+  const { restoreSession } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,15 +25,10 @@ export function RegisterPage() {
     setError(null);
 
     try {
-      await authApi.register({ displayName: name, email, password });
-      
-      // Auto-login después de registro exitoso
-      const loginOk = await login(email, password);
-      if (loginOk) {
-        navigate("/");
-      } else {
-        navigate("/login");
-      }
+      const response = await authApi.register({ displayName: name, email, password });
+      persistAuthSession(response);
+      restoreSession(response.user);
+      navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Error al crear la cuenta. Intenta con otro correo.");
     } finally {

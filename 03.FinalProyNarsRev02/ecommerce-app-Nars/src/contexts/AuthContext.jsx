@@ -47,6 +47,12 @@ export function AuthProvider({ children }) {
     setIsAuthenticated(false);
   };
 
+  const restoreSession = (nextUser) => {
+    setUser(nextUser);
+    setIsAuthenticated(Boolean(nextUser));
+    setError(null);
+  };
+
   const value = {
     user,
     isAuthenticated,
@@ -54,6 +60,7 @@ export function AuthProvider({ children }) {
     error,
     login,
     logout,
+    restoreSession,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
