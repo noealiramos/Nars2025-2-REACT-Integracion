@@ -4,13 +4,9 @@ import User from '../../../src/models/user.js';
 import {
     getUserProfile,
     getAllUsers,
-    getUserById,
-    updateUserProfile,
     changePassword,
     updateUser,
-    deactivateUser,
     toggleUserStatus,
-    deleteUser,
     searchUser
 } from '../../../src/controllers/userController.js';
 import { createMockReqRes } from '../../testUtils.js';

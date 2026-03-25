@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import logger from '../middlewares/logger.js';
 
 export default async function dbConnection() {
   try {
@@ -12,9 +13,13 @@ export default async function dbConnection() {
     mongoose.set('autoIndex', process.env.NODE_ENV !== 'production');
 
     await mongoose.connect(`${MONGODB_URI}/${MONGODB_DB}`);
-    console.log('MongoDB is connected');
+    logger.info({ message: 'MongoDB is connected', database: MONGODB_DB });
   } catch (error) {
-    console.error('Mongo connection error:', error.message);
+    logger.error({
+      message: 'Mongo connection error',
+      error: error.message,
+      stack: error.stack,
+    });
     process.exit(1);
   }
 }

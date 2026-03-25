@@ -10,7 +10,7 @@ async function getCarts(req, res, next) {
       Cart.countDocuments({}),
       Cart.find({})
         .populate('user', 'displayName email _id')
-        .populate('products.product', 'name price _id')
+        .populate('products.product', 'name price _id imagesUrl image')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
@@ -29,7 +29,7 @@ async function getCartById(req, res, next) {
     const id = req.params.id;
     const cart = await Cart.findById(id)
       .populate('user', 'displayName email _id')
-      .populate('products.product', 'name price _id')
+      .populate('products.product', 'name price _id imagesUrl image')
       .lean();
 
     if (!cart) return res.status(404).json({ message: 'Carrito no encontrado' });
@@ -52,7 +52,7 @@ async function getCartByUser(req, res, next) {
 
     let cart = await Cart.findOne({ user: userId })
       .populate('user', 'displayName email _id')
-      .populate('products.product', 'name price _id')
+      .populate('products.product', 'name price _id imagesUrl image')
       .lean();
 
     // Si no existe, devuelve estructura vacía (no filtramos existencia)
@@ -84,7 +84,7 @@ async function createCart(req, res, next) {
     const created = await Cart.create({ user, products });
     const out = await Cart.findById(created._id)
       .populate('user', 'displayName email _id')
-      .populate('products.product', 'name price _id')
+      .populate('products.product', 'name price _id imagesUrl image')
       .lean();
 
     return res.status(201).json({ data: out });
@@ -118,7 +118,7 @@ async function updateCart(req, res, next) {
       { new: true }
     )
       .populate('user', 'displayName email _id')
-      .populate('products.product', 'name price _id');
+      .populate('products.product', 'name price _id imagesUrl image');
 
     if (!updated) return res.status(404).json({ message: 'Carrito no encontrado' });
     return res.status(200).json({ data: updated });
@@ -165,7 +165,7 @@ async function addProductToCart(req, res, next) {
       { new: true }
     )
       .populate('user', 'displayName email _id')
-      .populate('products.product', 'name price _id');
+      .populate('products.product', 'name price _id imagesUrl image');
 
     if (incRes) return res.json({ data: incRes });
 
@@ -176,7 +176,7 @@ async function addProductToCart(req, res, next) {
       { new: true }
     )
       .populate('user', 'displayName email _id')
-      .populate('products.product', 'name price _id');
+      .populate('products.product', 'name price _id imagesUrl image');
 
     return res.json({ data: pushRes });
   } catch (error) {

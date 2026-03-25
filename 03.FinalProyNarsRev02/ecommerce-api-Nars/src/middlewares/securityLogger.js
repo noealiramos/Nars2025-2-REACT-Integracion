@@ -1,6 +1,6 @@
 import logger from './logger.js';
 
-export const securityLogger = (action) => (req, res, next) => {
+export const securityLogger = (action) => (req, _res, next) => {
   const user = req.user ? req.user.userId : 'Anonymous';
   const data = {
     ip: req.ip,
@@ -24,7 +24,7 @@ export const logFailedLogin = (email, ip, reason) => {
   });
 };
 
-export const logRateLimit = (req, res) => {
+export const logRateLimit = (req) => {
   logger.warn('Security Event: Rate Limit Tripped', {
     ip: req.ip,
     url: req.originalUrl,

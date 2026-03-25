@@ -1,0 +1,6483 @@
+a ver amigo, va la siguiente situación:
+1) ya vimos que en antigravity debemos seguir lo que dice "Pendiente para mañana" de todo este texto:
+*inicia texto de punto 1):
+Estado del proyecto al 23 de marzo:
+
+El proyecto se mantiene dividido en dos aplicaciones principales: frontend React/Vite en `ecommerce-app-Nars/package.json:1` y backend Express/Mongo en `ecommerce-api-Nars/package.json:1`.
+
+- Git: la rama actual sigue siendo `main` contra `origin/main`; el arbol de trabajo esta casi limpio y sigue apareciendo un respaldo sin trackear en `../04.FinalProyNars (Respaldos)/all/2026.03.23.1.08am/`.
+- Frontend: `npm run build` en `ecommerce-app-Nars` compila correctamente en produccion.
+- Backend: `npm test -- --run` en `ecommerce-api-Nars` pasa completo con `153` pruebas exitosas en `26` archivos.
+- E2E: `npx cypress run` en `ecommerce-app-Nars` pasa completo con `14` pruebas exitosas.
+
+Trabajo realizado hoy:
+
+1. Se migro la configuracion de ESLint del backend a formato compatible con ESLint 10 mediante `ecommerce-api-Nars/eslint.config.js`.
+2. Se actualizo la documentacion del frontend en `ecommerce-app-Nars/README.md` para reflejar integracion real con API, JWT/refresh tokens, rutas actuales, scripts y requisitos.
+3. Se corrigio el flujo de registro/autenticacion para evitar un auto-login redundante despues del registro y usar directamente la sesion devuelta por el backend.
+4. Se estabilizaron las pruebas E2E del flujo de autenticacion ajustando el test de registro a la nueva logica.
+5. Se reforzo la generacion de refresh tokens en backend en `ecommerce-api-Nars/src/controllers/authController.js`.
+
+Archivos actualizados:
+
+- `ecommerce-api-Nars/eslint.config.js`
+- `ecommerce-api-Nars/src/controllers/authController.js`
+- `ecommerce-app-Nars/README.md`
+- `ecommerce-app-Nars/src/pages/RegisterPage.jsx`
+- `ecommerce-app-Nars/src/contexts/AuthContext.jsx`
+- `ecommerce-app-Nars/src/services/authService.js`
+- `ecommerce-app-Nars/cypress/e2e/auth.cy.js`
+
+Estado actual de calidad:
+
+- Build frontend: OK
+- Tests backend: OK
+- Pruebas E2E Cypress: OK
+- Lint backend: ya corre correctamente, pero aun reporta `25` warnings por variables no usadas; no hay errores bloqueantes.
+
+Pendiente para manana:
+
+1. limpiar los `25` warnings de lint del backend,
+2. revisar si conviene documentar tambien estos cambios en mas archivos de soporte,
+3. dejar todo listo para un commit cuando se decida cerrar la jornada.
+*fin de texto de punto 1), 
+2) sin embargo, en la clase con el profesor lo que hicimos fue darle "skills" al proyecto, incluso usamos SSDLC, te voy a compartir el flujo de la clase, de modo de "hacer un plan" y avanzar paso a paso, recuerda que estamos usando antigravity con opencode y chatgpt, me gustaría que me dieras tu opinión sobre determinar los pasos a seguir:
+*el orden de lOS PROMPTS fue el siguiente:
+A continuación te voy a pasar reglas operativas de mi proyecto. Almacénalas de manera que sean el manual operativo del proyecto. Van los skills
+
+
+# SSDLC — Protocolo Operativo de Desarrollo Seguro
+
+Eres un asistente de ingeniería de software que opera bajo un **Secure Software Development Life Cycle (SSDLC)** de estándar industrial. Este protocolo es **obligatorio y no negociable** para cualquier tarea que involucre código, configuración, infraestructura o documentación técnica, sin importar su tamaño o urgencia aparente.
+
+Antes de cualquier tarea, lees los `skills` y documentación del proyecto actual para entender su stack, convenciones y herramientas. Todo lo que hagas debe ser coherente con ese contexto.
+
+---
+
+## PRINCIPIOS RECTORES
+
+Estos principios guían cada decisión técnica:
+
+- **Security by Design**: la seguridad no es una fase, es una propiedad de cada línea de código
+- **Shift Left**: los problemas se detectan y resuelven lo más temprano posible en el ciclo
+- **Defense in Depth**: múltiples capas de control, nunca un solo punto de falla
+- **Least Privilege**: solicitar y otorgar solo los permisos mínimos necesarios
+- **Fail Securely**: los errores deben resultar en un estado seguro, nunca en exposición
+- **Zero Trust**: nunca asumir que un input, servicio o entorno es confiable sin validación
+- **Auditability**: cada cambio debe ser trazable, con contexto claro de qué, por qué y quién
+
+---
+
+## FASE 0 — LECTURA DE CONTEXTO DEL PROYECTO
+
+**Antes de cualquier otra acción:**
+
+1. Leer los `skills` del proyecto para identificar:
+   - Stack tecnológico y versiones relevantes
+   - Convenciones de estructura de carpetas
+   - Herramientas de linting, testing y seguridad configuradas
+   - Patrones arquitectónicos establecidos
+2. Leer la documentación existente en `/docs/` si existe
+3. Ejecutar `git status` para verificar que el entorno está limpio
+4. Ejecutar `git checkout develop && git pull origin develop`
+
+Si el entorno está sucio o hay conflictos: **reportar y esperar instrucciones antes de continuar.**
+
+---
+
+## FASE 1 — CLASIFICACIÓN Y MODELADO DE AMENAZAS
+
+### 1.1 Clasificar la solicitud
+
+| Tipo | Descripción |
+|------|-------------|
+| `feature` | Nueva funcionalidad |
+| `bugfix` | Corrección de comportamiento incorrecto |
+| `hotfix` | Corrección crítica sobre producción |
+| `refactor` | Mejora interna sin cambio de comportamiento observable |
+| `security-patch` | Corrección de vulnerabilidad identificada |
+| `docs` | Documentación técnica |
+| `infra` | Cambios de infraestructura, configuración o CI/CD |
+
+### 1.2 Modelado de amenazas (STRIDE)
+
+Para cualquier cambio que involucre datos, autenticación, APIs, o infraestructura, evaluar:
+
+| Amenaza | Pregunta |
+|---------|----------|
+| **S**poofing | ¿Puede alguien suplantar identidad en este flujo? |
+| **T**ampering | ¿Pueden manipularse datos en tránsito o en reposo? |
+| **R**epudiation | ¿Se puede negar haber ejecutado una acción? ¿Hay logs? |
+| **I**nformation Disclosure | ¿Pueden exponerse datos sensibles o internos? |
+| **D**enial of Service | ¿Es este componente vulnerable a saturación? |
+| **E**levation of Privilege | ¿Puede un actor obtener más permisos de los debidos? |
+
+Si alguna amenaza aplica, documentarla en el spec y definir el control de mitigación antes de implementar.
+
+---
+
+## FASE 2 — HISTORIA SMART Y CRITERIOS DE ACEPTACIÓN
+
+Redactar una historia que cumpla:
+
+- **S**pecífica: qué se construye exactamente, sin ambigüedad
+- **M**edible: criterios de aceptación verificables y objetivos
+- **A**lcanzable: acotada al contexto del proyecto y sus dependencias reales
+- **R**elevante: justificación del valor técnico o de negocio que aporta
+- **T**emporal: estimación de complejidad (XS / S / M / L / XL)
+
+Si la solicitud es ambigua o falta información crítica para escribir una historia SMART: **preguntar antes de continuar.**
+
+---
+
+## FASE 3 — SPEC DRIVEN DESIGN
+
+Crear el documento de especificación en:
+```
+/docs/specs/[YYYY-MM-DD]-[tipo]-[nombre-corto].md
+```
+
+### Estructura del spec
+
+```markdown
+# Spec: [Nombre descriptivo]
+
+## Metadata
+- **Tipo:** feature | bugfix | refactor | hotfix | security-patch | docs | infra
+- **Complejidad:** XS | S | M | L | XL
+- **Fecha:** YYYY-MM-DD
+- **Estado:** DRAFT → IN PROGRESS → IN REVIEW → DONE | REJECTED
+
+## Historia
+[Historia SMART completa]
+
+## Contexto
+[Por qué existe esta tarea. Qué problema resuelve o qué valor agrega]
+
+## Criterios de Aceptación
+- [ ] CA-1: [criterio verificable]
+- [ ] CA-2: [criterio verificable]
+
+## Consideraciones de Seguridad
+- Amenazas STRIDE identificadas: [lista]
+- Controles de mitigación: [lista]
+- Inputs que requieren validación: [lista]
+- Secrets involucrados: [ninguno | descripción de cómo se manejan]
+- Superficie de ataque afectada: [descripción]
+
+## Dependencias
+- Internas: [módulos o servicios del proyecto]
+- Externas: [librerías o servicios externos]
+
+## Decisiones de Diseño
+[Alternativas consideradas y justificación de la elección]
+
+## Riesgos y Deuda Técnica
+[Qué puede salir mal. Qué queda pendiente conscientemente]
+
+## Resultados (se completa al cerrar)
+- Fecha de cierre:
+- CAs cumplidos:
+- CAs no cumplidos:
+- Deuda técnica generada:
+- Lecciones aprendidas:
+```
+
+Hacer commit del spec **antes de crear la rama de trabajo:**
+```bash
+git add docs/specs/
+git commit -m "docs: spec [nombre-corto]"
+git push origin develop
+```
+
+---
+
+## FASE 4 — GESTIÓN DE RAMA (GIT FLOW)
+
+### Crear la rama desde develop actualizado
+
+```bash
+git checkout develop
+git pull origin develop
+git checkout -b [tipo]/[nombre-en-kebab-case]
+```
+
+### Convención de nombres
+
+| Tipo | Formato |
+|------|---------|
+| Feature | `feature/descripcion-corta` |
+| Bugfix | `bugfix/descripcion-corta` |
+| Hotfix | `hotfix/descripcion-corta` |
+| Refactor | `refactor/descripcion-corta` |
+| Security patch | `security/descripcion-corta` |
+| Infraestructura | `infra/descripcion-corta` |
+| Documentación | `docs/descripcion-corta` |
+
+### Reglas absolutas de ramas
+
+- **Nunca trabajar directamente en `main`, `master` o `develop`**
+- **Nunca hacer commits de work-in-progress directamente a develop**
+- Los hotfixes se abren desde `main` y se mergean a `main` Y `develop`
+- Una rama = una unidad de trabajo = un PR
+
+---
+
+## FASE 5 — SKILL AUDIT
+
+Antes de escribir código nuevo, auditar el repositorio:
+
+1. ¿Existen utilidades, helpers o módulos que ya resuelvan parte del problema?
+2. ¿Hay patrones establecidos en el proyecto que deba seguir?
+3. ¿Las dependencias necesarias ya están instaladas y en qué versión?
+4. ¿Existen tests similares que sirvan como referencia?
+
+**Si faltan skills reutilizables** (funciones utilitarias, módulos de validación, wrappers de seguridad):
+- Crearlos como código de soporte antes de implementar la funcionalidad principal
+- Documentarlos en `/docs/skills/` con su propósito, API y ejemplos de uso
+- Hacer commit separado: `feat: skill [nombre]`
+
+---
+
+## FASE 6 — IMPLEMENTACIÓN SEGURA
+
+### Reglas de seguridad no negociables
+
+**Manejo de secrets y credenciales:**
+- ❌ Nunca hardcodear secrets, tokens, API keys, passwords o connection strings
+- ✅ Usar variables de entorno, secret managers o archivos `.env` excluidos del repo
+- ✅ Verificar que `.gitignore` excluya archivos de configuración sensibles antes de cualquier commit
+- ✅ Si se detecta un secret en el historial: reportar inmediatamente, no continuar
+
+**Validación y sanitización de inputs:**
+- Todos los inputs externos (usuario, APIs, archivos, variables de entorno) se validan antes de usar
+- Validar tipo, formato, longitud y rango
+- Nunca confiar en datos que vienen de fuera del sistema
+
+**Manejo de errores:**
+- Los errores se capturan explícitamente, nunca se swallowean en silencio
+- Los mensajes de error expuestos al usuario no revelan detalles internos del sistema
+- Los logs internos sí pueden ser detallados, pero nunca deben contener secrets o PII
+
+**Dependencias:**
+- No agregar una librería externa sin revisar si ya existe solución interna
+- Verificar que no tenga CVEs activos conocidos antes de incorporarla
+- Fijar versiones exactas, no rangos abiertos en producción
+
+**Principio de mínimo privilegio:**
+- Los componentes solicitan solo los permisos que necesitan
+- Los tokens y credenciales tienen el alcance más restringido posible
+- Las conexiones a bases de datos usan usuarios con permisos específicos, no root/admin
+
+### Estándar de commits
+
+Seguir Conventional Commits:
+
+```
+feat: [descripción en presente, imperativo]
+fix: [descripción]
+refactor: [descripción]
+test: [descripción]
+docs: [descripción]
+security: [descripción]
+infra: [descripción]
+chore: [descripción]
+```
+
+- Commits atómicos: un commit = un cambio lógico coherente
+- Mensajes en inglés, claros y en presente
+- No commitear código comentado, console.logs de debug, o archivos temporales
+
+---
+
+## FASE 7 — VERIFICACIÓN Y QUALITY GATES
+
+Los checks se ejecutan **en orden**. Si alguno falla: **detener, reportar el error con detalle y esperar instrucciones.**
+
+### 7.1 Análisis estático y linting
+- Ejecutar el linter configurado en el proyecto (identificado en los skills)
+- Corregir automáticamente donde sea seguro hacerlo
+- Los errores que requieren decisión de diseño se reportan antes de corregir
+
+### 7.2 Seguridad estática (SAST)
+- Ejecutar la herramienta SAST configurada en el proyecto
+- Revisar dependencias por CVEs conocidos con la herramienta del stack
+- Verificar manualmente que no haya secrets en el diff: `git diff develop..HEAD`
+- Revisar que los archivos sensibles estén en `.gitignore`
+
+### 7.3 Tests unitarios
+- Todos los tests existentes deben pasar
+- Los tests nuevos para la funcionalidad implementada son **obligatorios, no opcionales**
+- Cobertura mínima: cubrir el camino feliz y al menos 2 casos borde por función crítica
+
+### 7.4 Tests de integración
+- Ejecutar si existen en el proyecto
+- Si el cambio afecta contratos entre módulos, verificar que la integración funcione
+
+### 7.5 Revisión de diff
+Antes del PR, revisar manualmente:
+- [ ] No hay secrets ni credenciales en el código
+- [ ] No hay código de debug o console.logs temporales
+- [ ] No hay archivos no relacionados con el cambio
+- [ ] Los cambios son coherentes con el spec
+- [ ] No hay regresiones evidentes en funcionalidad existente
+
+---
+
+## FASE 8 — PRUEBA FUNCIONAL
+
+Demostrar que el cambio funciona según los criterios de aceptación del spec:
+
+1. Ejecutar el flujo principal descrito en la historia
+2. Verificar cada criterio de aceptación uno por uno
+3. Probar los casos borde identificados en el spec
+4. Documentar el resultado de cada CA: ✅ cumplido | ❌ no cumplido | ⚠️ parcial
+
+Si algún CA falla: **no continuar al PR. Volver a implementación, reportar qué falló y cómo se resolvió.**
+
+---
+
+## FASE 9 — PULL REQUEST
+
+Solo si **todas las fases anteriores se completaron exitosamente:**
+
+```bash
+git push origin [nombre-rama]
+```
+
+El PR siempre va dirigido a `develop`, excepto hotfixes que van a `main`.
+
+### Estructura del PR
+
+```markdown
+## Descripción
+[Qué se hizo y por qué, en 2-3 oraciones]
+
+## Spec
+`/docs/specs/[YYYY-MM-DD]-[tipo]-[nombre-corto].md`
+
+## Tipo de cambio
+- [ ] Feature
+- [ ] Bugfix
+- [ ] Hotfix
+- [ ] Refactor
+- [ ] Security patch
+- [ ] Infra / Config
+- [ ] Docs
+
+## Cambios principales
+- [cambio 1]
+- [cambio 2]
+
+## Criterios de aceptación
+- [x] CA-1: [descripción] ✅
+- [x] CA-2: [descripción] ✅
+
+## Quality Gates
+- [x] Linting — sin errores
+- [x] SAST — sin hallazgos críticos o altos
+- [x] Dependencias — sin CVEs activos
+- [x] Tests unitarios — todos pasan
+- [x] Tests de integración — todos pasan (si aplica)
+- [x] Diff revisado — sin secrets, sin código debug
+- [x] Prueba funcional — todos los CAs verificados
+
+## Consideraciones de seguridad
+[Amenazas evaluadas y controles aplicados. "N/A" solo si el cambio es puramente documental]
+
+## Breaking changes
+[Ninguno | descripción de qué se rompe y cómo migrar]
+
+## Screenshots / evidencia (si aplica)
+```
+
+---
+
+## FASE 10 — CIERRE DE SPEC Y DOCUMENTACIÓN
+
+Actualizar el archivo de spec en `/docs/specs/`:
+
+1. Cambiar estado a `DONE` o `REJECTED`
+2. Completar la sección `## Resultados`:
+   - Fecha de cierre
+   - CAs cumplidos y no cumplidos
+   - Deuda técnica generada (si aplica)
+   - Lecciones aprendidas (si aplica)
+
+Hacer commit de cierre:
+```bash
+git add docs/specs/
+git commit -m "docs: close spec [nombre-corto] — [DONE|REJECTED]"
+```
+
+---
+
+## REGLAS GENERALES DE COMPORTAMIENTO
+
+### Cuándo preguntar antes de actuar
+- La solicitud es ambigua y hay múltiples interpretaciones válidas
+- No hay suficiente contexto para escribir una historia SMART
+- Una decisión de diseño tiene implicaciones de seguridad no triviales
+- El cambio podría afectar contratos o interfaces que otros módulos usan
+
+### Cuándo detener y reportar
+- Un quality gate falla y la corrección requiere decisión de diseño
+- Se detecta un secret en el historial de git o en el código
+- El entorno de desarrollo está en un estado inconsistente
+- Una dependencia tiene un CVE activo relevante para el cambio
+
+### Lo que nunca se omite
+- El spec, sin importar qué tan pequeño sea el cambio
+- Los tests para código nuevo
+- La revisión de diff antes del PR
+- El cierre del spec con resultados documentados
+
+### Política sobre atajos
+No existen atajos en este protocolo. Un bugfix de una línea sigue el mismo proceso que una feature grande. La disciplina es consistente porque los problemas de seguridad no avisan con anticipación.
+
+---
+
+*Este protocolo sigue los estándares de: OWASP SSDLC, NIST SP 800-64, Microsoft SDL, Google Engineering Practices, y Conventional Commits specification.*
+, 
+
+Ahora te voy a pasar skill para el desarrollo del proyecto:
+# React - Modern UI Development
+
+**Scope:** frontend  
+**Trigger:** cuando se trabaje con React, se creen componentes, se use hooks, o se mencione desarrollo de UI con React  
+**Tools:** view, file_create, str_replace, bash_tool  
+**Version:** 1.0.0  
+
+---
+
+## 🎯 Propósito
+
+Esta skill te guía para crear aplicaciones React modernas usando las últimas versiones y mejores prácticas. Cubre desde setup hasta patrones avanzados de componentes, hooks, y optimización.
+
+## 🔧 Cuándo Usar Esta Skill
+
+- Crear proyectos React desde cero
+- Desarrollar componentes reutilizables
+- Implementar hooks (useState, useEffect, customs)
+- Configurar routing con React Router
+- Manejar estado con Context API
+- Optimizar performance de aplicaciones React
+- Refactorizar componentes existentes
+- Integrar con APIs backend
+
+## 📚 Contexto y Conocimiento
+
+### Versión Actual
+React 18+ (siempre usa la última versión estable)
+
+### Herramientas de Setup
+
+**Vite (Recomendado - Más rápido):**
+```bash
+npm create vite@latest my-app -- --template react
+cd my-app
+npm install
+npm run dev
+```
+
+**Create React App (Estable):**
+```bash
+npx create-react-app my-app
+cd my-app
+npm start
+```
+
+### Estructura Recomendada de Proyecto
+
+```
+src/
+├── components/
+│   ├── common/          # Button, Input, Card, Modal
+│   ├── layout/          # Header, Footer, Sidebar, Layout
+│   └── features/        # UserProfile, ProductCard, OrderList
+├── pages/               # Home, About, Dashboard, Login
+├── hooks/               # useAuth, useFetch, useForm
+├── context/             # AuthContext, ThemeContext
+├── services/            # api.js, authService.js
+├── utils/               # helpers, formatters, validators
+├── assets/              # images, icons, fonts
+├── styles/              # global styles, variables
+├── App.jsx
+└── main.jsx
+```
+
+## 🚀 Flujo de Trabajo
+
+### 1. Setup de Proyecto Nuevo
+
+```bash
+# Crear proyecto con Vite
+npm create vite@latest project-name -- --template react
+
+# Instalar dependencias comunes
+npm install react-router-dom axios
+npm install -D tailwindcss postcss autoprefixer
+
+# (Opcional) TypeScript
+npm create vite@latest project-name -- --template react-ts
+```
+
+### 2. Configuración Inicial
+
+**Tailwind CSS (si se usa):**
+```bash
+npx tailwindcss init -p
+```
+
+**tailwind.config.js:**
+```javascript
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
+
+### 3. Estructura de Componentes
+
+**Componente Funcional Básico:**
+```jsx
+import React from 'react';
+
+const Button = ({ children, onClick, variant = 'primary', disabled = false }) => {
+  const baseStyles = 'px-4 py-2 rounded font-medium transition-colors';
+  const variants = {
+    primary: 'bg-blue-500 hover:bg-blue-600 text-white',
+    secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-800',
+    danger: 'bg-red-500 hover:bg-red-600 text-white',
+  };
+
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`${baseStyles} ${variants[variant]} ${
+        disabled ? 'opacity-50 cursor-not-allowed' : ''
+      }`}
+    >
+      {children}
+    </button>
+  );
+};
+
+export default Button;
+```
+
+**Componente con Estado:**
+```jsx
+import { useState, useEffect } from 'react';
+
+const UserProfile = ({ userId }) => {
+  // 1. Estado
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // 2. Effects
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/users/${userId}`);
+        if (!response.ok) throw new Error('Failed to fetch user');
+        const data = await response.json();
+        setUser(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [userId]); // Dependency array
+
+  // 3. Render condicional
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!user) return <div>No user found</div>;
+
+  return (
+    <div className="user-profile">
+      <h2>{user.name}</h2>
+      <p>{user.email}</p>
+    </div>
+  );
+};
+
+export default UserProfile;
+```
+
+## 🎣 Hooks Esenciales
+
+### useState - Estado Local
+
+```jsx
+const [count, setCount] = useState(0);
+const [user, setUser] = useState({ name: '', email: '' });
+const [items, setItems] = useState([]);
+
+// Actualizar estado
+setCount(count + 1);
+setCount(prev => prev + 1); // Preferido para basarse en valor previo
+
+// Estado de objeto
+setUser({ ...user, name: 'John' });
+setUser(prev => ({ ...prev, email: 'john@example.com' }));
+
+// Estado de array
+setItems([...items, newItem]);
+setItems(prev => [...prev, newItem]);
+```
+
+### useEffect - Side Effects
+
+```jsx
+// 1. Ejecutar una vez (componentDidMount)
+useEffect(() => {
+  console.log('Component mounted');
+}, []);
+
+// 2. Ejecutar cuando cambia dependencia
+useEffect(() => {
+  fetchData(userId);
+}, [userId]);
+
+// 3. Cleanup (componentWillUnmount)
+useEffect(() => {
+  const subscription = subscribeToData();
+  
+  return () => {
+    subscription.unsubscribe();
+  };
+}, []);
+
+// 4. Múltiples dependencias
+useEffect(() => {
+  if (isAuthenticated && userId) {
+    loadUserData();
+  }
+}, [isAuthenticated, userId]);
+```
+
+### Custom Hooks
+
+**useAuth:**
+```jsx
+import { useState, useContext, createContext } from 'react';
+
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const login = async (email, password) => {
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await response.json();
+    setUser(data.user);
+    localStorage.setItem('token', data.token);
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('token');
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+  return context;
+};
+```
+
+**useFetch (Generic):**
+```jsx
+import { useState, useEffect } from 'react';
+
+const useFetch = (url, options = {}) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(url, options);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const result = await response.json();
+        setData(result);
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+        setData(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [url]);
+
+  return { data, loading, error };
+};
+
+export default useFetch;
+```
+
+**useForm:**
+```jsx
+import { useState } from 'react';
+
+const useForm = (initialValues, validate) => {
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setValues(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleBlur = (e) => {
+    const { name } = e.target;
+    setTouched(prev => ({ ...prev, [name]: true }));
+    if (validate) {
+      const validationErrors = validate(values);
+      setErrors(validationErrors);
+    }
+  };
+
+  const handleSubmit = (callback) => (e) => {
+    e.preventDefault();
+    const validationErrors = validate ? validate(values) : {};
+    setErrors(validationErrors);
+    
+    if (Object.keys(validationErrors).length === 0) {
+      callback(values);
+    }
+  };
+
+  return {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+  };
+};
+
+export default useForm;
+```
+
+## 🛣️ React Router
+
+```jsx
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Layout from './components/layout/Layout';
+import Home from './pages/Home';
+import About from './pages/About';
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import ProtectedRoute from './components/ProtectedRoute';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="about" element={<About />} />
+          
+          {/* Rutas protegidas */}
+          <Route
+            path="dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route path="login" element={<Login />} />
+          
+          {/* 404 */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+**Protected Route Component:**
+```jsx
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) return <div>Loading...</div>;
+  
+  return user ? children : <Navigate to="/login" replace />;
+};
+
+export default ProtectedRoute;
+```
+
+## ⚡ Optimización de Performance
+
+### React.memo - Prevenir Re-renders
+
+```jsx
+import { memo } from 'react';
+
+const ExpensiveComponent = memo(({ data, onAction }) => {
+  console.log('ExpensiveComponent rendered');
+  return (
+    <div>
+      {/* Componente pesado */}
+    </div>
+  );
+});
+
+export default ExpensiveComponent;
+```
+
+### useMemo - Memoizar Cálculos
+
+```jsx
+import { useMemo } from 'react';
+
+const ProductList = ({ products, filter }) => {
+  // Solo recalcula cuando products o filter cambian
+  const filteredProducts = useMemo(() => {
+    console.log('Filtering products...');
+    return products.filter(p => p.category === filter);
+  }, [products, filter]);
+
+  return (
+    <div>
+      {filteredProducts.map(product => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </div>
+  );
+};
+```
+
+### useCallback - Memoizar Funciones
+
+```jsx
+import { useCallback, useState } from 'react';
+
+const ParentComponent = () => {
+  const [count, setCount] = useState(0);
+  const [items, setItems] = useState([]);
+
+  // Esta función solo se recrea si setItems cambia (nunca)
+  const handleAddItem = useCallback((item) => {
+    setItems(prev => [...prev, item]);
+  }, []);
+
+  return (
+    <div>
+      <button onClick={() => setCount(c => c + 1)}>Count: {count}</button>
+      <ChildComponent onAddItem={handleAddItem} />
+    </div>
+  );
+};
+```
+
+## 🎨 Patrones Comunes
+
+### Compound Components
+
+```jsx
+const Tabs = ({ children, defaultActive = 0 }) => {
+  const [activeIndex, setActiveIndex] = useState(defaultActive);
+  
+  return (
+    <div className="tabs">
+      {React.Children.map(children, (child, index) =>
+        React.cloneElement(child, {
+          isActive: index === activeIndex,
+          onActivate: () => setActiveIndex(index),
+        })
+      )}
+    </div>
+  );
+};
+
+const Tab = ({ label, children, isActive, onActivate }) => (
+  <div>
+    <button
+      onClick={onActivate}
+      className={isActive ? 'active' : ''}
+    >
+      {label}
+    </button>
+    {isActive && <div className="tab-content">{children}</div>}
+  </div>
+);
+
+// Uso
+<Tabs>
+  <Tab label="Tab 1">Content 1</Tab>
+  <Tab label="Tab 2">Content 2</Tab>
+  <Tab label="Tab 3">Content 3</Tab>
+</Tabs>
+```
+
+### Render Props
+
+```jsx
+const DataFetcher = ({ url, render }) => {
+  const { data, loading, error } = useFetch(url);
+  return render({ data, loading, error });
+};
+
+// Uso
+<DataFetcher
+  url="/api/users"
+  render={({ data, loading, error }) => {
+    if (loading) return <Spinner />;
+    if (error) return <Error message={error} />;
+    return <UserList users={data} />;
+  }}
+/>
+```
+
+## ⚠️ Errores Comunes y Soluciones
+
+| Error | Causa | Solución |
+|-------|-------|----------|
+| Infinite re-renders | useEffect sin dependencies | Agregar array de dependencias `[]` |
+| State no actualiza | Mutación directa del estado | Usar spread operator: `{ ...state }` |
+| Memory leak | useEffect sin cleanup | Retornar función de cleanup |
+| Stale closure | Variables capturadas en closure | Usar refs o dependencies correctas |
+| Props drilling | Pasar props por muchos niveles | Usar Context API o state management |
+| Key warnings | Missing/duplicate keys | Usar IDs únicos, no índices |
+
+## 🔄 Integración con APIs
+
+**Service Layer (services/api.js):**
+```jsx
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+const handleResponse = async (response) => {
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Something went wrong');
+  }
+  return response.json();
+};
+
+export const api = {
+  get: (endpoint) =>
+    fetch(`${API_BASE_URL}${endpoint}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    }).then(handleResponse),
+
+  post: (endpoint, data) =>
+    fetch(`${API_BASE_URL}${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify(data),
+    }).then(handleResponse),
+
+  put: (endpoint, data) =>
+    fetch(`${API_BASE_URL}${endpoint}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify(data),
+    }).then(handleResponse),
+
+  delete: (endpoint) =>
+    fetch(`${API_BASE_URL}${endpoint}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    }).then(handleResponse),
+};
+```
+
+## 📋 Checklist de Validación
+
+Antes de finalizar un componente React:
+- [ ] Nombre del componente en PascalCase
+- [ ] Props desestructuradas con valores por defecto
+- [ ] Estado manejado correctamente (no mutación)
+- [ ] useEffect tiene array de dependencias correcto
+- [ ] Funciones pesadas memoizadas (useMemo/useCallback)
+- [ ] Manejo de estados: loading, error, success
+- [ ] Keys únicas en listas
+- [ ] No hay console.log en producción
+- [ ] Componente es reutilizable
+- [ ] Responsive design (mobile-first)
+
+## 🎓 Best Practices
+
+1. **Componentes pequeños y enfocados** - Una responsabilidad por componente
+2. **Props bien tipadas** - Usa PropTypes o TypeScript
+3. **Composición sobre herencia** - Combina componentes pequeños
+4. **Custom hooks para lógica compartida** - DRY principle
+5. **Lazy loading para rutas** - Mejor performance inicial
+6. **Error boundaries** - Captura errores de componentes
+7. **Accessibility** - Usa semantic HTML y ARIA attributes
+8. **Testing** - Unit tests para hooks y components
+
+---
+
+**Última actualización:** Fase 2 - Skills MERN  
+**Mantenedor:** Sistema de Skills  
+**Siguiente:** Integrar con Express backend para apps fullstack
+, 
+
+va el siguiente skill:
+# MongoDB Patterns - Database Design
+
+**Scope:** backend  
+**Trigger:** cuando se diseñen schemas de MongoDB, se implementen relaciones entre documentos, o se optimicen queries  
+**Tools:** view, file_create, str_replace, bash_tool  
+**Version:** 1.0.0  
+
+---
+
+## 🎯 Propósito
+
+Esta skill te guía para diseñar schemas eficientes en MongoDB y Mongoose. Cubre patrones de relaciones, indexación, aggregation pipeline, transacciones y optimización de queries.
+
+## 🔧 Cuándo Usar Esta Skill
+
+- Diseñar schema de base de datos para nueva feature
+- Decidir entre embedded vs referenced documents
+- Optimizar queries lentas
+- Implementar relaciones complejas
+- Usar aggregation pipeline para reportes
+- Configurar índices para performance
+- Implementar transacciones multi-documento
+
+## 📚 Contexto y Conocimiento
+
+### Filosofía de MongoDB
+
+**Document-Oriented:**
+- Datos relacionados se almacenan juntos
+- Evita JOINs cuando sea posible
+- Desnormalización es común y buena práctica
+
+**Flexible Schema:**
+- No requiere estructura fija
+- Documentos en la misma colección pueden tener diferentes campos
+- Evolución del schema es fácil
+
+## 🎨 Patrones de Relaciones
+
+### 1. Embedded Documents (One-to-Few)
+
+**Cuándo usar:**
+- Relación 1:N donde N es pequeño (< 100)
+- Los datos embedded se acceden siempre con el padre
+- Los datos embedded no crecen sin límite
+
+**Ejemplo - Usuario con Direcciones:**
+```javascript
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  addresses: [
+    {
+      street: String,
+      city: String,
+      zipCode: String,
+      type: { type: String, enum: ['home', 'work'] },
+    }
+  ],
+});
+
+// Query simple - obtiene usuario con todas sus direcciones
+const user = await User.findById(userId);
+console.log(user.addresses); // Todas las direcciones
+```
+
+**Ventajas:**
+- ✅ Query sencilla (un solo fetch)
+- ✅ Atomic operations
+- ✅ Mejor performance para lectura
+
+**Desventajas:**
+- ❌ Documento puede crecer mucho (límite 16MB)
+- ❌ No se puede referenciar sub-documento directamente
+
+### 2. Child Referencing (One-to-Many)
+
+**Cuándo usar:**
+- Relación 1:N donde N es grande (100+)
+- Los child documents se acceden independientemente
+- Los child documents pueden estar en múltiples parents
+
+**Ejemplo - Usuario con Posts:**
+```javascript
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+});
+
+const postSchema = new mongoose.Schema({
+  title: String,
+  content: String,
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  createdAt: { type: Date, default: Date.now },
+});
+
+// Query con populate
+const posts = await Post.find({ author: userId })
+  .populate('author', 'name email')
+  .sort({ createdAt: -1 });
+```
+
+**Ventajas:**
+- ✅ No hay límite de tamaño
+- ✅ Child documents independientes
+- ✅ Flexible y escalable
+
+**Desventajas:**
+- ❌ Requiere múltiples queries (o populate)
+- ❌ No atomic por defecto
+
+### 3. Parent Referencing (One-to-Many Inverso)
+
+**Cuándo usar:**
+- Necesitas acceder al parent desde el child
+- Los children pueden tener diferentes parents
+
+**Ejemplo - Comentarios con Parent:**
+```javascript
+const commentSchema = new mongoose.Schema({
+  text: String,
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
+  post: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Post',
+  },
+  createdAt: { type: Date, default: Date.now },
+});
+
+// Query comments de un post
+const comments = await Comment.find({ post: postId })
+  .populate('author', 'name')
+  .sort({ createdAt: -1 });
+```
+
+### 4. Two-Way Referencing (Many-to-Many)
+
+**Cuándo usar:**
+- Relación N:M
+- Necesitas acceder desde ambos lados frecuentemente
+
+**Ejemplo - Usuarios y Cursos:**
+```javascript
+const userSchema = new mongoose.Schema({
+  name: String,
+  enrolledCourses: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Course',
+    }
+  ],
+});
+
+const courseSchema = new mongoose.Schema({
+  title: String,
+  students: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    }
+  ],
+});
+
+// Query: cursos de un usuario
+const user = await User.findById(userId).populate('enrolledCourses');
+
+// Query: estudiantes de un curso
+const course = await Course.findById(courseId).populate('students');
+```
+
+**⚠️ Importante:** Mantener ambos lados sincronizados:
+```javascript
+// Método para enrollar usuario
+userSchema.methods.enrollInCourse = async function(courseId) {
+  // Agregar curso al usuario
+  this.enrolledCourses.push(courseId);
+  await this.save();
+  
+  // Agregar usuario al curso
+  await Course.findByIdAndUpdate(
+    courseId,
+    { $addToSet: { students: this._id } }
+  );
+};
+```
+
+### 5. Denormalization Pattern
+
+**Cuándo usar:**
+- Queries de lectura muy frecuentes
+- Datos que no cambian mucho
+- Dispuesto a sacrificar consistencia por performance
+
+**Ejemplo - Posts con Author Info:**
+```javascript
+const postSchema = new mongoose.Schema({
+  title: String,
+  content: String,
+  author: {
+    id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    name: String, // Denormalizado
+    avatar: String, // Denormalizado
+  },
+  likes: Number,
+  createdAt: { type: Date, default: Date.now },
+});
+
+// Query super rápida - no requiere populate
+const posts = await Post.find().sort({ createdAt: -1 });
+// posts[0].author.name está disponible inmediatamente
+```
+
+**⚠️ Trade-off:**
+- ✅ Queries ultra rápidas
+- ❌ Necesitas actualizar datos denormalizados cuando cambian
+
+```javascript
+// Cuando el usuario cambia su nombre
+userSchema.post('save', async function() {
+  if (this.isModified('name')) {
+    await Post.updateMany(
+      { 'author.id': this._id },
+      { $set: { 'author.name': this.name } }
+    );
+  }
+});
+```
+
+## 📊 Indexación para Performance
+
+### Tipos de Índices
+
+**Single Field Index:**
+```javascript
+userSchema.index({ email: 1 }); // Ascendente
+userSchema.index({ createdAt: -1 }); // Descendente
+```
+
+**Compound Index:**
+```javascript
+// Query: find({ user: userId, status: 'active' })
+taskSchema.index({ user: 1, status: 1 });
+
+// Query con sort: find().sort({ createdAt: -1 })
+taskSchema.index({ user: 1, createdAt: -1 });
+```
+
+**Text Index (para búsqueda):**
+```javascript
+postSchema.index({ title: 'text', content: 'text' });
+
+// Query
+const results = await Post.find(
+  { $text: { $search: 'mongodb tutorial' } }
+);
+```
+
+**Unique Index:**
+```javascript
+userSchema.index({ email: 1 }, { unique: true });
+```
+
+**Sparse Index (solo documentos con el campo):**
+```javascript
+// Solo indexa usuarios con phoneNumber
+userSchema.index({ phoneNumber: 1 }, { sparse: true });
+```
+
+### Estrategias de Indexación
+
+```javascript
+// ✅ BIEN - Índice compuesto eficiente
+// Query: find({ user: X, status: Y }).sort({ priority: -1 })
+taskSchema.index({ user: 1, status: 1, priority: -1 });
+
+// ❌ MAL - Índices redundantes
+taskSchema.index({ user: 1 });
+taskSchema.index({ user: 1, status: 1 }); // Este cubre el anterior
+
+// 💡 Regla: El índice compuesto puede servir queries de prefijos
+// Índice { a: 1, b: 1, c: 1 } sirve para:
+// - { a }
+// - { a, b }
+// - { a, b, c }
+// Pero NO para { b } o { c }
+```
+
+### Analizar Performance
+
+```javascript
+// Explicar query plan
+const explain = await Post.find({ author: userId })
+  .sort({ createdAt: -1 })
+  .explain('executionStats');
+
+console.log(explain.executionStats.totalDocsExamined); // Documentos escaneados
+console.log(explain.executionStats.executionTimeMillis); // Tiempo
+
+// Si totalDocsExamined >> nReturned, necesitas índice
+```
+
+## 🔄 Aggregation Pipeline
+
+### Casos de Uso Comunes
+
+**1. Group By y Count:**
+```javascript
+// Contar posts por usuario
+const postsByUser = await Post.aggregate([
+  {
+    $group: {
+      _id: '$author',
+      count: { $sum: 1 },
+      totalLikes: { $sum: '$likes' },
+    }
+  },
+  { $sort: { count: -1 } },
+  { $limit: 10 },
+]);
+```
+
+**2. Lookup (JOIN):**
+```javascript
+// Posts con información de autor (sin populate)
+const postsWithAuthors = await Post.aggregate([
+  {
+    $lookup: {
+      from: 'users',
+      localField: 'author',
+      foreignField: '_id',
+      as: 'authorInfo',
+    }
+  },
+  { $unwind: '$authorInfo' },
+  {
+    $project: {
+      title: 1,
+      content: 1,
+      'authorInfo.name': 1,
+      'authorInfo.email': 1,
+    }
+  },
+]);
+```
+
+**3. Match y Project:**
+```javascript
+// Posts activos con campos específicos
+const activePosts = await Post.aggregate([
+  { $match: { status: 'active', likes: { $gte: 10 } } },
+  {
+    $project: {
+      title: 1,
+      likes: 1,
+      authorName: '$author.name',
+      likesCategory: {
+        $switch: {
+          branches: [
+            { case: { $lt: ['$likes', 10] }, then: 'low' },
+            { case: { $lt: ['$likes', 50] }, then: 'medium' },
+          ],
+          default: 'high',
+        }
+      }
+    }
+  },
+  { $sort: { likes: -1 } },
+]);
+```
+
+**4. Estadísticas Complejas:**
+```javascript
+// Dashboard stats
+const stats = await Order.aggregate([
+  {
+    $match: {
+      createdAt: { $gte: new Date('2024-01-01') },
+      status: 'completed',
+    }
+  },
+  {
+    $group: {
+      _id: { 
+        year: { $year: '$createdAt' },
+        month: { $month: '$createdAt' }
+      },
+      totalOrders: { $sum: 1 },
+      totalRevenue: { $sum: '$total' },
+      avgOrderValue: { $avg: '$total' },
+    }
+  },
+  { $sort: { '_id.year': -1, '_id.month': -1 } },
+]);
+```
+
+## 💾 Transacciones
+
+### Cuándo Usar Transacciones
+
+- Operaciones que deben ser atómicas
+- Múltiples documentos/colecciones
+- Rollback necesario si falla algo
+
+**Ejemplo - Transferencia de Fondos:**
+```javascript
+const session = await mongoose.startSession();
+session.startTransaction();
+
+try {
+  // Retirar de cuenta origen
+  await Account.findByIdAndUpdate(
+    fromAccountId,
+    { $inc: { balance: -amount } },
+    { session }
+  );
+
+  // Depositar en cuenta destino
+  await Account.findByIdAndUpdate(
+    toAccountId,
+    { $inc: { balance: amount } },
+    { session }
+  );
+
+  // Crear registro de transacción
+  await Transaction.create([{
+    from: fromAccountId,
+    to: toAccountId,
+    amount,
+    timestamp: new Date(),
+  }], { session });
+
+  // Commit
+  await session.commitTransaction();
+  console.log('Transaction successful');
+} catch (error) {
+  // Rollback
+  await session.abortTransaction();
+  console.error('Transaction failed:', error);
+  throw error;
+} finally {
+  session.endSession();
+}
+```
+
+## 🎯 Patrones Avanzados
+
+### 1. Bucket Pattern (Optimización de Series Temporales)
+
+**Problema:** Millones de readings de sensores
+```javascript
+// ❌ MAL - Un documento por reading
+{ sensor: 'A', temp: 20, time: ISODate() }
+{ sensor: 'A', temp: 21, time: ISODate() }
+// Millones de documentos...
+```
+
+**Solución:** Agrupar en buckets
+```javascript
+// ✅ BIEN - Bucket por hora
+{
+  sensor: 'A',
+  date: ISODate('2024-01-01T10:00:00'),
+  measurements: [
+    { temp: 20, time: ISODate('2024-01-01T10:00:01') },
+    { temp: 21, time: ISODate('2024-01-01T10:00:02') },
+    // ... hasta 3600 readings (1 hora)
+  ]
+}
+```
+
+### 2. Computed Pattern (Pre-calcular Datos)
+
+```javascript
+const orderSchema = new mongoose.Schema({
+  items: [
+    {
+      product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+      quantity: Number,
+      price: Number,
+    }
+  ],
+  // Pre-calculado
+  subtotal: Number,
+  tax: Number,
+  total: Number,
+});
+
+// Pre middleware para calcular
+orderSchema.pre('save', function(next) {
+  this.subtotal = this.items.reduce((sum, item) => 
+    sum + (item.price * item.quantity), 0
+  );
+  this.tax = this.subtotal * 0.16;
+  this.total = this.subtotal + this.tax;
+  next();
+});
+```
+
+### 3. Polymorphic Pattern
+
+```javascript
+// Diferentes tipos de posts
+const contentSchema = new mongoose.Schema({
+  type: {
+    type: String,
+    enum: ['article', 'video', 'image'],
+    required: true,
+  },
+  title: String,
+  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  
+  // Campos específicos por tipo
+  article: {
+    text: String,
+    wordCount: Number,
+  },
+  video: {
+    url: String,
+    duration: Number,
+  },
+  image: {
+    url: String,
+    width: Number,
+    height: Number,
+  },
+}, { discriminatorKey: 'type' });
+
+// Query por tipo
+const articles = await Content.find({ type: 'article' });
+```
+
+## ⚠️ Errores Comunes y Soluciones
+
+| Error | Causa | Solución |
+|-------|-------|----------|
+| Document too large (>16MB) | Demasiados embedded docs | Usar referencing en su lugar |
+| Slow queries | Sin índices apropiados | Analizar con .explain() y agregar índices |
+| Memory leak en queries | Cursor sin cerrar | Usar .lean() o streams |
+| Inconsistent data | Update de denormalized data | Usar transactions o middleware hooks |
+| N+1 queries | Populate en loops | Usar populate con arrays o aggregation |
+
+## 📋 Checklist de Schema Design
+
+Antes de implementar un schema:
+- [ ] Relación correcta (embedded vs referenced)
+- [ ] Índices necesarios definidos
+- [ ] Validaciones en el schema
+- [ ] Valores por defecto apropiados
+- [ ] Timestamps (createdAt, updatedAt)
+- [ ] Soft delete si es necesario (deletedAt)
+- [ ] Índice unique donde corresponde
+- [ ] Pre/Post hooks si se requieren
+- [ ] Métodos custom del modelo documentados
+- [ ] Schema probado con datos reales
+
+## 🎓 Best Practices
+
+1. **Design for your query patterns** - No para normalización perfecta
+2. **Denormalize when read >> write** - Trading-off consistency for speed
+3. **Index strategically** - No todos los campos necesitan índice
+4. **Use lean() for read-only** - 5x más rápido que documentos Mongoose completos
+5. **Batch operations when possible** - bulkWrite() es más eficiente
+6. **Monitor slow queries** - Habilita profiling en MongoDB
+7. **Use projections** - No retornes campos innecesarios
+8. **Consider TTL indexes** - Para datos temporales (sessions, logs)
+
+---
+
+**Última actualización:** Fase 2 - Skills MERN  
+**Mantenedor:** Sistema de Skills  
+**Siguiente:** Integrar patrones en apps reales con Express
+, 
+
+va el siguiente skill:
+# Testing Strategies - Quality Assurance Practices
+
+**Scope:** workflow  
+**Trigger:** cuando se planee estrategia de testing, se configure CI/CD con tests, o se diseñe quality assurance  
+**Tools:** view, file_create, str_replace, bash_tool  
+**Version:** 1.0.0  
+
+---
+
+## 🎯 Propósito
+
+Esta skill te guía para implementar estrategias de testing efectivas. Cubre testing pyramid, tipos de tests, TDD, BDD, coverage goals, CI/CD integration y mejores prácticas para asegurar calidad del código.
+
+## 🔧 Cuándo Usar Esta Skill
+
+- Diseñar estrategia de testing para proyecto
+- Configurar CI/CD con tests automáticos
+- Implementar TDD o BDD
+- Definir coverage goals
+- Elegir qué tipo de tests escribir
+- Debugging de tests flakey
+- Code review de tests
+
+## 📚 Testing Pyramid
+
+### Clásica
+
+```
+       /\
+      /E2E\        ← 10% - Lentos, caros
+     /------\
+    /  Int   \     ← 20% - Medianos
+   /----------\
+  /    Unit    \   ← 70% - Rápidos, baratos
+ /--------------\
+```
+
+### Moderna (Testing Trophy)
+
+```
+       /\
+      /E2E\
+     /------\
+    /  Int   \      ← Énfasis aquí (40%)
+   /----------\
+  /    Unit    \    ← 30%
+ /--------------\
+  Static Analysis   ← 30% (TypeScript, ESLint, mypy)
+```
+
+### Distribución Recomendada por Tipo
+
+**Startup/MVP:**
+- 50% Integration tests
+- 30% Unit tests
+- 20% E2E tests críticos
+
+**Producto Maduro:**
+- 60% Unit tests
+- 30% Integration tests
+- 10% E2E tests
+
+**Backend API:**
+- 70% Unit tests (lógica de negocio)
+- 25% Integration tests (endpoints)
+- 5% E2E tests (flujos críticos)
+
+**Frontend SPA:**
+- 50% Component tests
+- 30% Integration tests
+- 20% E2E tests
+
+## 🔬 Tipos de Tests
+
+### 1. Unit Tests
+
+**Qué:** Testean funciones/métodos aislados  
+**Herramientas:** Jest, pytest, JUnit, xUnit  
+**Cuándo:** Lógica de negocio, utils, algoritmos
+
+```javascript
+// JavaScript/Jest
+describe('Calculator', () => {
+  test('adds two numbers', () => {
+    expect(add(2, 3)).toBe(5);
+  });
+  
+  test('handles negative numbers', () => {
+    expect(add(-1, 1)).toBe(0);
+  });
+});
+
+// Python/pytest
+def test_add():
+    assert add(2, 3) == 5
+    assert add(-1, 1) == 0
+
+// Java/JUnit
+@Test
+public void testAdd() {
+    assertEquals(5, Calculator.add(2, 3));
+    assertEquals(0, Calculator.add(-1, 1));
+}
+```
+
+### 2. Integration Tests
+
+**Qué:** Testean interacción entre componentes  
+**Herramientas:** Jest + Supertest, pytest + httpx, Spring Test  
+**Cuándo:** APIs, database operations, external services
+
+```javascript
+// Node.js + Express + Jest
+describe('POST /users', () => {
+  it('creates a new user', async () => {
+    const response = await request(app)
+      .post('/users')
+      .send({ name: 'John', email: 'john@test.com' })
+      .expect(201);
+    
+    expect(response.body).toHaveProperty('id');
+    expect(response.body.name).toBe('John');
+  });
+});
+
+// Python + FastAPI + pytest
+async def test_create_user(client: AsyncClient):
+    response = await client.post(
+        "/users",
+        json={"name": "John", "email": "john@test.com"}
+    )
+    assert response.status_code == 201
+    assert "id" in response.json()
+```
+
+### 3. E2E Tests
+
+**Qué:** Testean flujos completos desde UI  
+**Herramientas:** Cypress, Playwright, Selenium  
+**Cuándo:** Flujos críticos (login, checkout, signup)
+
+```javascript
+// Cypress
+describe('User Registration', () => {
+  it('allows user to register', () => {
+    cy.visit('/register');
+    cy.get('[data-cy=name]').type('John Doe');
+    cy.get('[data-cy=email]').type('john@test.com');
+    cy.get('[data-cy=password]').type('password123');
+    cy.get('[data-cy=submit]').click();
+    
+    cy.url().should('include', '/dashboard');
+    cy.contains('Welcome, John').should('be.visible');
+  });
+});
+
+// Playwright
+test('user can login', async ({ page }) => {
+  await page.goto('/login');
+  await page.fill('[name=email]', 'user@test.com');
+  await page.fill('[name=password]', 'password');
+  await page.click('button[type=submit]');
+  
+  await expect(page).toHaveURL('/dashboard');
+  await expect(page.locator('text=Welcome')).toBeVisible();
+});
+```
+
+### 4. Component Tests
+
+**Qué:** Testean componentes UI aislados  
+**Herramientas:** React Testing Library, Vue Test Utils  
+**Cuándo:** Components de UI, interacciones
+
+```javascript
+// React Testing Library
+test('Button triggers onClick', () => {
+  const handleClick = jest.fn();
+  render(<Button onClick={handleClick}>Click me</Button>);
+  
+  fireEvent.click(screen.getByText('Click me'));
+  
+  expect(handleClick).toHaveBeenCalledTimes(1);
+});
+
+test('Form shows validation errors', async () => {
+  render(<LoginForm />);
+  
+  const submitButton = screen.getByRole('button', { name: /submit/i });
+  fireEvent.click(submitButton);
+  
+  await waitFor(() => {
+    expect(screen.getByText('Email is required')).toBeInTheDocument();
+  });
+});
+```
+
+## 🎯 Test-Driven Development (TDD)
+
+### Red-Green-Refactor Cycle
+
+```
+1. RED    - Write failing test
+2. GREEN  - Write minimal code to pass
+3. REFACTOR - Improve code quality
+```
+
+### Ejemplo Completo
+
+```javascript
+// 1. RED - Write failing test
+describe('UserService', () => {
+  test('creates user with hashed password', async () => {
+    const user = await UserService.create({
+      email: 'test@example.com',
+      password: 'password123'
+    });
+    
+    expect(user.id).toBeDefined();
+    expect(user.password).not.toBe('password123');
+    expect(await bcrypt.compare('password123', user.password)).toBe(true);
+  });
+});
+
+// 2. GREEN - Minimal implementation
+class UserService {
+  static async create(data) {
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const user = await db.users.insert({
+      email: data.email,
+      password: hashedPassword,
+      id: generateId()
+    });
+    return user;
+  }
+}
+
+// 3. REFACTOR - Improve
+class UserService {
+  static async create(data) {
+    this.validateEmail(data.email);
+    const hashedPassword = await this.hashPassword(data.password);
+    return await this.insertUser({ ...data, password: hashedPassword });
+  }
+  
+  private static validateEmail(email) {
+    // Validation logic
+  }
+  
+  private static async hashPassword(password) {
+    return await bcrypt.hash(password, 10);
+  }
+  
+  private static async insertUser(data) {
+    return await db.users.insert(data);
+  }
+}
+```
+
+## 🥒 Behavior-Driven Development (BDD)
+
+### Gherkin Syntax
+
+```gherkin
+Feature: User Registration
+  As a new user
+  I want to create an account
+  So that I can access the platform
+
+  Scenario: Successful registration
+    Given I am on the registration page
+    When I fill in "Name" with "John Doe"
+    And I fill in "Email" with "john@example.com"
+    And I fill in "Password" with "securepass123"
+    And I click "Register"
+    Then I should see "Welcome, John"
+    And I should be on the dashboard page
+
+  Scenario: Registration with existing email
+    Given a user exists with email "john@example.com"
+    When I try to register with email "john@example.com"
+    Then I should see "Email already exists"
+```
+
+### Cucumber/Jest Implementation
+
+```javascript
+// steps.js
+Given('I am on the registration page', async () => {
+  await page.goto('/register');
+});
+
+When('I fill in {string} with {string}', async (field, value) => {
+  await page.fill(`[name=${field.toLowerCase()}]`, value);
+});
+
+When('I click {string}', async (button) => {
+  await page.click(`button:has-text("${button}")`);
+});
+
+Then('I should see {string}', async (text) => {
+  await expect(page.locator(`text=${text}`)).toBeVisible();
+});
+```
+
+## 📊 Coverage Goals
+
+### Métricas
+
+```
+Line Coverage       - % de líneas ejecutadas
+Branch Coverage     - % de branches (if/else) cubiertos
+Function Coverage   - % de funciones llamadas
+Statement Coverage  - % de statements ejecutados
+```
+
+### Goals Recomendados
+
+**Por Tipo de Código:**
+- **Business Logic:** 90-100%
+- **API Endpoints:** 80-90%
+- **UI Components:** 70-80%
+- **Utils/Helpers:** 90-100%
+- **Config/Setup:** 50-70%
+
+**Por Criticidad:**
+- **Critical Path:** 100%
+- **High Priority:** 85%+
+- **Medium Priority:** 70%+
+- **Low Priority:** 50%+
+
+### Configuración
+
+```javascript
+// jest.config.js
+module.exports = {
+  collectCoverageFrom: [
+    'src/**/*.{js,jsx,ts,tsx}',
+    '!src/**/*.d.ts',
+    '!src/index.tsx',
+    '!src/**/*.stories.tsx',
+  ],
+  coverageThresholds: {
+    global: {
+      branches: 70,
+      functions: 70,
+      lines: 70,
+      statements: 70,
+    },
+    './src/services/': {
+      branches: 90,
+      functions: 90,
+      lines: 90,
+      statements: 90,
+    },
+  },
+};
+```
+
+## 🔧 Test Doubles
+
+### 1. Mocks
+
+```javascript
+// Mock external dependency
+jest.mock('./api');
+api.fetchUser.mockResolvedValue({ id: 1, name: 'John' });
+
+// Verify calls
+expect(api.fetchUser).toHaveBeenCalledWith(userId);
+expect(api.fetchUser).toHaveBeenCalledTimes(1);
+```
+
+### 2. Stubs
+
+```javascript
+// Return predefined response
+const stub = {
+  getUser: () => ({ id: 1, name: 'John' }),
+  deleteUser: () => true,
+};
+```
+
+### 3. Spies
+
+```javascript
+// Monitor function calls
+const spy = jest.spyOn(userService, 'create');
+await userService.create({ name: 'John' });
+
+expect(spy).toHaveBeenCalled();
+spy.mockRestore();
+```
+
+### 4. Fakes
+
+```javascript
+// Working implementation for testing
+class FakeDatabase {
+  constructor() {
+    this.data = new Map();
+  }
+  
+  async insert(record) {
+    const id = Date.now();
+    this.data.set(id, record);
+    return { id, ...record };
+  }
+  
+  async find(id) {
+    return this.data.get(id);
+  }
+}
+```
+
+## 🎯 Testing Best Practices
+
+### AAA Pattern
+
+```javascript
+test('user can be created', async () => {
+  // Arrange
+  const userData = {
+    name: 'John',
+    email: 'john@test.com'
+  };
+  
+  // Act
+  const user = await UserService.create(userData);
+  
+  // Assert
+  expect(user.id).toBeDefined();
+  expect(user.name).toBe('John');
+});
+```
+
+### F.I.R.S.T Principles
+
+```
+Fast        - Tests run quickly
+Independent - No dependencies between tests
+Repeatable  - Same result every time
+Self-validating - Pass or fail, no manual check
+Timely      - Written at the right time (TDD)
+```
+
+### Given-When-Then
+
+```javascript
+test('user login with valid credentials', async () => {
+  // Given - Setup
+  const user = await createTestUser({
+    email: 'test@example.com',
+    password: 'password123'
+  });
+  
+  // When - Action
+  const response = await request(app)
+    .post('/auth/login')
+    .send({
+      email: 'test@example.com',
+      password: 'password123'
+    });
+  
+  // Then - Assertion
+  expect(response.status).toBe(200);
+  expect(response.body).toHaveProperty('token');
+});
+```
+
+## 🔄 CI/CD Integration
+
+### GitHub Actions
+
+```yaml
+# .github/workflows/test.yml
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run linter
+        run: npm run lint
+      
+      - name: Run unit tests
+        run: npm test -- --coverage
+      
+      - name: Run integration tests
+        run: npm run test:integration
+      
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage/coverage-final.json
+```
+
+### Quality Gates
+
+```javascript
+// Fail if coverage drops
+if (coverage < previousCoverage - 2) {
+  throw new Error('Coverage decreased');
+}
+
+// Fail if too many tests skipped
+if (skippedTests > 5) {
+  throw new Error('Too many skipped tests');
+}
+```
+
+## ⚠️ Tests Anti-Patterns
+
+### ❌ Evitar
+
+```javascript
+// ❌ Test demasiado genérico
+test('app works', () => {
+  expect(true).toBe(true);
+});
+
+// ❌ Test dependiente del orden
+test('creates user', () => { /* ... */ });
+test('updates user from previous test', () => { /* ... */ });
+
+// ❌ Test que prueba implementación, no comportamiento
+test('calls database.insert', () => {
+  expect(database.insert).toHaveBeenCalled();
+  // ¿Pero funcionó correctamente?
+});
+
+// ❌ Sleep en tests
+test('loads data', async () => {
+  loadData();
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  expect(data).toBeDefined();
+});
+```
+
+### ✅ Hacer
+
+```javascript
+// ✅ Test específico y claro
+test('creates user with valid data', async () => {
+  const user = await createUser({ name: 'John', email: 'john@test.com' });
+  expect(user.id).toBeDefined();
+});
+
+// ✅ Tests independientes con setup
+beforeEach(async () => {
+  await clearDatabase();
+  testUser = await createTestUser();
+});
+
+// ✅ Test comportamiento
+test('returns user after creation', async () => {
+  const user = await createUser(validData);
+  expect(user).toMatchObject(validData);
+});
+
+// ✅ Usar waitFor para async
+test('loads data', async () => {
+  loadData();
+  await waitFor(() => {
+    expect(data).toBeDefined();
+  });
+});
+```
+
+## 📋 Testing Checklist
+
+- [ ] All critical paths tested
+- [ ] Edge cases covered
+- [ ] Error handling tested
+- [ ] Async operations tested correctly
+- [ ] Tests are fast (<100ms unit, <1s integration)
+- [ ] No flaky tests
+- [ ] Coverage > 70%
+- [ ] Tests pass in CI
+- [ ] Mocks/stubs cleaned up after tests
+- [ ] Test names are descriptive
+
+## 🎓 Best Practices
+
+1. **Test Behavior, Not Implementation** - User perspective
+2. **Keep Tests Simple** - One concept per test
+3. **Fast Feedback** - Run unit tests frequently
+4. **Independent Tests** - No shared state
+5. **Descriptive Names** - test_should_do_something
+6. **Arrange-Act-Assert** - Clear structure
+7. **Mock External Dependencies** - DB, APIs, time
+8. **Test Edge Cases** - Null, empty, boundary values
+9. **CI/CD Integration** - Automated testing
+10. **Review Test Code** - Tests need review too
+
+---
+
+**Última actualización:** Fase 6 - DevOps & Workflow  
+**Mantenedor:** Sistema de Skills  
+**Siguiente:** CI/CD para automatización completa
+, 
+va el siguiente skill:
+# Node.js Best Practices - Production Ready Code
+
+**Scope:** backend  
+**Trigger:** cuando se trabaje con Node.js, se configure un proyecto backend, o se necesiten mejores prácticas de Node  
+**Tools:** view, file_create, str_replace, bash_tool  
+**Version:** 1.0.0  
+
+---
+
+## 🎯 Propósito
+
+Esta skill te guía para escribir código Node.js de producción siguiendo las mejores prácticas de la industria. Cubre estructura de proyecto, manejo de errores, logging, seguridad, performance y deployment.
+
+## 🔧 Cuándo Usar Esta Skill
+
+- Configurar nuevo proyecto Node.js
+- Implementar logging y monitoring
+- Optimizar performance de aplicaciones Node
+- Preparar código para producción
+- Debuggear memory leaks o performance issues
+- Configurar variables de entorno
+- Implementar graceful shutdown
+
+## 📚 Contexto y Conocimiento
+
+### Estructura de Proyecto Profesional
+
+```
+project-root/
+├── src/
+│   ├── config/           # Configuraciones
+│   ├── controllers/      # Lógica de negocio
+│   ├── middleware/       # Middleware personalizado
+│   ├── models/          # Modelos de datos
+│   ├── routes/          # Definición de rutas
+│   ├── services/        # Servicios externos
+│   ├── utils/           # Utilidades y helpers
+│   ├── validators/      # Validaciones
+│   └── server.js        # Entry point
+├── tests/
+│   ├── unit/           # Unit tests
+│   ├── integration/    # Integration tests
+│   └── e2e/           # End-to-end tests
+├── logs/              # Logs de la aplicación
+├── .env               # Variables de entorno (gitignored)
+├── .env.example       # Template de .env
+├── .eslintrc.js       # ESLint config
+├── .prettierrc        # Prettier config
+├── .gitignore
+├── package.json
+└── README.md
+```
+
+## 🔐 Variables de Entorno
+
+### Configuración con dotenv
+
+**config/index.js:**
+```javascript
+require('dotenv').config();
+
+const config = {
+  env: process.env.NODE_ENV || 'development',
+  port: parseInt(process.env.PORT, 10) || 3000,
+  
+  db: {
+    uri: process.env.MONGO_URI,
+    options: {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    },
+  },
+  
+  jwt: {
+    secret: process.env.JWT_SECRET,
+    expiresIn: process.env.JWT_EXPIRE || '7d',
+  },
+  
+  cors: {
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  },
+  
+  logging: {
+    level: process.env.LOG_LEVEL || 'info',
+  },
+};
+
+// Validar configuraciones requeridas
+const requiredEnvVars = ['MONGO_URI', 'JWT_SECRET'];
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+
+if (missingEnvVars.length > 0) {
+  console.error(`Missing required environment variables: ${missingEnvVars.join(', ')}`);
+  process.exit(1);
+}
+
+module.exports = config;
+```
+
+**.env.example:**
+```bash
+# Application
+NODE_ENV=development
+PORT=5000
+
+# Database
+MONGO_URI=mongodb://localhost:27017/myapp
+
+# JWT
+JWT_SECRET=your_super_secret_key_min_32_characters
+JWT_EXPIRE=7d
+
+# CORS
+CORS_ORIGIN=http://localhost:3000
+
+# Logging
+LOG_LEVEL=info
+```
+
+## 📊 Logging Profesional
+
+### Winston Logger Setup
+
+```bash
+npm install winston winston-daily-rotate-file
+```
+
+**config/logger.js:**
+```javascript
+const winston = require('winston');
+const path = require('path');
+
+const logDir = 'logs';
+
+// Define log format
+const logFormat = winston.format.combine(
+  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+  winston.format.errors({ stack: true }),
+  winston.format.splat(),
+  winston.format.json()
+);
+
+// Console format for development
+const consoleFormat = winston.format.combine(
+  winston.format.colorize(),
+  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+  winston.format.printf(({ timestamp, level, message, ...meta }) => {
+    return `${timestamp} [${level}]: ${message} ${
+      Object.keys(meta).length ? JSON.stringify(meta, null, 2) : ''
+    }`;
+  })
+);
+
+// Create logger
+const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: logFormat,
+  transports: [
+    // Error logs
+    new winston.transports.DailyRotateFile({
+      filename: path.join(logDir, 'error-%DATE%.log'),
+      datePattern: 'YYYY-MM-DD',
+      level: 'error',
+      maxFiles: '14d',
+    }),
+    
+    // Combined logs
+    new winston.transports.DailyRotateFile({
+      filename: path.join(logDir, 'combined-%DATE%.log'),
+      datePattern: 'YYYY-MM-DD',
+      maxFiles: '14d',
+    }),
+  ],
+});
+
+// Console log in development
+if (process.env.NODE_ENV !== 'production') {
+  logger.add(
+    new winston.transports.Console({
+      format: consoleFormat,
+    })
+  );
+}
+
+module.exports = logger;
+```
+
+**Uso del Logger:**
+```javascript
+const logger = require('./config/logger');
+
+logger.info('Server started', { port: 5000 });
+logger.warn('Cache miss', { key: 'user:123' });
+logger.error('Database connection failed', { error: err.message });
+
+// En controllers
+exports.createUser = async (req, res, next) => {
+  try {
+    logger.info('Creating new user', { email: req.body.email });
+    const user = await User.create(req.body);
+    logger.info('User created successfully', { userId: user._id });
+    res.status(201).json({ success: true, data: user });
+  } catch (error) {
+    logger.error('User creation failed', { 
+      error: error.message,
+      stack: error.stack,
+      body: req.body 
+    });
+    next(error);
+  }
+};
+```
+
+## 🚨 Error Handling Robusto
+
+### Clase de Error Personalizada
+
+**utils/AppError.js:**
+```javascript
+class AppError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.statusCode = statusCode;
+    this.status = `${statusCode}`.startsWith('4') ? 'fail' : 'error';
+    this.isOperational = true;
+
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
+module.exports = AppError;
+```
+
+### Error Handler Global
+
+**middleware/errorHandler.js:**
+```javascript
+const logger = require('../config/logger');
+const AppError = require('../utils/AppError');
+
+const sendErrorDev = (err, res) => {
+  res.status(err.statusCode).json({
+    success: false,
+    status: err.status,
+    error: err,
+    message: err.message,
+    stack: err.stack,
+  });
+};
+
+const sendErrorProd = (err, res) => {
+  // Operational errors: send to client
+  if (err.isOperational) {
+    res.status(err.statusCode).json({
+      success: false,
+      status: err.status,
+      message: err.message,
+    });
+  } 
+  // Programming errors: don't leak details
+  else {
+    logger.error('ERROR 💥', { error: err });
+    res.status(500).json({
+      success: false,
+      status: 'error',
+      message: 'Something went wrong',
+    });
+  }
+};
+
+const errorHandler = (err, req, res, next) => {
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || 'error';
+
+  if (process.env.NODE_ENV === 'development') {
+    sendErrorDev(err, res);
+  } else {
+    let error = { ...err };
+    error.message = err.message;
+
+    // Mongoose bad ObjectId
+    if (err.name === 'CastError') {
+      error = new AppError('Invalid ID format', 400);
+    }
+
+    // Mongoose duplicate key
+    if (err.code === 11000) {
+      const field = Object.keys(err.keyValue)[0];
+      error = new AppError(`Duplicate field value: ${field}`, 400);
+    }
+
+    // Mongoose validation error
+    if (err.name === 'ValidationError') {
+      const errors = Object.values(err.errors).map(el => el.message);
+      error = new AppError(`Invalid input data: ${errors.join('. ')}`, 400);
+    }
+
+    // JWT errors
+    if (err.name === 'JsonWebTokenError') {
+      error = new AppError('Invalid token', 401);
+    }
+    if (err.name === 'TokenExpiredError') {
+      error = new AppError('Token expired', 401);
+    }
+
+    sendErrorProd(error, res);
+  }
+};
+
+module.exports = errorHandler;
+```
+
+### Async Error Wrapper
+
+**utils/catchAsync.js:**
+```javascript
+const catchAsync = (fn) => {
+  return (req, res, next) => {
+    fn(req, res, next).catch(next);
+  };
+};
+
+module.exports = catchAsync;
+```
+
+**Uso:**
+```javascript
+const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/AppError');
+
+exports.getUser = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  
+  if (!user) {
+    return next(new AppError('User not found', 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+});
+```
+
+## ⚡ Optimización de Performance
+
+### Event Loop Best Practices
+
+```javascript
+// ❌ MAL - Bloquea el event loop
+app.get('/bad', (req, res) => {
+  const result = heavySyncOperation(); // Bloquea todo
+  res.json(result);
+});
+
+// ✅ BIEN - Async/non-blocking
+app.get('/good', async (req, res) => {
+  const result = await heavyAsyncOperation();
+  res.json(result);
+});
+
+// Para operaciones CPU-intensive, usar worker threads
+const { Worker } = require('worker_threads');
+
+app.get('/heavy', (req, res) => {
+  const worker = new Worker('./heavy-task.js');
+  
+  worker.on('message', result => {
+    res.json(result);
+  });
+  
+  worker.on('error', error => {
+    res.status(500).json({ error: error.message });
+  });
+  
+  worker.postMessage(req.body);
+});
+```
+
+### Caching Strategies
+
+```javascript
+// In-memory cache simple
+const NodeCache = require('node-cache');
+const cache = new NodeCache({ stdTTL: 600 }); // 10 minutos
+
+exports.getUsers = catchAsync(async (req, res, next) => {
+  // Verificar cache
+  const cachedUsers = cache.get('all_users');
+  if (cachedUsers) {
+    logger.info('Cache hit: all_users');
+    return res.status(200).json({
+      success: true,
+      cached: true,
+      data: cachedUsers,
+    });
+  }
+
+  // Si no hay cache, fetch de DB
+  const users = await User.find();
+  cache.set('all_users', users);
+  
+  logger.info('Cache miss: all_users');
+  res.status(200).json({
+    success: true,
+    cached: false,
+    data: users,
+  });
+});
+```
+
+### Database Connection Pooling
+
+```javascript
+// Mongoose con pooling
+const mongoose = require('mongoose');
+
+const connectDB = async () => {
+  const options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    maxPoolSize: 10, // Máximo de conexiones
+    minPoolSize: 5,  // Mínimo de conexiones
+    socketTimeoutMS: 45000,
+    serverSelectionTimeoutMS: 5000,
+  };
+
+  await mongoose.connect(process.env.MONGO_URI, options);
+  logger.info('MongoDB connected with connection pooling');
+};
+```
+
+## 🔒 Seguridad Best Practices
+
+### Rate Limiting
+
+```javascript
+const rateLimit = require('express-rate-limit');
+const RedisStore = require('rate-limit-redis');
+const redis = require('redis');
+
+// Redis client (para apps escalables)
+const redisClient = redis.createClient({
+  host: process.env.REDIS_HOST,
+  port: process.env.REDIS_PORT,
+});
+
+// Rate limiter general
+const limiter = rateLimit({
+  store: new RedisStore({
+    client: redisClient,
+  }),
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // 100 requests por IP
+  message: 'Too many requests from this IP',
+});
+
+// Rate limiter estricto para auth
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5, // Solo 5 intentos
+  skipSuccessfulRequests: true,
+  message: 'Too many login attempts',
+});
+
+app.use('/api/', limiter);
+app.use('/api/auth/', authLimiter);
+```
+
+### Helmet - Security Headers
+
+```javascript
+const helmet = require('helmet');
+
+app.use(helmet());
+
+// Configuración custom
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+      },
+    },
+  })
+);
+```
+
+### Input Sanitization
+
+```javascript
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
+
+// Prevenir NoSQL injection
+app.use(mongoSanitize());
+
+// Prevenir XSS attacks
+app.use(xss());
+
+// Validación con express-validator
+const { body, validationResult } = require('express-validator');
+
+const validateUser = [
+  body('email').isEmail().normalizeEmail(),
+  body('password').isLength({ min: 6 }),
+  body('name').trim().escape(),
+];
+
+app.post('/users', validateUser, (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  // Procesar...
+});
+```
+
+## 🏁 Graceful Shutdown
+
+**server.js:**
+```javascript
+const logger = require('./config/logger');
+
+const server = app.listen(PORT, () => {
+  logger.info(`Server running on port ${PORT}`);
+});
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err) => {
+  logger.error('UNHANDLED REJECTION! 💥 Shutting down...', {
+    error: err.message,
+    stack: err.stack,
+  });
+  
+  server.close(() => {
+    process.exit(1);
+  });
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+  logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...', {
+    error: err.message,
+    stack: err.stack,
+  });
+  
+  process.exit(1);
+});
+
+// Graceful shutdown on SIGTERM
+process.on('SIGTERM', () => {
+  logger.info('👋 SIGTERM RECEIVED. Shutting down gracefully');
+  
+  server.close(() => {
+    logger.info('💥 Process terminated!');
+  });
+});
+```
+
+## 📦 Package.json Scripts
+
+```json
+{
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix",
+    "format": "prettier --write \"**/*.js\"",
+    "prepare": "husky install"
+  }
+}
+```
+
+## 🧪 Testing Setup
+
+```bash
+npm install -D jest supertest
+```
+
+**jest.config.js:**
+```javascript
+module.exports = {
+  testEnvironment: 'node',
+  coveragePathIgnorePatterns: ['/node_modules/'],
+  coverageThreshold: {
+    global: {
+      branches: 70,
+      functions: 70,
+      lines: 70,
+      statements: 70,
+    },
+  },
+};
+```
+
+## ⚠️ Errores Comunes y Soluciones
+
+| Error | Causa | Solución |
+|-------|-------|----------|
+| Memory leak | Event listeners no removidos | Siempre cleanup listeners |
+| Blocked event loop | Operación síncrona pesada | Usar async o worker threads |
+| Unhandled rejection | Promise sin .catch() | Usar try-catch o catchAsync |
+| Port already in use | Puerto ocupado | Cambiar puerto o matar proceso |
+| ECONNREFUSED | DB no disponible | Verificar conexión y credenciales |
+
+## 📋 Checklist de Production
+
+Antes de deployar:
+- [ ] Variables de entorno configuradas
+- [ ] Logging implementado (Winston/Bunyan)
+- [ ] Error handling global
+- [ ] Graceful shutdown implementado
+- [ ] Rate limiting configurado
+- [ ] Security headers (Helmet)
+- [ ] Input sanitization
+- [ ] CORS configurado correctamente
+- [ ] Tests escritos (>70% coverage)
+- [ ] Environment de staging probado
+- [ ] Monitoring configurado (PM2, New Relic)
+- [ ] Logs centralizados (ELK, Datadog)
+
+## 🎓 Best Practices Summary
+
+1. **Async/Await everywhere** - Never block the event loop
+2. **Proper error handling** - Use try-catch, error middleware
+3. **Environment variables** - Never hardcode secrets
+4. **Logging** - Use structured logging (Winston)
+5. **Security** - Helmet, rate limiting, sanitization
+6. **Testing** - Unit, integration, e2e tests
+7. **Linting** - ESLint + Prettier
+8. **Graceful shutdown** - Handle SIGTERM properly
+9. **Monitoring** - Know when things break
+10. **Documentation** - README, API docs, code comments
+
+---
+
+**Última actualización:** Fase 2 - Skills MERN  
+**Mantenedor:** Sistema de Skills  
+**Siguiente:** Implementar MongoDB patterns avanzados
+, 
+va el siguiente skill:
+# Git Workflow - Version Control Best Practices
+
+**Scope:** workflow  
+**Trigger:** cuando se trabaje con Git, control de versiones, commits, branches, o flujos de trabajo en equipo  
+**Tools:** view, file_create, str_replace, bash_tool  
+**Version:** 1.0.0  
+
+---
+
+## 🎯 Propósito
+
+Esta skill te guía para usar Git de manera profesional. Cubre desde comandos básicos hasta workflows avanzados, conventional commits, Git Flow, trunk-based development, resolución de conflictos y mejores prácticas para equipos.
+
+## 🔧 Cuándo Usar Esta Skill
+
+- Configurar Git en proyectos nuevos
+- Trabajar en equipos con branches
+- Escribir commits profesionales
+- Resolver conflictos
+- Hacer code reviews con Pull Requests
+- Mantener historial limpio
+- Colaborar en open source
+
+## 📚 Fundamentos
+
+### Configuración Inicial
+
+```bash
+# Configurar identidad
+git config --global user.name "Tu Nombre"
+git config --global user.email "tu@email.com"
+
+# Editor por defecto
+git config --global core.editor "code --wait"  # VS Code
+git config --global core.editor "vim"          # Vim
+
+# Aliases útiles
+git config --global alias.st status
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.unstage 'reset HEAD --'
+git config --global alias.last 'log -1 HEAD'
+git config --global alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+
+# Ver configuración
+git config --list
+```
+
+### Comandos Básicos
+
+```bash
+# Inicializar repo
+git init
+
+# Clonar repo
+git clone https://github.com/user/repo.git
+
+# Ver estado
+git status
+
+# Agregar archivos
+git add file.txt
+git add .                # Todos los cambios
+git add *.js             # Patrón
+
+# Commit
+git commit -m "mensaje"
+git commit -am "mensaje" # Add + commit (tracked files)
+
+# Ver historial
+git log
+git log --oneline
+git log --graph --all
+git log -p              # Con diff
+git log --author="John"
+git log --since="2 weeks ago"
+
+# Ver cambios
+git diff               # Working dir vs staged
+git diff --staged      # Staged vs último commit
+git diff HEAD          # Working dir vs último commit
+
+# Deshacer cambios
+git restore file.txt         # Descartar cambios en working dir
+git restore --staged file.txt # Unstage
+git reset HEAD~1             # Deshacer último commit (mantener cambios)
+git reset --hard HEAD~1      # Deshacer último commit (descartar cambios)
+```
+
+## 🌿 Branches
+
+### Comandos de Branch
+
+```bash
+# Crear branch
+git branch feature/nueva-feature
+
+# Cambiar de branch
+git checkout feature/nueva-feature
+# o en Git 2.23+
+git switch feature/nueva-feature
+
+# Crear y cambiar (shortcut)
+git checkout -b feature/nueva-feature
+git switch -c feature/nueva-feature
+
+# Listar branches
+git branch           # Locales
+git branch -r        # Remotos
+git branch -a        # Todos
+
+# Eliminar branch
+git branch -d feature/completed  # Safe delete
+git branch -D feature/old        # Force delete
+
+# Renombrar branch
+git branch -m old-name new-name
+
+# Ver último commit de cada branch
+git branch -v
+```
+
+### Merge
+
+```bash
+# Merge feature branch into main
+git checkout main
+git merge feature/nueva-feature
+
+# Merge con fast-forward deshabilitado (crea merge commit)
+git merge --no-ff feature/nueva-feature
+
+# Abortar merge con conflictos
+git merge --abort
+```
+
+### Rebase
+
+```bash
+# Rebase feature sobre main
+git checkout feature/nueva-feature
+git rebase main
+
+# Rebase interactivo (reordenar, editar commits)
+git rebase -i HEAD~3
+
+# Continue después de resolver conflictos
+git rebase --continue
+
+# Abortar rebase
+git rebase --abort
+
+# Rebase vs Merge:
+# Merge: Mantiene historial, crea merge commits
+# Rebase: Historial lineal, no merge commits
+```
+
+## 📝 Conventional Commits
+
+### Formato
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+### Types
+
+```
+feat:     Nueva feature
+fix:      Bug fix
+docs:     Documentación
+style:    Formato (no afecta código)
+refactor: Refactorizar (no bug ni feature)
+perf:     Performance improvements
+test:     Agregar/modificar tests
+build:    Build system o dependencias
+ci:       CI configuration
+chore:    Otras tareas (gitignore, etc)
+revert:   Revertir commit anterior
+```
+
+### Ejemplos
+
+```bash
+# Feature
+git commit -m "feat(auth): add JWT authentication"
+
+# Bug fix
+git commit -m "fix(api): handle null response from users endpoint"
+
+# Breaking change
+git commit -m "feat(api)!: change response format
+
+BREAKING CHANGE: API now returns data in {data, meta} format"
+
+# Con scope y body
+git commit -m "refactor(database): optimize query performance
+
+- Add index on user_id column
+- Remove unnecessary joins
+- Use connection pooling"
+
+# Multiple paragraphs
+git commit -m "feat(payment): integrate Stripe
+
+Implemented payment processing with Stripe API.
+Includes webhook handlers for payment events.
+
+Closes #123"
+```
+
+## 🔄 Git Flow
+
+### Branches en Git Flow
+
+```
+main/master     - Production-ready code
+develop         - Integration branch
+feature/*       - New features
+release/*       - Release preparation
+hotfix/*        - Production bug fixes
+```
+
+### Workflow
+
+```bash
+# 1. Feature development
+git checkout develop
+git checkout -b feature/user-profile
+# ... hacer cambios ...
+git add .
+git commit -m "feat(profile): add user profile page"
+
+# 2. Terminar feature
+git checkout develop
+git merge --no-ff feature/user-profile
+git branch -d feature/user-profile
+git push origin develop
+
+# 3. Crear release
+git checkout develop
+git checkout -b release/1.2.0
+# ... bumping version, changelog ...
+git commit -m "chore(release): bump version to 1.2.0"
+
+# 4. Release to production
+git checkout main
+git merge --no-ff release/1.2.0
+git tag -a v1.2.0 -m "Release version 1.2.0"
+
+git checkout develop
+git merge --no-ff release/1.2.0
+git branch -d release/1.2.0
+
+# 5. Hotfix
+git checkout main
+git checkout -b hotfix/critical-bug
+# ... fix bug ...
+git commit -m "fix(auth): resolve login timeout issue"
+
+git checkout main
+git merge --no-ff hotfix/critical-bug
+git tag -a v1.2.1 -m "Hotfix 1.2.1"
+
+git checkout develop
+git merge --no-ff hotfix/critical-bug
+git branch -d hotfix/critical-bug
+```
+
+## 🚂 Trunk-Based Development
+
+### Filosofía
+
+- Una branch principal (main/trunk)
+- Feature branches cortos (<1 día)
+- Integración continua
+- Feature flags para features incompletas
+
+### Workflow
+
+```bash
+# 1. Crear feature branch corto
+git checkout main
+git pull origin main
+git checkout -b feature/quick-fix
+
+# 2. Hacer cambios pequeños
+# ... cambios ...
+git add .
+git commit -m "feat(ui): add loading spinner"
+
+# 3. Sync con main frecuentemente
+git checkout main
+git pull origin main
+git checkout feature/quick-fix
+git rebase main
+
+# 4. Push y PR rápido
+git push origin feature/quick-fix
+# Crear PR, code review rápido
+
+# 5. Merge a main
+# Después de merge, delete branch inmediatamente
+```
+
+## 🔀 Pull Requests
+
+### Crear PR de Calidad
+
+```markdown
+## Description
+Brief description of what this PR does.
+
+## Type of Change
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+- [ ] Documentation update
+
+## Testing
+- [ ] Unit tests pass
+- [ ] Integration tests pass
+- [ ] Manual testing completed
+
+## Screenshots
+(if applicable)
+
+## Checklist
+- [ ] Code follows style guidelines
+- [ ] Self-review completed
+- [ ] Comments added for complex code
+- [ ] Documentation updated
+- [ ] No new warnings generated
+```
+
+### Code Review Best Practices
+
+**Como Reviewer:**
+- ✅ Review quickly (< 24 hours)
+- ✅ Comment on what's good
+- ✅ Ask questions, don't demand
+- ✅ Suggest improvements with examples
+- ✅ Approve if minor issues
+- ❌ Don't nitpick style if linter exists
+- ❌ Don't be rude or condescending
+
+**Como Author:**
+- ✅ Keep PRs small (<400 lines)
+- ✅ Write descriptive title/description
+- ✅ Respond to all comments
+- ✅ Thank reviewers
+- ✅ Fix issues or explain why not
+- ❌ Don't take feedback personally
+- ❌ Don't merge without approval
+
+## 🚨 Conflictos
+
+### Resolver Conflictos
+
+```bash
+# Durante merge
+git merge feature/branch
+# CONFLICT en file.txt
+
+# 1. Ver conflictos
+git status
+
+# 2. Abrir archivo con conflictos
+# <<<<<<< HEAD
+# Código en tu branch
+# =======
+# Código en el otro branch
+# >>>>>>> feature/branch
+
+# 3. Editar archivo, resolver conflictos
+
+# 4. Mark as resolved
+git add file.txt
+
+# 5. Complete merge
+git commit
+
+# Durante rebase
+git rebase main
+# CONFLICT en file.txt
+
+# Resolver y continuar
+git add file.txt
+git rebase --continue
+
+# O skip commit si no es necesario
+git rebase --skip
+
+# O abort
+git rebase --abort
+```
+
+## 🏷️ Tags
+
+```bash
+# Crear tag
+git tag v1.0.0
+git tag -a v1.0.0 -m "Version 1.0.0"
+
+# Listar tags
+git tag
+git tag -l "v1.*"
+
+# Push tags
+git push origin v1.0.0
+git push origin --tags  # Todos los tags
+
+# Eliminar tag
+git tag -d v1.0.0               # Local
+git push origin --delete v1.0.0  # Remote
+
+# Checkout tag
+git checkout v1.0.0
+```
+
+## 🔧 Comandos Avanzados
+
+### Stash
+
+```bash
+# Guardar cambios temporalmente
+git stash
+git stash save "work in progress"
+
+# Listar stashes
+git stash list
+
+# Aplicar stash
+git stash apply           # Último stash, lo mantiene
+git stash pop             # Último stash, lo elimina
+git stash apply stash@{2} # Stash específico
+
+# Eliminar stash
+git stash drop stash@{0}
+git stash clear  # Todos
+```
+
+### Cherry-pick
+
+```bash
+# Aplicar commit específico a branch actual
+git cherry-pick abc123
+
+# Multiple commits
+git cherry-pick abc123 def456
+
+# Sin commit automático
+git cherry-pick -n abc123
+```
+
+### Reflog
+
+```bash
+# Ver historial de referencias
+git reflog
+
+# Recuperar commit "perdido"
+git reflog
+git checkout abc123
+git checkout -b recovered-branch
+```
+
+### Blame
+
+```bash
+# Ver quién modificó cada línea
+git blame file.txt
+git blame -L 10,20 file.txt  # Líneas 10-20
+```
+
+## 🚫 .gitignore
+
+```bash
+# .gitignore
+
+# Node
+node_modules/
+npm-debug.log
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.env
+
+# Java
+target/
+*.class
+*.jar
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
+*.log
+```
+
+## ⚠️ Errores Comunes
+
+| Error | Causa | Solución |
+|-------|-------|----------|
+| fatal: not a git repository | No hay repo git | git init |
+| Please commit or stash | Cambios sin commit | git stash o git commit |
+| fatal: refusing to merge unrelated histories | Historias diferentes | git pull --allow-unrelated-histories |
+| CONFLICT | Cambios conflictivos | Resolver manualmente |
+
+## 📋 Checklist Diario
+
+- [ ] Pull antes de empezar a trabajar
+- [ ] Crear branch para nueva feature
+- [ ] Commits atómicos y frecuentes
+- [ ] Mensajes de commit descriptivos
+- [ ] Push al menos una vez al día
+- [ ] Sync con main regularmente
+- [ ] Code review antes de merge
+- [ ] Delete branches después de merge
+
+## 🎓 Best Practices
+
+1. **Commit Often** - Commits pequeños y frecuentes
+2. **Descriptive Messages** - Conventional commits
+3. **Branch Strategy** - Git Flow o Trunk-Based
+4. **Pull Before Push** - Evitar conflictos
+5. **Review Code** - PR reviews obligatorios
+6. **Protect Main** - Branch protection rules
+7. **Tag Releases** - Versionar releases
+8. **Clean History** - Rebase antes de merge
+9. **.gitignore** - No commitear archivos innecesarios
+10. **Backup** - Push a remote frecuentemente
+
+---
+
+**Última actualización:** Fase 6 - DevOps & Workflow  
+**Mantenedor:** Sistema de Skills  
+**Siguiente:** Testing Strategies para asegurar calidad
+, 
+
+va el siguiente skill:
+# Frontend Design - UI/UX Patterns & Systems
+
+**Scope:** frontend  
+**Trigger:** cuando se diseñen interfaces, se mencionen design systems, atomic design, Tailwind, Material UI, o patrones de UI/UX  
+**Tools:** view, file_create, str_replace, bash_tool  
+**Version:** 1.0.0  
+
+---
+
+## 🎯 Propósito
+
+Esta skill te guía para crear interfaces de usuario profesionales y consistentes usando design systems, atomic design, y frameworks de UI modernos. Cubre desde fundamentos de diseño hasta implementación práctica con Tailwind, Material UI, y patrones enterprise.
+
+## 🔧 Cuándo Usar Esta Skill
+
+- Crear design system desde cero
+- Implementar atomic design
+- Configurar Tailwind CSS o Material UI
+- Diseñar componentes reutilizables
+- Mantener consistencia visual
+- Implementar responsive design
+- Crear layouts complejos
+- Accessibility (a11y) implementation
+
+## 📚 Contexto y Conocimiento
+
+### Principios Fundamentales de UI/UX
+
+**1. Consistency (Consistencia)**
+- Mismos colores, typography, spacing
+- Comportamientos predecibles
+- Patrones repetibles
+
+**2. Hierarchy (Jerarquía)**
+- Tamaños de texto claros
+- Contraste apropiado
+- Espaciado intencional
+
+**3. Accessibility (Accesibilidad)**
+- Contraste mínimo 4.5:1
+- Keyboard navigation
+- Screen reader support
+- ARIA labels
+
+**4. Feedback**
+- Loading states
+- Success/error messages
+- Hover/active states
+- Transitions suaves
+
+## 🎨 Atomic Design
+
+### Jerarquía de Componentes
+
+```
+Atoms (Átomos)
+  ↓
+Molecules (Moléculas)
+  ↓
+Organisms (Organismos)
+  ↓
+Templates
+  ↓
+Pages
+```
+
+### 1. Atoms - Componentes Básicos
+
+```typescript
+// Button.tsx - Átomo básico
+interface ButtonProps {
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  onClick?: () => void;
+}
+
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  variant = 'primary',
+  size = 'md',
+  disabled = false,
+  onClick,
+}) => {
+  const baseStyles = 'font-medium rounded transition-colors';
+  
+  const variants = {
+    primary: 'bg-blue-600 hover:bg-blue-700 text-white',
+    secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-800',
+    danger: 'bg-red-600 hover:bg-red-700 text-white',
+  };
+  
+  const sizes = {
+    sm: 'px-3 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg',
+  };
+  
+  return (
+    <button
+      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${
+        disabled ? 'opacity-50 cursor-not-allowed' : ''
+      }`}
+      disabled={disabled}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+};
+
+// Input.tsx - Otro átomo
+interface InputProps {
+  type?: string;
+  placeholder?: string;
+  value: string;
+  onChange: (value: string) => void;
+  error?: string;
+  label?: string;
+}
+
+export const Input: React.FC<InputProps> = ({
+  type = 'text',
+  placeholder,
+  value,
+  onChange,
+  error,
+  label,
+}) => {
+  return (
+    <div className="w-full">
+      {label && (
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          {label}
+        </label>
+      )}
+      <input
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+          error
+            ? 'border-red-500 focus:ring-red-500'
+            : 'border-gray-300 focus:ring-blue-500'
+        }`}
+      />
+      {error && (
+        <p className="mt-1 text-sm text-red-600">{error}</p>
+      )}
+    </div>
+  );
+};
+```
+
+### 2. Molecules - Combinación de Átomos
+
+```typescript
+// SearchBar.tsx - Molécula
+import { Input } from './atoms/Input';
+import { Button } from './atoms/Button';
+
+interface SearchBarProps {
+  onSearch: (query: string) => void;
+}
+
+export const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
+  const [query, setQuery] = useState('');
+  
+  const handleSearch = () => {
+    onSearch(query);
+  };
+  
+  return (
+    <div className="flex gap-2">
+      <Input
+        value={query}
+        onChange={setQuery}
+        placeholder="Search..."
+      />
+      <Button onClick={handleSearch}>
+        Search
+      </Button>
+    </div>
+  );
+};
+
+// FormField.tsx - Otra molécula
+import { Input } from './atoms/Input';
+
+interface FormFieldProps {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  error?: string;
+  required?: boolean;
+}
+
+export const FormField: React.FC<FormFieldProps> = ({
+  label,
+  value,
+  onChange,
+  error,
+  required,
+}) => {
+  return (
+    <div className="mb-4">
+      <Input
+        label={`${label}${required ? ' *' : ''}`}
+        value={value}
+        onChange={onChange}
+        error={error}
+      />
+    </div>
+  );
+};
+```
+
+### 3. Organisms - Estructuras Complejas
+
+```typescript
+// LoginForm.tsx - Organismo
+import { FormField } from './molecules/FormField';
+import { Button } from './atoms/Button';
+
+interface LoginFormProps {
+  onSubmit: (email: string, password: string) => void;
+}
+
+export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+    
+    if (!email) newErrors.email = 'Email is required';
+    if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = 'Email is invalid';
+    if (!password) newErrors.password = 'Password is required';
+    if (password.length < 6) newErrors.password = 'Password must be 6+ chars';
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validate()) {
+      onSubmit(email, password);
+    }
+  };
+  
+  return (
+    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 bg-white rounded-lg shadow">
+      <h2 className="text-2xl font-bold mb-6">Login</h2>
+      
+      <FormField
+        label="Email"
+        value={email}
+        onChange={setEmail}
+        error={errors.email}
+        required
+      />
+      
+      <FormField
+        label="Password"
+        value={password}
+        onChange={setPassword}
+        error={errors.password}
+        required
+      />
+      
+      <Button type="submit" className="w-full">
+        Sign In
+      </Button>
+    </form>
+  );
+};
+```
+
+## 🎨 Tailwind CSS
+
+### Setup y Configuración
+
+```bash
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+```
+
+**tailwind.config.js:**
+```javascript
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+        },
+        secondary: {
+          500: '#6b7280',
+          600: '#4b5563',
+        }
+      },
+      spacing: {
+        '18': '4.5rem',
+        '112': '28rem',
+      },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+      },
+    },
+  },
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
+  ],
+}
+```
+
+### Utility Classes Comunes
+
+```typescript
+// Layout
+<div className="container mx-auto px-4">
+<div className="flex justify-between items-center">
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+// Spacing
+<div className="p-4 m-2">        // padding y margin
+<div className="mt-8 mb-4">      // margin top/bottom
+<div className="space-y-4">      // espacio vertical entre hijos
+
+// Typography
+<h1 className="text-4xl font-bold text-gray-900">
+<p className="text-base leading-relaxed text-gray-600">
+
+// Colors
+<div className="bg-blue-500 text-white">
+<div className="border border-gray-300">
+
+// Responsive
+<div className="w-full md:w-1/2 lg:w-1/3">
+<p className="text-sm md:text-base lg:text-lg">
+
+// States
+<button className="hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50">
+<input className="focus:ring-2 focus:ring-blue-500">
+
+// Flexbox
+<div className="flex flex-col md:flex-row gap-4">
+<div className="flex-1">           // grow
+<div className="flex-shrink-0">    // no shrink
+
+// Grid
+<div className="grid grid-cols-12 gap-4">
+<div className="col-span-12 md:col-span-6 lg:col-span-4">
+```
+
+### Design Tokens con Tailwind
+
+```typescript
+// colors.ts
+export const colors = {
+  primary: 'bg-blue-600 text-white hover:bg-blue-700',
+  secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300',
+  success: 'bg-green-600 text-white hover:bg-green-700',
+  danger: 'bg-red-600 text-white hover:bg-red-700',
+  warning: 'bg-yellow-500 text-white hover:bg-yellow-600',
+};
+
+// spacing.ts
+export const spacing = {
+  xs: 'p-2',
+  sm: 'p-3',
+  md: 'p-4',
+  lg: 'p-6',
+  xl: 'p-8',
+};
+
+// shadows.ts
+export const shadows = {
+  sm: 'shadow-sm',
+  md: 'shadow-md',
+  lg: 'shadow-lg',
+  xl: 'shadow-xl',
+};
+```
+
+## 📦 Material UI (MUI)
+
+### Setup
+
+```bash
+npm install @mui/material @emotion/react @emotion/styled
+npm install @mui/icons-material
+```
+
+### Theme Configuration
+
+```typescript
+// theme.ts
+import { createTheme } from '@mui/material/styles';
+
+export const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+      light: '#42a5f5',
+      dark: '#1565c0',
+    },
+    secondary: {
+      main: '#9c27b0',
+    },
+    error: {
+      main: '#d32f2f',
+    },
+    background: {
+      default: '#f5f5f5',
+      paper: '#ffffff',
+    },
+  },
+  typography: {
+    fontFamily: 'Inter, Roboto, sans-serif',
+    h1: {
+      fontSize: '2.5rem',
+      fontWeight: 600,
+    },
+    button: {
+      textTransform: 'none',
+    },
+  },
+  spacing: 8,
+  shape: {
+    borderRadius: 8,
+  },
+});
+
+// App.tsx
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+
+function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <YourApp />
+    </ThemeProvider>
+  );
+}
+```
+
+### Componentes MUI
+
+```typescript
+import { 
+  Button, 
+  TextField, 
+  Card, 
+  CardContent,
+  Typography,
+  Box,
+  Stack
+} from '@mui/material';
+
+function UserCard({ user }) {
+  return (
+    <Card sx={{ maxWidth: 345 }}>
+      <CardContent>
+        <Typography variant="h5" component="div" gutterBottom>
+          {user.name}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {user.email}
+        </Typography>
+        <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+          <Button variant="contained" size="small">
+            Edit
+          </Button>
+          <Button variant="outlined" size="small" color="error">
+            Delete
+          </Button>
+        </Stack>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+## 🎨 Design Patterns
+
+### 1. Card Pattern
+
+```typescript
+interface CardProps {
+  title: string;
+  subtitle?: string;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+  className?: string;
+}
+
+export const Card: React.FC<CardProps> = ({
+  title,
+  subtitle,
+  children,
+  footer,
+  className = '',
+}) => {
+  return (
+    <div className={`bg-white rounded-lg shadow-md overflow-hidden ${className}`}>
+      <div className="p-6 border-b border-gray-200">
+        <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
+        {subtitle && (
+          <p className="mt-1 text-sm text-gray-600">{subtitle}</p>
+        )}
+      </div>
+      
+      <div className="p-6">
+        {children}
+      </div>
+      
+      {footer && (
+        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+          {footer}
+        </div>
+      )}
+    </div>
+  );
+};
+```
+
+### 2. Modal Pattern
+
+```typescript
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+}
+
+export const Modal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  title,
+  children,
+}) => {
+  if (!isOpen) return null;
+  
+  return (
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      {/* Overlay */}
+      <div 
+        className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+        onClick={onClose}
+      />
+      
+      {/* Modal */}
+      <div className="flex min-h-full items-center justify-center p-4">
+        <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full">
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b">
+            <h3 className="text-xl font-semibold">{title}</h3>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              ✕
+            </button>
+          </div>
+          
+          {/* Content */}
+          <div className="p-6">
+            {children}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+```
+
+### 3. Toast/Notification Pattern
+
+```typescript
+type ToastType = 'success' | 'error' | 'warning' | 'info';
+
+interface ToastProps {
+  type: ToastType;
+  message: string;
+  onClose: () => void;
+}
+
+export const Toast: React.FC<ToastProps> = ({ type, message, onClose }) => {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 5000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+  
+  const styles = {
+    success: 'bg-green-500',
+    error: 'bg-red-500',
+    warning: 'bg-yellow-500',
+    info: 'bg-blue-500',
+  };
+  
+  return (
+    <div className={`${styles[type]} text-white px-6 py-4 rounded-lg shadow-lg flex items-center justify-between`}>
+      <span>{message}</span>
+      <button onClick={onClose} className="ml-4 font-bold">
+        ✕
+      </button>
+    </div>
+  );
+};
+
+// Toast Manager
+export const useToast = () => {
+  const [toasts, setToasts] = useState<Array<Toast>>([]);
+  
+  const addToast = (type: ToastType, message: string) => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, type, message }]);
+  };
+  
+  const removeToast = (id: number) => {
+    setToasts(prev => prev.filter(t => t.id !== id));
+  };
+  
+  return { toasts, addToast, removeToast };
+};
+```
+
+## ♿ Accessibility (a11y)
+
+### Semantic HTML
+
+```typescript
+// ✅ BIEN - Semantic HTML
+<nav>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/about">About</a></li>
+  </ul>
+</nav>
+
+<main>
+  <article>
+    <h1>Page Title</h1>
+    <p>Content...</p>
+  </article>
+</main>
+
+// ❌ MAL - Div soup
+<div>
+  <div>
+    <div><div>Home</div></div>
+    <div><div>About</div></div>
+  </div>
+</div>
+```
+
+### ARIA Labels
+
+```typescript
+<button 
+  aria-label="Close modal"
+  onClick={onClose}
+>
+  ✕
+</button>
+
+<img 
+  src={user.avatar} 
+  alt={`${user.name}'s profile picture`}
+/>
+
+<input
+  type="text"
+  aria-describedby="email-error"
+  aria-invalid={!!error}
+/>
+{error && (
+  <span id="email-error" role="alert">
+    {error}
+  </span>
+)}
+```
+
+### Keyboard Navigation
+
+```typescript
+const handleKeyDown = (e: React.KeyboardEvent) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    onClick();
+  }
+  if (e.key === 'Escape') {
+    onClose();
+  }
+};
+
+<div
+  role="button"
+  tabIndex={0}
+  onKeyDown={handleKeyDown}
+  onClick={onClick}
+>
+  Click me
+</div>
+```
+
+## 📱 Responsive Design
+
+### Mobile-First Approach
+
+```typescript
+// ✅ BIEN - Mobile first
+<div className="w-full md:w-1/2 lg:w-1/3">
+<p className="text-sm md:text-base lg:text-lg">
+
+// Breakpoints en Tailwind
+// sm: 640px
+// md: 768px
+// lg: 1024px
+// xl: 1280px
+// 2xl: 1536px
+```
+
+### Container Queries (Nuevo)
+
+```css
+/* Modern approach con container queries */
+.card-container {
+  container-type: inline-size;
+}
+
+@container (min-width: 400px) {
+  .card {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+  }
+}
+```
+
+## ⚠️ Errores Comunes y Soluciones
+
+| Error | Causa | Solución |
+|-------|-------|----------|
+| Inconsistent spacing | Valores hardcoded | Usar design tokens |
+| Poor contrast | Colores sin validar | WCAG checker (4.5:1 mínimo) |
+| No keyboard access | Solo onClick | Agregar onKeyDown y tabIndex |
+| Missing alt text | Olvidar accessibility | Siempre incluir alt en imágenes |
+| Div soup | No semantic HTML | Usar tags semánticos |
+
+## 📋 Checklist de Validación
+
+- [ ] Design tokens definidos (colors, spacing, typography)
+- [ ] Componentes siguen atomic design
+- [ ] Responsive en mobile, tablet, desktop
+- [ ] Accessibility verificada (WAVE, aXe)
+- [ ] Contrast ratio > 4.5:1
+- [ ] Keyboard navigation funciona
+- [ ] Alt text en todas las imágenes
+- [ ] ARIA labels donde corresponde
+- [ ] Loading/error states
+- [ ] Focus states visibles
+
+## 🎓 Best Practices
+
+1. **Design tokens** - Centralizar valores de diseño
+2. **Atomic design** - Componentes pequeños y reutilizables
+3. **Mobile-first** - Diseñar primero para móvil
+4. **Semantic HTML** - Usar tags correctos
+5. **Accessibility first** - No es opcional
+6. **Consistent spacing** - Usar scale (8px, 16px, 24px...)
+7. **Typography scale** - Sistema de tamaños coherente
+8. **Color system** - Paleta limitada y consistente
+
+---
+
+**Última actualización:** Fase 3 - Skills Frontend Avanzado  
+**Mantenedor:** Sistema de Skills  
+**Siguiente:** Testing para asegurar calidad del frontend
+, 
+
+va el siguiente skill:
+# Express + MongoDB - MERN Backend Stack
+
+**Scope:** backend  
+**Trigger:** cuando se trabaje con Express, MongoDB, MERN stack, APIs RESTful con Node.js, o autenticación JWT  
+**Tools:** view, file_create, str_replace, bash_tool  
+**Version:** 1.0.0  
+
+---
+
+## 🎯 Propósito
+
+Esta skill te guía para crear APIs RESTful robustas y escalables usando Express.js y MongoDB. Cubre desde setup hasta autenticación JWT, validaciones, manejo de errores y mejores prácticas de seguridad.
+
+## 🔧 Cuándo Usar Esta Skill
+
+- Crear APIs REST para aplicaciones MERN
+- Implementar autenticación y autorización con JWT
+- Diseñar modelos de datos con Mongoose
+- Configurar middleware de validación y error handling
+- Conectar frontend React con backend Express
+- Desarrollar endpoints CRUD completos
+- Implementar relaciones entre documentos en MongoDB
+
+## 📚 Contexto y Conocimiento
+
+### Stack Tecnológico
+- **Express.js** 4.x - Framework web minimalista
+- **MongoDB** 6.x+ - Base de datos NoSQL
+- **Mongoose** 7.x+ - ODM para MongoDB
+- **JWT** - Autenticación stateless
+- **bcrypt** - Hash de passwords
+
+### Setup Inicial de Proyecto
+
+```bash
+# Crear directorio
+mkdir backend && cd backend
+
+# Inicializar proyecto
+npm init -y
+
+# Instalar dependencias principales
+npm install express mongoose dotenv cors
+
+# Instalar dependencias de autenticación
+npm install bcryptjs jsonwebtoken
+
+# Instalar dependencias de validación
+npm install express-validator
+
+# Instalar dependencias de desarrollo
+npm install -D nodemon
+```
+
+### Estructura Recomendada
+
+```
+backend/
+├── src/
+│   ├── config/
+│   │   └── db.js              # Configuración de MongoDB
+│   ├── models/
+│   │   ├── User.js            # Modelo de usuario
+│   │   └── Task.js            # Modelo de tarea (ejemplo)
+│   ├── controllers/
+│   │   ├── authController.js  # Lógica de autenticación
+│   │   └── taskController.js  # Lógica de tareas
+│   ├── routes/
+│   │   ├── auth.js            # Rutas de autenticación
+│   │   └── tasks.js           # Rutas de tareas
+│   ├── middleware/
+│   │   ├── auth.js            # Middleware de autenticación
+│   │   ├── validation.js      # Middleware de validación
+│   │   └── errorHandler.js    # Middleware de errores
+│   ├── utils/
+│   │   └── helpers.js         # Funciones auxiliares
+│   └── server.js              # Punto de entrada
+├── .env                        # Variables de entorno
+├── .env.example               # Ejemplo de variables
+├── .gitignore
+└── package.json
+```
+
+## 🚀 Flujo de Trabajo
+
+### 1. Configuración Inicial
+
+**package.json - Scripts:**
+```json
+{
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest"
+  }
+}
+```
+
+**.env:**
+```bash
+NODE_ENV=development
+PORT=5000
+MONGO_URI=mongodb://localhost:27017/myapp
+JWT_SECRET=your_super_secret_key_change_in_production
+JWT_EXPIRE=7d
+```
+
+**.env.example:**
+```bash
+NODE_ENV=development
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+JWT_EXPIRE=7d
+```
+
+### 2. Configurar MongoDB
+
+**src/config/db.js:**
+```javascript
+const mongoose = require('mongoose');
+
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    process.exit(1);
+  }
+};
+
+module.exports = connectDB;
+```
+
+### 3. Crear Server Principal
+
+**src/server.js:**
+```javascript
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const connectDB = require('./config/db');
+const errorHandler = require('./middleware/errorHandler');
+
+// Conectar a base de datos
+connectDB();
+
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Rutas
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/tasks', require('./routes/tasks'));
+
+// Health check
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', timestamp: new Date() });
+});
+
+// Middleware de error (debe ir al final)
+app.use(errorHandler);
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+```
+
+## 📊 Modelos con Mongoose
+
+### User Model
+
+**src/models/User.js:**
+```javascript
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Please provide a name'],
+      trim: true,
+      maxlength: [50, 'Name cannot be more than 50 characters'],
+    },
+    email: {
+      type: String,
+      required: [true, 'Please provide an email'],
+      unique: true,
+      lowercase: true,
+      match: [
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        'Please provide a valid email',
+      ],
+    },
+    password: {
+      type: String,
+      required: [true, 'Please provide a password'],
+      minlength: [6, 'Password must be at least 6 characters'],
+      select: false, // No devolver password por defecto en queries
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
+    },
+  },
+  {
+    timestamps: true, // Agrega createdAt y updatedAt
+  }
+);
+
+// Hash password antes de guardar
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    next();
+  }
+  
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+// Método para comparar passwords
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
+
+module.exports = mongoose.model('User', userSchema);
+```
+
+### Task Model (con relaciones)
+
+**src/models/Task.js:**
+```javascript
+const mongoose = require('mongoose');
+
+const taskSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: [true, 'Please provide a title'],
+      trim: true,
+      maxlength: [100, 'Title cannot be more than 100 characters'],
+    },
+    description: {
+      type: String,
+      maxlength: [500, 'Description cannot be more than 500 characters'],
+    },
+    status: {
+      type: String,
+      enum: ['pending', 'in-progress', 'completed'],
+      default: 'pending',
+    },
+    priority: {
+      type: String,
+      enum: ['low', 'medium', 'high'],
+      default: 'medium',
+    },
+    dueDate: {
+      type: Date,
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+// Índices para mejorar queries
+taskSchema.index({ user: 1, status: 1 });
+taskSchema.index({ dueDate: 1 });
+
+module.exports = mongoose.model('Task', taskSchema);
+```
+
+## 🔐 Autenticación JWT
+
+### Middleware de Autenticación
+
+**src/middleware/auth.js:**
+```javascript
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+
+const protect = async (req, res, next) => {
+  let token;
+
+  // Verificar que el token existe en el header
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: 'Not authorized to access this route',
+    });
+  }
+
+  try {
+    // Verificar token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Agregar user al request
+    req.user = await User.findById(decoded.id).select('-password');
+
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    next();
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      message: 'Not authorized, token failed',
+    });
+  }
+};
+
+// Middleware para roles específicos
+const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: `User role '${req.user.role}' is not authorized to access this route`,
+      });
+    }
+    next();
+  };
+};
+
+module.exports = { protect, authorize };
+```
+
+### Auth Controller
+
+**src/controllers/authController.js:**
+```javascript
+const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+
+// Generar JWT
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE,
+  });
+};
+
+// @desc    Register user
+// @route   POST /api/auth/register
+// @access  Public
+exports.register = async (req, res, next) => {
+  try {
+    const { name, email, password } = req.body;
+
+    // Verificar si el usuario ya existe
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({
+        success: false,
+        message: 'User already exists',
+      });
+    }
+
+    // Crear usuario
+    const user = await User.create({
+      name,
+      email,
+      password,
+    });
+
+    // Generar token
+    const token = generateToken(user._id);
+
+    res.status(201).json({
+      success: true,
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Login user
+// @route   POST /api/auth/login
+// @access  Public
+exports.login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validar email y password
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide email and password',
+      });
+    }
+
+    // Buscar usuario (incluir password)
+    const user = await User.findOne({ email }).select('+password');
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials',
+      });
+    }
+
+    // Verificar password
+    const isMatch = await user.matchPassword(password);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials',
+      });
+    }
+
+    // Generar token
+    const token = generateToken(user._id);
+
+    res.status(200).json({
+      success: true,
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get current logged in user
+// @route   GET /api/auth/me
+// @access  Private
+exports.getMe = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+```
+
+## 🛣️ Routes
+
+**src/routes/auth.js:**
+```javascript
+const express = require('express');
+const { register, login, getMe } = require('../controllers/authController');
+const { protect } = require('../middleware/auth');
+
+const router = express.Router();
+
+router.post('/register', register);
+router.post('/login', login);
+router.get('/me', protect, getMe);
+
+module.exports = router;
+```
+
+**src/routes/tasks.js:**
+```javascript
+const express = require('express');
+const {
+  getTasks,
+  getTask,
+  createTask,
+  updateTask,
+  deleteTask,
+} = require('../controllers/taskController');
+const { protect } = require('../middleware/auth');
+
+const router = express.Router();
+
+// Todas las rutas requieren autenticación
+router.use(protect);
+
+router.route('/')
+  .get(getTasks)
+  .post(createTask);
+
+router.route('/:id')
+  .get(getTask)
+  .put(updateTask)
+  .delete(deleteTask);
+
+module.exports = router;
+```
+
+## 📝 Controller CRUD Completo
+
+**src/controllers/taskController.js:**
+```javascript
+const Task = require('../models/Task');
+
+// @desc    Get all tasks for logged in user
+// @route   GET /api/tasks
+// @access  Private
+exports.getTasks = async (req, res, next) => {
+  try {
+    const tasks = await Task.find({ user: req.user.id })
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: tasks.length,
+      data: tasks,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get single task
+// @route   GET /api/tasks/:id
+// @access  Private
+exports.getTask = async (req, res, next) => {
+  try {
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: 'Task not found',
+      });
+    }
+
+    // Verificar que la tarea pertenece al usuario
+    if (task.user.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to access this task',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: task,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Create new task
+// @route   POST /api/tasks
+// @access  Private
+exports.createTask = async (req, res, next) => {
+  try {
+    // Agregar user al body
+    req.body.user = req.user.id;
+
+    const task = await Task.create(req.body);
+
+    res.status(201).json({
+      success: true,
+      data: task,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Update task
+// @route   PUT /api/tasks/:id
+// @access  Private
+exports.updateTask = async (req, res, next) => {
+  try {
+    let task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: 'Task not found',
+      });
+    }
+
+    // Verificar ownership
+    if (task.user.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to update this task',
+      });
+    }
+
+    task = await Task.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(200).json({
+      success: true,
+      data: task,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Delete task
+// @route   DELETE /api/tasks/:id
+// @access  Private
+exports.deleteTask = async (req, res, next) => {
+  try {
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: 'Task not found',
+      });
+    }
+
+    // Verificar ownership
+    if (task.user.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to delete this task',
+      });
+    }
+
+    await task.deleteOne();
+
+    res.status(200).json({
+      success: true,
+      data: {},
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+```
+
+## 🚨 Error Handling
+
+**src/middleware/errorHandler.js:**
+```javascript
+const errorHandler = (err, req, res, next) => {
+  let error = { ...err };
+  error.message = err.message;
+
+  // Log para desarrollo
+  if (process.env.NODE_ENV === 'development') {
+    console.error(err);
+  }
+
+  // Mongoose bad ObjectId
+  if (err.name === 'CastError') {
+    const message = 'Resource not found';
+    error = { message, statusCode: 404 };
+  }
+
+  // Mongoose duplicate key
+  if (err.code === 11000) {
+    const message = 'Duplicate field value entered';
+    error = { message, statusCode: 400 };
+  }
+
+  // Mongoose validation error
+  if (err.name === 'ValidationError') {
+    const message = Object.values(err.errors).map((val) => val.message);
+    error = { message, statusCode: 400 };
+  }
+
+  res.status(error.statusCode || 500).json({
+    success: false,
+    message: error.message || 'Server Error',
+  });
+};
+
+module.exports = errorHandler;
+```
+
+## ✅ Validación de Datos
+
+**src/middleware/validation.js:**
+```javascript
+const { body, validationResult } = require('express-validator');
+
+// Validación de registro
+exports.validateRegister = [
+  body('name')
+    .trim()
+    .notEmpty()
+    .withMessage('Name is required')
+    .isLength({ max: 50 })
+    .withMessage('Name cannot exceed 50 characters'),
+  
+  body('email')
+    .trim()
+    .isEmail()
+    .withMessage('Please provide a valid email')
+    .normalizeEmail(),
+  
+  body('password')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters'),
+];
+
+// Validación de login
+exports.validateLogin = [
+  body('email')
+    .trim()
+    .isEmail()
+    .withMessage('Please provide a valid email')
+    .normalizeEmail(),
+  
+  body('password')
+    .notEmpty()
+    .withMessage('Password is required'),
+];
+
+// Middleware para verificar resultados
+exports.validate = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      errors: errors.array(),
+    });
+  }
+  next();
+};
+```
+
+## ⚠️ Errores Comunes y Soluciones
+
+| Error | Causa | Solución |
+|-------|-------|----------|
+| MongoServerError: E11000 | Duplicate key | Verificar uniqueness antes de insertar |
+| CastError: Cast to ObjectId failed | ID inválido | Validar formato de ID antes de query |
+| ValidationError | Datos inválidos | Usar validación en modelo y middleware |
+| UnhandledPromiseRejection | Async sin catch | Wrap en try-catch o usar errorHandler |
+| CORS errors | Missing headers | Configurar cors() correctamente |
+| JWT expired | Token expirado | Implementar refresh token |
+
+## 🔒 Seguridad Best Practices
+
+```javascript
+// Configuración de CORS segura
+const corsOptions = {
+  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
+
+// Rate limiting (instalar: npm install express-rate-limit)
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // 100 requests por IP
+  message: 'Too many requests, please try again later',
+});
+
+app.use('/api/', limiter);
+
+// Helmet para headers seguros (instalar: npm install helmet)
+const helmet = require('helmet');
+app.use(helmet());
+
+// Sanitización de datos (instalar: npm install express-mongo-sanitize)
+const mongoSanitize = require('express-mongo-sanitize');
+app.use(mongoSanitize());
+```
+
+## 📋 Checklist de Validación
+
+Antes de finalizar un endpoint:
+- [ ] Autenticación implementada si es necesario
+- [ ] Validación de input completa
+- [ ] Manejo de errores con try-catch
+- [ ] Status codes HTTP correctos (200, 201, 400, 401, 404, 500)
+- [ ] Responses consistentes (success, data, message)
+- [ ] No exponer información sensible
+- [ ] Logs apropiados (sin passwords/tokens)
+- [ ] Ownership verificado (user puede acceder al recurso)
+
+---
+
+**Última actualización:** Fase 2 - Skills MERN  
+**Mantenedor:** Sistema de Skills  
+**Siguiente:** Integrar con frontend React para app fullstack completa
+, 
+va el siguiente skill:
+# API Best Practices - RESTful Design & Production Ready
+
+**Scope:** backend  
+**Trigger:** cuando se diseñen APIs REST, se mencione API design, RESTful principles, API documentation, o production-ready APIs  
+**Tools:** view, file_create, str_replace, bash_tool  
+**Version:** 1.0.0  
+
+---
+
+## 🎯 Propósito
+
+Esta skill te guía para diseñar y desarrollar APIs RESTful profesionales y production-ready. Cubre principios REST, versionado, documentación con Swagger/OpenAPI, seguridad, rate limiting, caching y monitoring.
+
+## 🔧 Cuándo Usar Esta Skill
+
+- Diseñar nuevas APIs REST desde cero
+- Refactorizar APIs existentes
+- Implementar versionado de APIs
+- Documentar APIs con OpenAPI/Swagger
+- Configurar rate limiting y throttling
+- Implementar caching strategies
+- Preparar APIs para producción
+- Migrar de REST a GraphQL
+
+## 📚 Contexto y Conocimiento
+
+### Principios REST
+
+**REST (Representational State Transfer):**
+1. **Client-Server** - Separación de responsabilidades
+2. **Stateless** - No se guarda estado del cliente en servidor
+3. **Cacheable** - Responses deben indicar si son cacheables
+4. **Uniform Interface** - URLs consistentes y predecibles
+5. **Layered System** - Cliente no sabe si habla con servidor final
+6. **Code on Demand** (opcional) - Servidor puede enviar código
+
+### Niveles de Madurez Richardson
+
+```
+Level 0: Single URI, Single Method (RPC)
+    POST /api/endpoint
+
+Level 1: Multiple URIs, Single Method
+    POST /api/users
+    POST /api/products
+
+Level 2: Multiple URIs, Multiple Methods (HTTP Verbs)
+    GET    /api/users
+    POST   /api/users
+    PUT    /api/users/1
+    DELETE /api/users/1
+
+Level 3: HATEOAS (Hypermedia)
+    {
+      "id": 1,
+      "name": "John",
+      "_links": {
+        "self": "/users/1",
+        "orders": "/users/1/orders"
+      }
+    }
+```
+
+## 🎨 Diseño de URLs
+
+### Naming Conventions
+
+```
+✅ BIEN - Recursos en plural, sustantivos
+GET    /api/v1/users
+GET    /api/v1/users/123
+POST   /api/v1/users
+PUT    /api/v1/users/123
+DELETE /api/v1/users/123
+
+✅ BIEN - Relaciones anidadas
+GET    /api/v1/users/123/orders
+GET    /api/v1/users/123/orders/456
+POST   /api/v1/users/123/orders
+
+❌ MAL - Verbos en URLs
+GET    /api/v1/getUsers
+POST   /api/v1/createUser
+PUT    /api/v1/updateUser
+
+❌ MAL - Singular inconsistente
+GET    /api/v1/user
+GET    /api/v1/products
+```
+
+### Query Parameters
+
+```
+✅ BIEN - Filtros, búsqueda, paginación
+GET /api/v1/users?role=admin&status=active
+GET /api/v1/products?category=electronics&price_max=1000
+GET /api/v1/posts?page=2&limit=20&sort=-created_at
+
+✅ BIEN - Campos específicos (sparse fieldsets)
+GET /api/v1/users?fields=id,name,email
+
+✅ BIEN - Búsqueda
+GET /api/v1/products?search=laptop
+GET /api/v1/users?q=john
+
+❌ MAL - Lógica de negocio en query
+GET /api/v1/users?action=sendEmail
+```
+
+## 📊 HTTP Methods y Status Codes
+
+### HTTP Methods
+
+```
+GET     - Obtener recursos (idempotente, cacheable)
+POST    - Crear nuevo recurso
+PUT     - Actualizar completo (idempotente)
+PATCH   - Actualizar parcial (idempotente)
+DELETE  - Eliminar recurso (idempotente)
+HEAD    - Como GET pero solo headers
+OPTIONS - Métodos permitidos (CORS)
+```
+
+### Status Codes Correctos
+
+**2xx - Success:**
+```
+200 OK              - GET, PUT, PATCH exitosos
+201 Created         - POST exitoso, recurso creado
+    Location: /api/v1/users/123
+202 Accepted        - Procesamiento asíncrono aceptado
+204 No Content      - DELETE exitoso o PUT sin retorno
+```
+
+**3xx - Redirection:**
+```
+301 Moved Permanently  - URL cambió permanentemente
+302 Found              - URL temporal
+304 Not Modified       - Cache válido
+```
+
+**4xx - Client Error:**
+```
+400 Bad Request           - Validación falló
+401 Unauthorized          - No autenticado
+403 Forbidden             - No tiene permisos
+404 Not Found             - Recurso no existe
+405 Method Not Allowed    - Método HTTP no permitido
+409 Conflict              - Conflicto (ej: email duplicado)
+422 Unprocessable Entity  - Validación de negocio falló
+429 Too Many Requests     - Rate limit excedido
+```
+
+**5xx - Server Error:**
+```
+500 Internal Server Error  - Error no manejado
+502 Bad Gateway            - Gateway inválido
+503 Service Unavailable    - Servicio temporalmente no disponible
+504 Gateway Timeout        - Gateway timeout
+```
+
+### Ejemplos de Responses
+
+```json
+// 200 OK - GET /api/v1/users/123
+{
+  "id": 123,
+  "name": "John Doe",
+  "email": "john@example.com",
+  "createdAt": "2024-01-01T00:00:00Z"
+}
+
+// 201 Created - POST /api/v1/users
+{
+  "id": 124,
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "createdAt": "2024-01-02T00:00:00Z"
+}
+// Header: Location: /api/v1/users/124
+
+// 400 Bad Request
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Validation failed",
+    "details": [
+      {
+        "field": "email",
+        "message": "Email is required"
+      },
+      {
+        "field": "password",
+        "message": "Password must be at least 6 characters"
+      }
+    ]
+  }
+}
+
+// 404 Not Found
+{
+  "error": {
+    "code": "RESOURCE_NOT_FOUND",
+    "message": "User not found with id: 999"
+  }
+}
+
+// 429 Too Many Requests
+{
+  "error": {
+    "code": "RATE_LIMIT_EXCEEDED",
+    "message": "Too many requests. Try again in 60 seconds.",
+    "retryAfter": 60
+  }
+}
+// Header: Retry-After: 60
+```
+
+## 📄 Versionado
+
+### Estrategias de Versionado
+
+**1. URL Path (Recomendado):**
+```
+GET /api/v1/users
+GET /api/v2/users
+```
+
+**2. Query Parameter:**
+```
+GET /api/users?version=1
+GET /api/users?version=2
+```
+
+**3. Header:**
+```
+GET /api/users
+Header: Accept: application/vnd.myapi.v1+json
+```
+
+**4. Content Negotiation:**
+```
+GET /api/users
+Header: Accept: application/vnd.myapi+json; version=1
+```
+
+### Breaking vs Non-Breaking Changes
+
+**Non-Breaking (no requiere nueva versión):**
+- ✅ Agregar nuevo endpoint
+- ✅ Agregar nuevo campo opcional en request
+- ✅ Agregar nuevo campo en response
+- ✅ Hacer campo requerido opcional
+
+**Breaking (requiere nueva versión):**
+- ❌ Cambiar URL de endpoint
+- ❌ Remover campo de response
+- ❌ Cambiar tipo de dato de campo
+- ❌ Hacer campo opcional requerido
+- ❌ Cambiar comportamiento de lógica
+
+## 📖 Paginación
+
+### Offset-based Pagination
+
+```
+GET /api/v1/users?page=2&limit=20
+
+Response:
+{
+  "data": [...],
+  "pagination": {
+    "page": 2,
+    "limit": 20,
+    "total": 150,
+    "totalPages": 8,
+    "hasNext": true,
+    "hasPrevious": true
+  },
+  "links": {
+    "first": "/api/v1/users?page=1&limit=20",
+    "prev": "/api/v1/users?page=1&limit=20",
+    "next": "/api/v1/users?page=3&limit=20",
+    "last": "/api/v1/users?page=8&limit=20"
+  }
+}
+```
+
+### Cursor-based Pagination (mejor para grandes datasets)
+
+```
+GET /api/v1/posts?cursor=abc123&limit=20
+
+Response:
+{
+  "data": [...],
+  "pagination": {
+    "nextCursor": "def456",
+    "prevCursor": "xyz789",
+    "hasNext": true
+  },
+  "links": {
+    "next": "/api/v1/posts?cursor=def456&limit=20",
+    "prev": "/api/v1/posts?cursor=xyz789&limit=20"
+  }
+}
+```
+
+## 🔍 Filtrado y Búsqueda
+
+### Filtros Simples
+
+```
+GET /api/v1/products?category=electronics
+GET /api/v1/users?role=admin&status=active
+GET /api/v1/posts?author_id=123&published=true
+```
+
+### Rangos
+
+```
+GET /api/v1/products?price_min=100&price_max=500
+GET /api/v1/orders?created_after=2024-01-01&created_before=2024-12-31
+```
+
+### Ordenamiento
+
+```
+GET /api/v1/users?sort=name           # Ascendente
+GET /api/v1/users?sort=-created_at    # Descendente (-)
+GET /api/v1/products?sort=category,-price  # Múltiples
+```
+
+### Búsqueda
+
+```
+GET /api/v1/products?search=laptop
+GET /api/v1/users?q=john&fields=name,email
+```
+
+### Campos Específicos (Sparse Fieldsets)
+
+```
+GET /api/v1/users?fields=id,name,email
+GET /api/v1/products?fields=id,name,price
+
+Response:
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "John",
+      "email": "john@example.com"
+      // Solo campos solicitados
+    }
+  ]
+}
+```
+
+## 🔐 Seguridad
+
+### Authentication
+
+**JWT Bearer Token:**
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**API Key:**
+```
+X-API-Key: your-api-key-here
+```
+
+**OAuth 2.0:**
+```
+Authorization: Bearer <access_token>
+```
+
+### Rate Limiting
+
+**Headers de Rate Limit:**
+```
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 999
+X-RateLimit-Reset: 1641024000
+
+// Cuando se excede:
+HTTP/1.1 429 Too Many Requests
+Retry-After: 60
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1641024060
+```
+
+**Estrategias:**
+```
+1. Fixed Window   - 1000 requests por hora fija
+2. Sliding Window - 1000 requests en rolling 1 hora
+3. Token Bucket   - Tokens que se recargan
+4. Leaky Bucket   - Cola con rate constante
+```
+
+### CORS
+
+```javascript
+// Express ejemplo
+app.use(cors({
+  origin: ['https://app.example.com'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  maxAge: 86400 // 24 hours
+}));
+```
+
+### Security Headers
+
+```
+Content-Security-Policy: default-src 'self'
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+X-XSS-Protection: 1; mode=block
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+```
+
+## 💾 Caching
+
+### Cache Headers
+
+```
+// Cache for 1 hour
+Cache-Control: public, max-age=3600
+
+// No cache
+Cache-Control: no-store, no-cache, must-revalidate
+
+// Private cache (browser only)
+Cache-Control: private, max-age=300
+
+// ETag for conditional requests
+ETag: "33a64df551425fcc55e4d42a148795d9f25f89d4"
+```
+
+### Conditional Requests
+
+```
+// Cliente hace request con ETag
+GET /api/v1/users/123
+If-None-Match: "33a64df551425fcc55e4d42a148795d9f25f89d4"
+
+// Si no cambió: 304 Not Modified (sin body)
+HTTP/1.1 304 Not Modified
+ETag: "33a64df551425fcc55e4d42a148795d9f25f89d4"
+
+// Si cambió: 200 OK (con nuevo body y ETag)
+HTTP/1.1 200 OK
+ETag: "new-etag-value"
+```
+
+## 📝 Documentación con OpenAPI/Swagger
+
+### OpenAPI Spec (YAML)
+
+```yaml
+openapi: 3.0.0
+info:
+  title: My API
+  version: 1.0.0
+  description: API for managing users and products
+  
+servers:
+  - url: https://api.example.com/v1
+    description: Production
+  - url: https://staging-api.example.com/v1
+    description: Staging
+
+paths:
+  /users:
+    get:
+      summary: List all users
+      tags:
+        - Users
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        - bearerAuth: []
+    
+    post:
+      summary: Create a new user
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: john@example.com
+        createdAt:
+          type: string
+          format: date-time
+    
+    CreateUserRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 50
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+    
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+  
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: UNAUTHORIZED
+                  message:
+                    type: string
+                    example: Authentication required
+    
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    items:
+                      type: object
+  
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+```
+
+## 📊 Monitoring y Logging
+
+### Métricas Clave
+
+```
+1. Request Rate     - Requests por segundo
+2. Error Rate       - % de 4xx y 5xx
+3. Latency          - P50, P95, P99
+4. Availability     - Uptime %
+5. Throughput       - Data transferido
+```
+
+### Structured Logging
+
+```json
+{
+  "timestamp": "2024-01-01T12:00:00Z",
+  "level": "info",
+  "method": "GET",
+  "path": "/api/v1/users/123",
+  "statusCode": 200,
+  "responseTime": 45,
+  "userId": 456,
+  "ip": "192.168.1.1",
+  "userAgent": "Mozilla/5.0..."
+}
+```
+
+### Health Check Endpoint
+
+```
+GET /health
+
+Response:
+{
+  "status": "healthy",
+  "version": "1.2.3",
+  "timestamp": "2024-01-01T12:00:00Z",
+  "checks": {
+    "database": "healthy",
+    "cache": "healthy",
+    "externalApi": "degraded"
+  },
+  "uptime": 86400
+}
+```
+
+## ⚠️ Errores Comunes y Soluciones
+
+| Error | Causa | Solución |
+|-------|-------|----------|
+| Inconsistent responses | Cada endpoint diferente | Estandarizar formato |
+| Verbos en URLs | No seguir REST | Usar recursos + HTTP verbs |
+| N+1 queries | Falta eager loading | Optimizar queries con joins |
+| Sin versionado | Breaking changes sin aviso | Implementar /v1/, /v2/ |
+| Paginación ausente | Retornar miles de items | Siempre paginar resultados |
+| Sin rate limiting | Abuso de API | Implementar throttling |
+
+## 📋 Checklist Production-Ready
+
+- [ ] Versionado implementado (/v1/)
+- [ ] Paginación en endpoints de lista
+- [ ] Filtros y ordenamiento
+- [ ] Rate limiting configurado
+- [ ] Authentication/Authorization
+- [ ] CORS configurado correctamente
+- [ ] Error handling consistente
+- [ ] Logging estructurado
+- [ ] Documentación OpenAPI/Swagger
+- [ ] Health check endpoint
+- [ ] Caching strategy
+- [ ] Monitoring y alertas
+- [ ] Load testing realizado
+- [ ] Security headers
+- [ ] Input validation
+
+## 🎓 Best Practices
+
+1. **RESTful URLs** - Recursos en plural, sustantivos
+2. **HTTP Methods** - Usar correctamente GET, POST, PUT, DELETE
+3. **Status Codes** - Específicos y correctos
+4. **Versioning** - Desde el inicio (/v1/)
+5. **Pagination** - Siempre en listas grandes
+6. **Rate Limiting** - Proteger contra abuso
+7. **Documentation** - OpenAPI/Swagger actualizado
+8. **Consistent Responses** - Mismo formato siempre
+9. **Security** - JWT, CORS, rate limit, validation
+10. **Monitoring** - Logs, métricas, alertas
+
+## 🔄 REST vs GraphQL vs gRPC
+
+| Feature | REST | GraphQL | gRPC |
+|---------|------|---------|------|
+| **Best for** | CRUD apps | Complex queries | Microservices |
+| **Learning curve** | Fácil | Media | Alta |
+| **Over-fetching** | Común | No | No |
+| **Under-fetching** | Común (N+1) | No | No |
+| **Caching** | Built-in HTTP | Custom | Custom |
+| **Tooling** | Excelente | Muy bueno | Bueno |
+| **Browser support** | Nativo | Nativo | No directo |
+
+---
+
+**Última actualización:** Fase 4 - Skills Backend Robusto  
+**Mantenedor:** Sistema de Skills  
+**Siguiente:** Sistema completo con backend enterprise-ready
+, HASTA AQUI TERMINARON LOS SKILLS, luego en clase le dimos el siguiente prompt a antigravity:
+*Inicia prompt:
+Actúa como un Product Architect + Tech Lead + Business Analyst senior especializado en proyectos de software en curso, incompletos y con deuda técnica/documental.
+
+Tu tarea es ayudarme a ordenar, depurar y documentar un proyecto de software que YA ESTÁ EN DESARROLLO pero está incompleto.
+
+IMPORTANTE:
+No debes asumir que el sistema está terminado.
+No debes inventar funcionalidades no sustentadas.
+No debes conservar documentación vieja solo por existir.
+Debes revisar la documentación existente, detectar qué sigue siendo útil, qué está obsoleto, qué contradice al código o al estado actual del producto, y proponer qué eliminar, qué actualizar y qué consolidar.
+
+## Contexto actual del proyecto
+- Backend: API casi completa en Express + MongoDB.
+- Frontend: hecho en React.
+- Estado inconsistente: algunas partes del frontend guardan información en localStorage y otras ya están sincronizadas con la base de datos.
+- Necesidad principal: documentar el proyecto actual, dejar claro el avance real, auditar la documentación existente, eliminar o marcar lo que ya no sirve y transformar todo eso en specs bien estructurados.
+- Objetivo: cerrar la brecha de documentación para poder continuar el desarrollo con orden.
+
+## Tu forma de trabajar
+Debes trabajar en 5 fases obligatorias y en este orden:
+
+### FASE 0 — Auditoría de documentación existente
+Primero revisa toda la documentación existente que te comparta (README, notas, documentos técnicos, backlog viejo, apuntes, diagramas, documentos funcionales, tickets exportados, etc.).
+
+Tu objetivo en esta fase es identificar:
+1. Documentación vigente y útil.
+2. Documentación parcialmente útil pero desactualizada.
+3. Documentación obsoleta.
+4. Documentación redundante o duplicada.
+5. Documentación que contradice el código o el comportamiento actual.
+6. Documentación que debería eliminarse, archivarse o reescribirse.
+
+Entrega esta fase con el siguiente formato:
+
+# 0. Auditoría de documentación existente
+## 0.1 Inventario de documentos revisados
+## 0.2 Documentación vigente y aprovechable
+## 0.3 Documentación desactualizada pero recuperable
+## 0.4 Documentación obsoleta o contradictoria
+## 0.5 Documentación duplicada o redundante
+## 0.6 Recomendación por documento
+Usa una de estas etiquetas:
+- Conservar
+- Actualizar
+- Consolidar
+- Archivar
+- Eliminar
+
+## 0.7 Riesgos de mantener documentación incorrecta
+## 0.8 Propuesta de estructura documental limpia
+
+Reglas:
+- No respetes un documento solo por antigüedad o formalidad.
+- Si el documento contradice la realidad del sistema, dilo explícitamente.
+- Si un documento puede rescatarse parcialmente, separa lo útil de lo obsoleto.
+- Siempre diferencia entre “documentación válida”, “documentación desactualizada” y “documentación incorrecta”.
+
+### FASE 1 — Descubrimiento y diagnóstico del estado actual
+Analiza la información que te comparta del proyecto (código, estructura, endpoints, componentes, pantallas, modelos, notas, README, backlog incompleto, etc.) y construye un diagnóstico del estado real.
+
+Debes identificar y separar claramente:
+1. Lo que está implementado y confirmado.
+2. Lo que parece parcialmente implementado.
+3. Lo que está inconsistente o mezclado.
+4. Lo que falta por definir.
+5. Lo que estás infiriendo como hipótesis.
+
+Entrega esta fase con el siguiente formato:
+
+# 1. Diagnóstico del proyecto actual
+## 1.1 Resumen ejecutivo
+## 1.2 Estado del backend
+## 1.3 Estado del frontend
+## 1.4 Estado de persistencia de datos
+- Qué usa localStorage
+- Qué usa base de datos
+- Qué está duplicado o desalineado
+## 1.5 Flujos funcionales detectados
+## 1.6 Riesgos técnicos y funcionales
+## 1.7 Supuestos e hipótesis pendientes de validar
+
+### FASE 2 — Construcción de specs del proyecto
+Con base en la auditoría documental y el diagnóstico, redacta los specs del proyecto como si fueras a dejar una documentación profesional para que un equipo continúe el trabajo.
+
+Los specs deben reflejar:
+- Estado actual
+- Estado objetivo
+- Gaps entre ambos
+- Reglas funcionales y técnicas
+- Prioridades de implementación
+
+Debes generar el documento con esta estructura:
+
+# 2. Spec del proyecto
+## 2.1 Descripción general del sistema
+## 2.2 Objetivo del producto
+## 2.3 Problema que resuelve
+## 2.4 Alcance actual
+## 2.5 Alcance objetivo
+## 2.6 Módulos del sistema
+Para cada módulo incluye:
+- Nombre del módulo
+- Propósito
+- Estado actual
+- Componentes o pantallas relacionadas
+- Endpoints relacionados
+- Modelo(s) de datos relacionados
+- Reglas de negocio detectadas
+- Gaps pendientes
+
+## 2.7 Arquitectura funcional actual
+## 2.8 Arquitectura técnica actual
+- Frontend
+- Backend
+- Base de datos
+- Manejo de estado
+- Persistencia local vs persistencia remota
+- Autenticación si existe
+- Validaciones
+- Manejo de errores
+
+## 2.9 Inconsistencias detectadas
+Especialmente:
+- funcionalidades que viven en localStorage
+- funcionalidades que sí persisten en backend
+- diferencias entre estado del frontend y estado del backend
+- posibles fuentes de bugs por duplicidad de lógica
+
+## 2.10 Reglas funcionales del sistema
+## 2.11 Reglas técnicas del sistema
+## 2.12 Deuda técnica identificada
+## 2.13 Riesgos
+## 2.14 Recomendaciones de normalización y cierre de gaps
+Incluye una estrategia concreta para:
+- migrar lógica de localStorage a base de datos cuando aplique
+- definir una sola fuente de verdad
+- alinear frontend y backend
+- ordenar el siguiente ciclo de desarrollo
+
+## 2.15 Propuesta de documentación final
+Define qué documentos deberían existir al final, por ejemplo:
+- README general
+- arquitectura técnica
+- mapa de módulos
+- mapa de endpoints
+- reglas de negocio
+- backlog priorizado
+- guía de instalación
+- decisiones técnicas
+- pendientes conocidos
+
+### FASE 3 — Backlog estructurado a partir del spec
+A partir del spec, transforma los gaps en backlog priorizado.
+
+Debes generar:
+
+# 3. Backlog estructurado
+## 3.1 Épicas
+## 3.2 Features por épica
+## 3.3 Tareas técnicas por feature
+## 3.4 Priorización sugerida
+
+Usa prioridad:
+- Crítico
+- Alto
+- Medio
+- Bajo
+
+También clasifica cada item como:
+- Bug
+- Refactor
+- Feature faltante
+- Alineación frontend/backend
+- Deuda técnica
+- Documentación
+
+### FASE 4 — Historias de usuario
+Solo después de terminar el spec y backlog, redacta historias de usuario.
+
+Cada historia debe usar este formato:
+
+**ID:** US-XXX  
+**Título:**  
+**Como** [tipo de usuario]  
+**Quiero** [acción/capacidad]  
+**Para** [beneficio]
+
+**Criterios de aceptación:**
+- ...
+- ...
+- ...
+
+**Definición de terminado:**
+- ...
+- ...
+
+**Dependencias técnicas:**
+- ...
+- ...
+
+**Prioridad:** Crítico / Alto / Medio / Bajo  
+**Estado actual relacionado:** Implementado / Parcial / No implementado / Inconsistente
+
+### FASE 5 — Plan de limpieza documental
+Después de generar specs e historias, propone cómo ejecutar la limpieza documental real.
+
+Entrega esta fase así:
+
+# 5. Plan de limpieza documental
+## 5.1 Documentos a conservar
+## 5.2 Documentos a actualizar
+## 5.3 Documentos a fusionar o consolidar
+## 5.4 Documentos a archivar
+## 5.5 Documentos a eliminar
+## 5.6 Orden recomendado para hacer la limpieza
+## 5.7 Riesgos de no hacer esta limpieza
+
+## Reglas importantes
+- No inventes funcionalidades no respaldadas por la evidencia.
+- Cuando algo no esté claro, márcalo como “hipótesis” o “pendiente por validar”.
+- Distingue siempre entre “estado actual” y “estado objetivo”.
+- Distingue siempre entre “código real”, “documentación existente” e “interpretación”.
+- Si la documentación contradice al código, prioriza el comportamiento observable y marca la documentación como desactualizada o incorrecta.
+- Si encuentras mezcla entre frontend local y backend persistente, señálalo explícitamente como gap de arquitectura.
+- Si hay lógica de negocio duplicada entre frontend y backend, destácalo.
+- Si el sistema parece funcional pero mal alineado, no propongas reescribir todo: prioriza estabilizar, documentar, limpiar y normalizar.
+- Mantén un tono profesional, claro y accionable.
+- Piensa como alguien que debe dejarle el proyecto entendible a otro equipo mañana.
+
+## Formato de salida
+Quiero que respondas SIEMPRE en este orden:
+0. Auditoría de documentación existente
+1. Diagnóstico del proyecto actual
+2. Spec del proyecto
+3. Backlog estructurado
+4. Historias de usuario
+5. Plan de limpieza documental
+
+## Mi siguiente input
+Voy a compartirte información del proyecto como:
+- estructura de carpetas
+- endpoints
+- modelos de MongoDB
+- componentes React
+- pantallas
+- documentación existente
+- notas sueltas
+- comportamiento actual detectado
+
+Tu trabajo será consolidar todo eso en documentación útil, eliminar lo que no sirva, marcar lo obsoleto y dejar una base clara para continuar el desarrollo.
+
+Entiendo el objetivo es terminar con un proyecto limpio, dado que enseguida del ultimo prompt le dimos el siguiente promot:
+PROMT Para mejorar los SPECS:=>>>
+Quiero que actúes como un Staff Engineer + Product Architect + experto en SSDLC.
+
+Voy a darte mi documento actual de protocolo SSDLC. Tu tarea NO es resumirlo ni comentarlo por encima. Tu tarea es REESCRIBIRLO y AJUSTARLO directamente para corregir un hueco operativo importante:
+
+PROBLEMA A CORREGIR
+Actualmente el protocolo permite cerrar la parte documental/spec aunque no quede documentado de forma explícita todo lo que falta, lo que quedó parcial, lo inconsistente, lo fuera de alcance y lo que debe convertirse en backlog posterior.
+
+Quiero que modifiques el SSDLC para que:
+1. al cerrar un spec/documentación,
+2. sea obligatorio registrar lo faltante,
+3. sea obligatorio registrar gaps detectados,
+4. sea obligatorio registrar lo fuera de alcance,
+5. sea obligatorio convertir eso en backlog accionable,
+6. y quede listo para que después esos pendientes se trabajen en modo subagente.
+
+OBJETIVO DEL AJUSTE
+Quiero que el protocolo ya no permita un cierre “bonito pero incompleto”.
+Quiero un cierre documental que deje trazabilidad operativa real sobre:
+- qué sí quedó,
+- qué no quedó,
+- qué quedó parcial,
+- qué está inconsistente,
+- qué se difiere,
+- y qué sigue después.
+
+INSTRUCCIONES DE EDICIÓN
+Debes trabajar SOBRE el documento actual y devolverme una versión mejorada del SSDLC, conservando su estilo, tono, estructura y disciplina operativa.
+
+Haz estos cambios de forma explícita:
+
+### CAMBIO 1 — Ajustar la plantilla del spec en FASE 3
+En la estructura del spec, agrega una nueva sección obligatoria ANTES de “Resultados” llamada exactamente:
+
+## Pendientes Abiertos y Gaps Detectados
+
+Esa sección debe incluir como mínimo:
+- Funcionalidades faltantes
+- Comportamientos inconsistentes detectados
+- Gaps entre frontend y backend
+- Persistencia pendiente de migrar
+- Decisiones aplazadas
+- Trabajo fuera de alcance en esta iteración
+- Riesgos que requieren seguimiento
+- Items que deben convertirse en backlog
+
+### CAMBIO 2 — Expandir la sección “Resultados”
+La sección actual “## Resultados (se completa al cerrar)” debe quedar ampliada para incluir:
+- Fecha de cierre
+- CAs cumplidos
+- CAs no cumplidos
+- Deuda técnica generada
+- Lecciones aprendidas
+- Pendientes abiertos confirmados
+- Gaps no resueltos
+- Trabajo fuera de alcance confirmado
+- Backlog derivado creado: sí | no
+- Referencias a historias/tareas creadas
+
+### CAMBIO 3 — Reescribir FASE 10
+La FASE 10 debe dejar de ser solo “cerrar el spec”.
+Debe convertirse en una fase de cierre documental estricto.
+
+Debe obligar a:
+1. cambiar estado a DONE o REJECTED,
+2. completar Resultados,
+3. completar o actualizar “Pendientes Abiertos y Gaps Detectados”,
+4. registrar explícitamente todo lo que NO se resolvió,
+5. convertir cada pendiente accionable en backlog,
+6. impedir que el spec/documentación se considere cerrado si no existe backlog derivado.
+
+Incluye una regla fuerte como esta, redactada de forma profesional:
+“La fase documental no se considera cerrada hasta que los pendientes abiertos, gaps detectados y trabajo fuera de alcance hayan quedado explícitamente documentados y convertidos en backlog accionable cuando corresponda.”
+
+### CAMBIO 4 — Agregar una matriz de cierre
+Agrega una pequeña sección reusable al cierre del spec llamada:
+
+## Matriz de cierre
+
+Con esta lógica:
+| Item detectado | Estado | Acción |
+|---|---|---|
+| Implementado | Confirmado | Cerrar |
+| Parcial | Requiere seguimiento | Crear backlog |
+| Inconsistente | Riesgo | Crear backlog |
+| Fuera de alcance | Aplazado | Crear backlog o archivar |
+| Obsoleto | No aplica | Archivar o eliminar |
+
+### CAMBIO 5 — Preparar transición a modo subagente
+Sin reescribir todo el protocolo, agrega una regla clara que diga que, una vez cerrada la documentación/spec y consolidado el backlog derivado, los pendientes posteriores podrán trabajarse en modo subagente.
+
+Pero debe quedar clarísimo que:
+- los subagentes no trabajarán sobre “ideas sueltas”,
+- solo trabajarán sobre pendientes formalmente registrados,
+- y no pueden inventar alcance nuevo; solo escalar hallazgos.
+
+Incluye una frase equivalente a:
+“Una vez cerrada la documentación y consolidado el backlog derivado, los subagentes trabajarán únicamente sobre pendientes formalmente registrados. Cualquier nuevo hallazgo deberá escalarse como propuesta, no ejecutarse como alcance implícito.”
+
+### CAMBIO 6 — Mantener consistencia editorial
+No quiero parches torpes.
+No quiero texto repetido.
+No quiero contradicciones.
+No quiero que metas lenguaje más informal que el documento actual.
+Quiero que el resultado parezca una evolución natural del SSDLC original.
+
+## FORMA DE RESPONDER
+Devuélveme la respuesta en este formato exacto:
+
+# 1. Diagnóstico del hueco actual
+Explica brevemente qué estaba faltando en el SSDLC original.
+
+# 2. Cambios propuestos
+Lista concreta de los cambios que aplicarás.
+
+# 3. SSDLC corregido
+Entrégame el texto completo ya reescrito, listo para reemplazar el original.
+
+## REGLAS IMPORTANTES
+- No resumir el documento.
+- No dar recomendaciones abstractas.
+- No limitarte a decir “agrega una sección”.
+- Debes devolver el texto final ya modificado.
+- Conserva el espíritu SSDLC original.
+- Sé estricto con la trazabilidad y el cierre operativo.
+
+Fin del prompt para mejorar los SPECS
+, y luego, casi para finalizar le dimos el siguiente prompt:
+PROMPT FINAL=> Multiagente:
+INICIO
+
+Quiero que actúes como un Staff Engineer + Software Architect + experto en SSDLC multiagente.
+
+Voy a darte mi documento actual de protocolo SSDLC. Tu tarea NO es resumirlo ni comentarlo superficialmente. Tu tarea es REESCRIBIRLO y AJUSTARLO directamente para incorporar un modelo formal de ejecución con agente principal y subagentes.
+
+## CONTEXTO DEL CAMBIO
+Mi SSDLC ya cubre el flujo general de trabajo por tarea/spec, pero ahora necesito que quede explícitamente preparado para operar en dos etapas:
+
+### ETAPA 1 — Baseline documental y técnico
+Primero se documenta el proyecto, se audita lo existente, se limpia la documentación, se registran los gaps y se consolida un backlog derivado.
+
+### ETAPA 2 — Ejecución de pendientes en modo subagente
+Una vez cerrado el baseline documental y técnico y guardado en Git, quiero que los pendientes posteriores se trabajen en modo subagente.
+
+## PROBLEMA A CORREGIR
+El protocolo actual no define claramente:
+- cuándo termina la etapa documental y comienza la ejecución por pendientes,
+- cómo se establece el baseline oficial del proyecto,
+- qué autoridad tiene el agente principal,
+- qué autoridad tienen los subagentes,
+- cómo se divide el trabajo,
+- qué restricciones operativas tienen los subagentes,
+- y cómo se integra el trabajo sin romper consistencia, seguridad ni trazabilidad.
+
+## OBJETIVO DEL AJUSTE
+Quiero que el SSDLC quede preparado para un modelo de trabajo donde:
+- el agente principal actúa como orquestador,
+- los subagentes ejecutan pendientes delimitados,
+- cada pendiente se trabaja de forma aislada y trazable,
+- no se inventa alcance nuevo,
+- y toda integración queda controlada.
+
+## INSTRUCCIONES DE EDICIÓN
+Debes trabajar SOBRE el documento actual y devolverme una versión mejorada del SSDLC, conservando su estilo, tono, estructura y disciplina operativa.
+
+Haz estos cambios de forma explícita:
+
+---
+
+### CAMBIO 1 — Definir el baseline oficial del proyecto
+Agrega una sección clara que indique que, una vez terminada la documentación base del sistema y consolidado el backlog derivado, debe generarse un baseline oficial del proyecto en Git.
+
+Debe incluir como mínimo:
+- commit de consolidación documental/técnica,
+- referencia a `develop` como punto de partida operativo,
+- recomendación de crear un tag de baseline,
+- declaración de que desde ese momento:
+  - código + documentación vigente + backlog aprobado
+  son la fuente oficial de verdad para el trabajo posterior.
+
+Incluye un ejemplo de commit y un ejemplo de tag.
+
+---
+
+### CAMBIO 2 — Definir el modo subagente
+Agrega una nueva sección o fase llamada explícitamente algo equivalente a:
+
+## Modo de Ejecución con Subagentes
+
+Esa sección debe explicar que, después del baseline, el protocolo cambia de modo:
+- deja de ser exploratorio/documental,
+- pasa a ser ejecución orquestada de pendientes formales.
+
+Debe dejar claro que:
+- los subagentes no trabajan sobre ideas sueltas,
+- solo trabajan sobre backlog formalmente registrado,
+- el backlog aprobado es la única fuente válida para tomar trabajo,
+- cualquier hallazgo nuevo debe escalarse como propuesta, no ejecutarse automáticamente.
+
+---
+
+### CAMBIO 3 — Definir el modelo de autoridad
+Quiero una sección clara que defina roles y autoridad:
+
+#### Agente principal
+Debe actuar como:
+- orquestador,
+- priorizador,
+- guardián de consistencia,
+- responsable de integración final.
+
+#### Subagentes
+Deben actuar como:
+- ejecutores especializados,
+- responsables de una sola unidad de trabajo,
+- sin autoridad para redefinir arquitectura global,
+- sin autoridad para cambiar prioridades globales,
+- sin autoridad para expandir el alcance por cuenta propia.
+
+Incluye reglas explícitas como:
+- el agente principal interpreta el backlog,
+- los subagentes ejecutan,
+- los subagentes no rediseñan el roadmap,
+- cualquier cambio de alcance debe regresar al agente principal como propuesta.
+
+---
+
+### CAMBIO 4 — Definir la unidad mínima de trabajo
+Quiero que el SSDLC establezca una regla fuerte e inequívoca:
+
+**1 pendiente = 1 spec = 1 rama = 1 PR**
+
+Debes dejar claro que cada subagente trabaja únicamente una unidad delimitada, por ejemplo:
+- una historia de usuario,
+- un bug,
+- un refactor acotado,
+- una tarea técnica específica,
+- un hardening puntual.
+
+También debes dejar claro que:
+- no se deben mezclar múltiples pendientes en la misma rama,
+- no se deben agrupar tareas no relacionadas,
+- no se debe abrir trabajo sin spec propio.
+
+---
+
+### CAMBIO 5 — Definir entradas obligatorias para cada subagente
+Agrega una sección que indique qué información mínima debe recibir un subagente antes de comenzar.
+
+Incluye al menos:
+- ID del pendiente,
+- historia o tarea asignada,
+- criterios de aceptación,
+- contexto funcional,
+- contexto técnico,
+- documentación del módulo,
+- dependencias conocidas,
+- restricciones de seguridad,
+- definición de terminado.
+
+---
+
+### CAMBIO 6 — Definir el flujo operativo por subagente
+Quiero que el SSDLC deje explícito el flujo completo de ejecución por subagente.
+
+Debe verse algo así:
+1. El agente principal selecciona el pendiente desde el backlog oficial.
+2. El subagente clasifica el trabajo.
+3. El subagente redacta su spec.
+4. El subagente crea su rama desde `develop`.
+5. El subagente implementa.
+6. El subagente ejecuta quality gates.
+7. El subagente actualiza el spec con resultados.
+8. El subagente devuelve evidencia al agente principal.
+
+Debes dejarlo con wording profesional y consistente con el resto del documento.
+
+---
+
+### CAMBIO 7 — Definir la salida obligatoria de un subagente
+Agrega una sección que indique qué debe entregar un subagente al finalizar.
+
+Debe incluir:
+- resumen de cambios,
+- criterios de aceptación cumplidos/no cumplidos,
+- evidencia de pruebas,
+- riesgos detectados,
+- deuda técnica generada,
+- pendientes nuevos detectados,
+- impacto en documentación,
+- recomendación de integración.
+
+Debe quedar claro que el subagente NO hace la integración final de manera autónoma.
+
+---
+
+### CAMBIO 8 — Definir responsabilidades del agente principal al consolidar
+Agrega una sección donde el agente principal, al recibir trabajo de uno o más subagentes, debe:
+- revisar consistencia con el baseline,
+- revisar consistencia con backlog y spec,
+- detectar duplicados,
+- detectar conflictos entre ramas,
+- homologar criterios,
+- validar dependencias cruzadas,
+- ordenar integración,
+- preparar o validar PR final hacia `develop`.
+
+---
+
+### CAMBIO 9 — Definir reglas de escalamiento
+Quiero una sección clara para dudas y hallazgos.
+
+Debe indicar que:
+- los subagentes no deben resolver ambigüedades inventando,
+- deben escalar al agente principal,
+- el escalamiento debe incluir:
+  - la duda,
+  - opciones viables,
+  - impacto técnico/funcional/seguridad,
+  - recomendación sugerida.
+
+Debe quedar claro que:
+- solo el agente principal decide si hace falta consultar al usuario,
+- el subagente no debe interrumpir innecesariamente el flujo.
+
+---
+
+### CAMBIO 10 — Definir restricciones no negociables
+Agrega una sección fuerte de restricciones.
+
+Incluye reglas como:
+- ningún subagente puede trabajar fuera del backlog aprobado,
+- ningún subagente puede inventar alcance nuevo,
+- ningún subagente puede saltarse spec, tests o quality gates,
+- ningún subagente puede mezclar dos pendientes en una sola rama,
+- ningún subagente puede tocar `main`, `master` o `develop` directamente,
+- ningún subagente puede modificar documentación base sin justificarlo,
+- ningún subagente puede considerar cerrado un trabajo sin actualizar el spec.
+
+---
+
+### CAMBIO 11 — Integrar sin romper el SSDLC existente
+No quiero un apéndice desconectado.
+No quiero que se vea como otro documento pegado con cinta.
+
+Quiero que:
+- el modo subagente quede integrado al SSDLC original,
+- se note como una evolución natural,
+- respete la secuencia ya existente,
+- y tenga puntos de transición claros entre:
+  - documentación / baseline
+  - ejecución orquestada de pendientes
+
+Puedes agregar una fase nueva intermedia, por ejemplo “FASE 10.5”, o una sección equivalente, si eso ayuda a la coherencia del documento.
+
+---
+
+### CAMBIO 12 — Mantener consistencia editorial
+No quiero:
+- texto redundante,
+- cambios con tono distinto al documento actual,
+- reglas duplicadas,
+- contradicciones con las fases previas,
+- explicaciones abstractas sin texto operativo.
+
+Quiero:
+- lenguaje preciso,
+- reglas ejecutables,
+- trazabilidad clara,
+- consistencia con la disciplina SSDLC original.
+
+## FORMA DE RESPONDER
+Devuélveme la respuesta en este formato exacto:
+
+# 1. Diagnóstico del hueco actual
+Explica brevemente qué estaba faltando en el SSDLC original respecto al trabajo con subagentes.
+
+# 2. Cambios propuestos
+Lista concreta de los cambios que aplicarás.
+
+# 3. SSDLC corregido
+Entrégame el texto completo ya reescrito, listo para reemplazar el original.
+
+## REGLAS IMPORTANTES
+- No resumir el documento.
+- No dar recomendaciones abstractas.
+- No decir solamente “agrega una sección”.
+- Debes devolver el texto final ya modificado.
+- Conserva el espíritu SSDLC original.
+- Sé estricto con trazabilidad, aislamiento del trabajo y control de integración.
+- El modelo final debe dejar clarísimo que:
+  - el agente principal orquesta,
+  - los subagentes ejecutan,
+  - y cada pendiente sigue la regla:
+    1 pendiente = 1 spec = 1 rama = 1 PR.
+
+FIN=> OBJ, reescriba lo que ya tenemos
+. 
+
+entonces, ¿qué sugieres? ¿seguir el tal cual el paso a paso que te comparto?, o bien, ¿hay alguna forma de sintetizar los prompts en unos cuantos?, desde luego, la finalidad primero es "planificar" y luego "ejecutar", 
+
+¿cómo ves??
+
+*Fin de prompt.
+
+

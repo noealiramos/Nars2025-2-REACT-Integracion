@@ -1,5 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import logger from '../middlewares/logger.js';
 
 import authRoutes from './authRoutes.js';
 import cartRoutes from './cartRoutes.js';
@@ -57,7 +58,15 @@ router.get('/health', async (req, res) => {
       await conn.db.admin().command({ ping: 1 });
       mongoOk = true;
     }
-  } catch (err) {
+  } catch (error) {
+    logger.error({
+      message: 'Health check Mongo ping failed',
+      error: error.message,
+      stack: error.stack,
+      requestId: req.requestId || '-',
+      method: req.method,
+      url: req.originalUrl,
+    });
     mongoStatus.error = 'Database connection error';
   }
 
@@ -68,7 +77,7 @@ router.get('/health', async (req, res) => {
     service: 'ecommerce-api-jewelry',
     time: new Date().toISOString(),
     mongo: mongoStatus,
-    requestId: req.id
+    requestId: req.requestId
   });
 });
 

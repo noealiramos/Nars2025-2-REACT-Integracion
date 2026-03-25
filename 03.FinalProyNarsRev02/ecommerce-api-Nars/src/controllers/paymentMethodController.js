@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import PaymentMethod from '../models/paymentMethod.js';
+import logger from '../middlewares/logger.js';
 
 /** Helpers de paginación */
 const parsePagination = (req) => {
@@ -30,9 +31,10 @@ const dbg = (ctx, err) => {
     ? Object.fromEntries(Object.entries(err.errors).map(([k, v]) => [k, v?.message]))
     : undefined;
 
-  console.error(`[paymentMethods:${ctx}]`, {
-    name: err?.name,
-    message: err?.message,
+  logger.error({
+    message: `Payment method controller error: ${ctx}`,
+    errorName: err?.name,
+    error: err?.message,
     code: err?.code,
     keyPattern: err?.keyPattern,
     keyValue: err?.keyValue,

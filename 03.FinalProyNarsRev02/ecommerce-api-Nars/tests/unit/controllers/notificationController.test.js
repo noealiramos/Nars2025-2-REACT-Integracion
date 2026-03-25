@@ -6,7 +6,6 @@ import {
     getUnreadNotificationsByUser,
     getNotificationById,
     createNotification,
-    updateNotification,
     markAsRead,
     markAllAsReadByUser,
     deleteNotification

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import isAdminMiddleware from '../../../src/middlewares/isAdminMiddleware.js';
 import { createMockReqRes } from '../../testUtils.js';
 

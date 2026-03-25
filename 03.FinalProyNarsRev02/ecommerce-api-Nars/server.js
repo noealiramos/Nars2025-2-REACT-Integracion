@@ -113,7 +113,7 @@ app.get('/', (req, res) => {
     message: 'Ecommerce API Jewelry running',
     database: dbStatus,
     time: new Date().toISOString(),
-    requestId: req.id,
+    requestId: req.requestId,
   });
 });
 
@@ -142,7 +142,11 @@ app.use(errorHandler);
 const PORT = env.PORT;
 if (env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT} in ${env.NODE_ENV} mode`);
+    logger.info({
+      message: 'Server started',
+      url: `http://localhost:${PORT}`,
+      environment: env.NODE_ENV,
+    });
   });
 }
 

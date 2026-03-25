@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import app from '../../server.js';
 import Product from '../../src/models/product.js';
-import Category from '../../src/models/category.js';
 
 vi.mock('../../src/config/database.js', () => ({
     default: vi.fn().mockResolvedValue(null)

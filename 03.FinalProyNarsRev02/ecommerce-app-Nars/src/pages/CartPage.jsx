@@ -7,7 +7,7 @@ import { Button } from "../components/atoms/Button";
 import "./CartPage.css";
 
 export function CartPage() {
-  const { items, updateQuantity, removeItem, totalPrice, clearCart } = useCart();
+  const { items, updateQuantity, removeItem, totalPrice, clearCart, isLoading, error } = useCart();
   const navigate = useNavigate();
 
   const handleCheckout = () => {
@@ -21,7 +21,15 @@ export function CartPage() {
       <Heading level={2}>Tu carrito</Heading>
       <div className="cart-page__layout">
         <section>
-          {isEmpty ? (
+          {isLoading && (
+            <p className="cart-page__status">Cargando carrito...</p>
+          )}
+          {!isLoading && error && (
+            <p className="cart-page__status cart-page__status--error">
+              {error}
+            </p>
+          )}
+          {!isLoading && !error && isEmpty ? (
             <div className="cart-empty">
               <p className="cart-empty__title">Tu carrito está vacío</p>
               <p className="cart-empty__text">
@@ -31,7 +39,8 @@ export function CartPage() {
                 Ir a la tienda
               </Link>
             </div>
-          ) : (
+          ) : null}
+          {!isLoading && !error && !isEmpty && (
             <div className="cart-items">
               <div className="cart-items__header">
                 <p className="cart-items__info">
@@ -54,10 +63,10 @@ export function CartPage() {
         </section>
 
         <section className="cart-page__summary">
-          {!isEmpty && (
+          {!isLoading && !error && !isEmpty && (
             <CartSummary subtotal={totalPrice} onCheckout={handleCheckout} />
           )}
-          {isEmpty && (
+          {!isLoading && !error && isEmpty && (
             <p className="cart-page__hint">
               Agrega al menos una pieza para poder continuar al pago.
             </p>

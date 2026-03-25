@@ -20,9 +20,38 @@ import validate from '../middlewares/validation.js';
 import PaymentMethod from '../models/paymentMethod.js';
 
 const router = express.Router();
+const paymentTypes = ['credit_card', 'debit_card', 'paypal', 'bank_transfer', 'cash_on_delivery'];
 
 const idParamValidation = [
   param('id').isMongoId().withMessage('Invalid payment method id')
+];
+
+const createPaymentMethodValidation = [
+  body('user').optional().isMongoId().withMessage('user must be a valid MongoId'),
+  body('type').notEmpty().withMessage('type is required').isIn(paymentTypes).withMessage('Invalid payment method type'),
+  body('paypalEmail').optional().isEmail().withMessage('paypalEmail must be a valid email').normalizeEmail(),
+  body('bankName').optional().isString().withMessage('bankName must be a string').trim(),
+  body('accountNumber').optional().isString().withMessage('accountNumber must be a string').trim(),
+  body('brand').optional().isString().withMessage('brand must be a string').trim(),
+  body('last4').optional().isLength({ min: 4, max: 4 }).withMessage('last4 must contain 4 characters').isString().withMessage('last4 must be a string').trim(),
+  body('cardHolderName').optional().isString().withMessage('cardHolderName must be a string').trim(),
+  body('expiryDate').optional().matches(/^(0[1-9]|1[0-2])\/\d{2}$/).withMessage('expiryDate must be in MM/YY format'),
+  body('isDefault').optional().isBoolean().withMessage('isDefault must be boolean'),
+  body('active').optional().isBoolean().withMessage('active must be boolean'),
+];
+
+const updatePaymentMethodValidation = [
+  body('user').optional().isMongoId().withMessage('user must be a valid MongoId'),
+  body('type').optional().isIn(paymentTypes).withMessage('Invalid payment method type'),
+  body('paypalEmail').optional().isEmail().withMessage('paypalEmail must be a valid email').normalizeEmail(),
+  body('bankName').optional().isString().withMessage('bankName must be a string').trim(),
+  body('accountNumber').optional().isString().withMessage('accountNumber must be a string').trim(),
+  body('brand').optional().isString().withMessage('brand must be a string').trim(),
+  body('last4').optional().isString().withMessage('last4 must be a string').isLength({ min: 4, max: 4 }).withMessage('last4 must contain 4 characters').trim(),
+  body('cardHolderName').optional().isString().withMessage('cardHolderName must be a string').trim(),
+  body('expiryDate').optional().matches(/^(0[1-9]|1[0-2])\/\d{2}$/).withMessage('expiryDate must be in MM/YY format'),
+  body('isDefault').optional().isBoolean().withMessage('isDefault must be boolean'),
+  body('active').optional().isBoolean().withMessage('active must be boolean'),
 ];
 
 // Obtener todos los métodos de pago activos (admin)
@@ -59,7 +88,7 @@ router.get(
 );
 
 // Crear nuevo método de pago
-router.post('/payment-methods', authMiddleware, createPaymentMethod);
+router.post('/payment-methods', authMiddleware, createPaymentMethodValidation, validate, createPaymentMethod);
 
 
 // Actualización parcial explícita (opcional)
@@ -67,6 +96,7 @@ router.patch(
   '/payment-methods/:id',
   authMiddleware,
   idParamValidation,
+  updatePaymentMethodValidation,
   validate,
   ownerOrAdmin({ model: PaymentMethod }),
   updatePaymentMethod

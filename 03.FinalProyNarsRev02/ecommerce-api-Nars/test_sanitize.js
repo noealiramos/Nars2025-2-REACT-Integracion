@@ -1,5 +1,4 @@
 import mongoSanitize from 'express-mongo-sanitize';
-const { sanitize } = mongoSanitize;
 
 const obj = { '$gt': '' };
 mongoSanitize.sanitize(obj);

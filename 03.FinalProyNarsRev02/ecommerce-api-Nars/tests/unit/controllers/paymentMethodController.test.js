@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import {
     getPaymentMethods,
     getDefaultPaymentMethod,
-    getPaymentMethodsByUser,
     getPaymentMethodById,
     createPaymentMethod,
     updatePaymentMethod,
@@ -18,8 +17,6 @@ vi.mock('../../../src/models/paymentMethod.js');
 describe('paymentMethodController', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        // Silenciamos console.error para los tests de dbg helper
-        vi.spyOn(console, 'error').mockImplementation(() => { });
     });
 
     describe('getPaymentMethods (admin)', () => {

@@ -26,7 +26,7 @@ const getCheckoutErrorMessage = (error) => {
 };
 
 export function CheckoutPage() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, clearCart, isLoading } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -50,10 +50,10 @@ export function CheckoutPage() {
   const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
-    if (!items.length) {
+    if (!isLoading && !items.length) {
       navigate("/");
     }
-  }, [items, navigate]);
+  }, [items, isLoading, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -70,6 +70,16 @@
   gap: 0.35rem;
 }
 
+.cart-page__status {
+  margin: 0 0 0.8rem;
+  font-size: 0.86rem;
+  color: #e5e7eb;
+}
+
+.cart-page__status--error {
+  color: #fca5a5;
+}
+
 .cart-page__hint {
   font-size: 0.78rem;
   color: #9ca3af;

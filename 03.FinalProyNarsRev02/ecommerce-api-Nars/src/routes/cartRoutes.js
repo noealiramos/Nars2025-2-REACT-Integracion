@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import Cart from '../models/cart.js';
 
 import express from 'express';

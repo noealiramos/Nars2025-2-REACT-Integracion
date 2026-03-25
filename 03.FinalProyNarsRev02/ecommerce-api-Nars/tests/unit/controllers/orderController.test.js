@@ -9,7 +9,6 @@ import {
     getOrderById,
     createOrder,
     checkoutFromCart,
-    updateOrder,
     cancelOrder,
     deleteOrder
 } from '../../../src/controllers/orderController.js';

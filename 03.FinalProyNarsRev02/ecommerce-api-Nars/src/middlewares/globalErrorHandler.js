@@ -1,10 +1,3 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 import logger from './logger.js';
 
 const setupGlobalErrorHandlers = () => {
@@ -15,8 +8,7 @@ const setupGlobalErrorHandlers = () => {
       error: error.message,
       stack: error.stack
     });
-    // In production, the process should exit to avoid undefined state
-    console.error('CRITICAL: Uncaught exception. Exiting...');
+    process.stderr.write('CRITICAL: Uncaught exception. Exiting...\n');
     process.exit(1);
   });
 

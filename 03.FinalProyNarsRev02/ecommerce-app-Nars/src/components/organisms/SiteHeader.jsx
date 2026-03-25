@@ -6,7 +6,7 @@ import { Button } from "../atoms/Button";
 import "./SiteHeader.css";
 
 export function SiteHeader() {
-  const { totalItems, clearCart } = useCart();
+  const { totalItems } = useCart();
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -94,7 +94,6 @@ export function SiteHeader() {
               <button
                 type="button"
                 onClick={() => {
-                  clearCart();
                   logout();
                 }}
                 className="site-header__logout"

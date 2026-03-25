@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import app from '../../server.js';
-import User from '../../src/models/user.js';
 import Product from '../../src/models/product.js';
 import Cart from '../../src/models/cart.js';
 import ShippingAddress from '../../src/models/shippingAddress.js';
@@ -29,7 +28,6 @@ vi.mock('../../src/models/category.js', () => ({
 
 describe('Cart & Order Integration Tests', () => {
     const secret = 'test_secret';
-    const mockUserEmail = 'test@example.com';
     const validUserId = '65d100000000000000000001';
     const validProductId = '65d100000000000000000002';
     const validAddrId = '65d100000000000000000003';

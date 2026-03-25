@@ -1,4 +1,4 @@
-# API de Joyería – E-commerce (Express.js + MongoDB)
+# API de Joyería - E-commerce (Express.js + MongoDB)
 
 Backend para una tienda de joyería con autenticación JWT, paginación, validaciones, relaciones y endpoints listos para demo con Postman.
 
@@ -134,6 +134,7 @@ npm run dev
 npm start
 
 # 3) Comprobar salud
+curl http://localhost:3000/
 curl http://localhost:3000/api/health
 ```
 
@@ -152,6 +153,8 @@ curl http://localhost:3000/api/health
 - `express-validator` en rutas de creación/actualización.
 - Middleware `validation` centraliza respuesta de errores: `{ errors: [...] }`.
 - `errorHandler` controla errores 4xx/5xx y los formatea de forma consistente.
+- `requestId` agrega `X-Request-Id` a cada request y unifica la correlación en logs.
+- El logger central escribe errores, seguridad y trazas HTTP en archivos dentro de `logs/`.
 
 ---
 
@@ -168,9 +171,13 @@ curl http://localhost:3000/api/health
 **Base URL:** `http://localhost:3000`
 
 ### Auth
-- `POST /api/auth/register` → crea usuario (hash con bcrypt)
-- `POST /api/auth/login` → devuelve `{ token }`
-- `GET /api/auth/profile` → perfil del usuario autenticado
+- `POST /api/auth/register` → crea usuario y devuelve `accessToken` + `refreshToken`
+- `POST /api/auth/login` → devuelve `accessToken` + `refreshToken`
+- `POST /api/auth/refresh` → rota el refresh token y emite un nuevo access token
+- `POST /api/auth/logout` → revoca el refresh token enviado
+
+### Usuarios
+- `GET /api/users/me` → perfil del usuario autenticado
 
 ### Categorías
 - `GET /api/categories`
@@ -246,7 +253,8 @@ curl http://localhost:3000/api/health
   `DELETE /api/wishlist/:productId`
 
 ### Health
-- `GET /api/health` (público)
+- `GET /` (público; estado general + base de datos + `requestId`)
+- `GET /api/health` (público; ping detallado de MongoDB)
 
 ---
 

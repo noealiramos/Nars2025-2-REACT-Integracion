@@ -119,13 +119,15 @@ describe('cartController', () => {
                 user: { id: 'user1', role: 'customer' },
                 params: { userId: 'user1' }
             });
+            const populateMock = vi.fn().mockReturnThis();
             Cart.findOne.mockReturnValue({
-                populate: vi.fn().mockReturnThis(),
+                populate: populateMock,
                 lean: vi.fn().mockResolvedValue({ _id: 'c1', user: 'user1', products: [] })
             });
 
             await getCartByUser(req, res, next);
             expect(res.json).toHaveBeenCalled();
+            expect(populateMock).toHaveBeenNthCalledWith(2, 'products.product', 'name price _id imagesUrl image');
         });
 
         it('debe retornar una estructura vacia si el carrito no existe', async () => {
@@ -164,6 +166,20 @@ describe('cartController', () => {
             await updateCart(req, res, next);
             expect(res.status).toHaveBeenCalledWith(200);
         });
+
+        it('debe retornar 404 si el carrito no existe', async () => {
+            const { req, res, next } = createMockReqRes({
+                params: { id: 'c2' },
+                body: { products: [{ product: 'p1', quantity: 1 }] }
+            });
+            Cart.findByIdAndUpdate.mockReturnValue({
+                populate: vi.fn().mockReturnValue({
+                    populate: vi.fn().mockResolvedValue(null)
+                })
+            });
+            await updateCart(req, res, next);
+            expect(res.status).toHaveBeenCalledWith(404);
+        });
     });
 
     describe('deleteCart', () => {
@@ -172,6 +188,13 @@ describe('cartController', () => {
             Cart.findByIdAndDelete.mockReturnValue({ lean: vi.fn().mockResolvedValue({ _id: 'c1' }) });
             await deleteCart(req, res, next);
             expect(res.status).toHaveBeenCalledWith(200);
+        });
+
+        it('debe retornar 404 si no existe el carrito', async () => {
+            const { req, res, next } = createMockReqRes({ params: { id: 'c2' } });
+            Cart.findByIdAndDelete.mockReturnValue({ lean: vi.fn().mockResolvedValue(null) });
+            await deleteCart(req, res, next);
+            expect(res.status).toHaveBeenCalledWith(404);
         });
     });
 });

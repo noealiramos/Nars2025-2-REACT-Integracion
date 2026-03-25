@@ -147,10 +147,13 @@ export const refresh = async (req, res, next) => {
       refreshToken: newRefreshToken 
     });
   } catch (error) {
-    if (error.name === 'TokenExpiredError') {
+    if (error?.name === 'TokenExpiredError') {
       return res.status(401).json({ message: 'Refresh token expired' });
     }
-    return res.status(401).json({ message: 'Invalid refresh token' });
+    if (error?.name === 'JsonWebTokenError' || error?.name === 'NotBeforeError') {
+      return res.status(401).json({ message: 'Invalid refresh token' });
+    }
+    return next(error);
   }
 };
 

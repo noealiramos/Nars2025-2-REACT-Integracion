@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express from 'express';
 import router from '../../src/routes/cartRoutes.js';
-import * as cartController from '../../src/controllers/cartController.js';
 
 // Mock de los controladores para que no toquen DB
 vi.mock('../../src/controllers/cartController.js', () => ({
