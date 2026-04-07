@@ -28,18 +28,19 @@ describe('Golden Path - Login to Orders', () => {
 
     cy.wait('@loginReq').its('response.statusCode').should('eq', 200)
     cy.url().should('match', /\/$/)
-    cy.wait('@getProducts').its('response.statusCode').should('eq', 200)
+    //cy.wait('@getProducts').its('response.statusCode').should('eq', 200)
+    cy.wait('@getProducts').its('response.statusCode').should('be.oneOf', [200, 304])
 
     cy.get('[data-testid="nav-orders"]').should('be.visible')
     cy.get('.product-card').should('have.length.greaterThan', 0)
 
     cy.intercept('GET', '**/api/products/*').as('getProductDetail')
-    cy.get('[data-testid^="view-detail-"]').first().click()
-    cy.wait('@getProductDetail').its('response.statusCode').should('eq', 200)
+    cy.openFirstAvailableProductDetailViaUi()
+    cy.wait('@getProductDetail').its('response.statusCode').should('be.oneOf', [200, 304])
 
     cy.get('main').should('be.visible')
     cy.get('.product-detail__price').should('be.visible')
-    cy.get('[data-testid="add-to-cart-detail"]').click()
+    cy.get('[data-testid="add-to-cart-detail"]').should('be.visible').and('not.be.disabled').and('not.contain', 'Agotado').click()
     cy.get('[data-testid="cart-badge"]').should('have.text', '1')
 
     cy.get('[data-testid="nav-cart"]').click()
@@ -48,7 +49,7 @@ describe('Golden Path - Login to Orders', () => {
 
     cy.intercept('POST', '**/api/shipping-addresses').as('createShipping')
     cy.intercept('POST', '**/api/payment-methods').as('createPayment')
-    cy.intercept('POST', '**/api/orders').as('createOrder')
+    cy.intercept('POST', '**/api/orders/checkout').as('createOrder')
 
     cy.get('[data-testid="checkout-btn"]').click()
     cy.url().should('include', '/checkout')

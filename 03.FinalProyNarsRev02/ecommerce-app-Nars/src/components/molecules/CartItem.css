@@ -88,6 +88,11 @@
   background-color: #111827;
 }
 
+.cart-item__qty-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .cart-item__qty-value {
   width: 1.5rem;
   text-align: center;
@@ -99,6 +104,11 @@
   color: #fbbf24;
   font-weight: 600;
   margin: 0;
+}
+
+.cart-item__stock-note {
+  font-size: 0.75rem;
+  color: #9ca3af;
 }
 
 @media (max-width: 640px) {

@@ -29,4 +29,46 @@ describe("SiteHeader", () => {
 
     expect(screen.getByText("3")).toBeInTheDocument();
   });
+
+  it("muestra acceso a perfil cuando el usuario esta autenticado", () => {
+    useCart.mockReturnValue({ totalItems: 0 });
+    useAuth.mockReturnValue({
+      isAuthenticated: true,
+      user: { displayName: "Jane Doe" },
+      logout: vi.fn(),
+    });
+
+    renderHeader();
+
+    expect(screen.getByTestId("nav-profile")).toHaveAttribute("href", "/profile");
+    expect(screen.getByText("Hola,")).toBeInTheDocument();
+    expect(screen.getByText("Jane Doe")).toBeInTheDocument();
+  });
+
+  it("muestra acceso admin cuando el usuario tiene rol admin", () => {
+    useCart.mockReturnValue({ totalItems: 0 });
+    useAuth.mockReturnValue({
+      isAuthenticated: true,
+      user: { displayName: "Admin", role: "admin" },
+      logout: vi.fn(),
+    });
+
+    renderHeader();
+
+    expect(screen.getByTestId("nav-admin-products")).toHaveAttribute("href", "/admin/products");
+    expect(screen.getByTestId("nav-admin-categories")).toHaveAttribute("href", "/admin/categories");
+  });
+
+  it("muestra acceso a wishlist cuando el usuario esta autenticado", () => {
+    useCart.mockReturnValue({ totalItems: 0 });
+    useAuth.mockReturnValue({
+      isAuthenticated: true,
+      user: { displayName: "Jane Doe" },
+      logout: vi.fn(),
+    });
+
+    renderHeader();
+
+    expect(screen.getByTestId("nav-wishlist")).toHaveAttribute("href", "/wishlist");
+  });
 });

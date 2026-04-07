@@ -23,8 +23,7 @@ describe('Flujos Adversos - Checkout', () => {
 
   it('Debería manejar de forma segura un rechazo real del backend al confirmar datos inválidos', () => {
     cy.intercept('POST', '**/api/cart/add-product').as('addToCart')
-    cy.visit('/')
-    cy.get('[data-testid^="add-to-cart-"]').first().click()
+    cy.addFirstProductToCartViaUi()
     cy.wait('@addToCart').its('response.statusCode').should('be.oneOf', [200, 201])
     cy.get('[data-testid="cart-badge"]').should('have.text', '1')
 

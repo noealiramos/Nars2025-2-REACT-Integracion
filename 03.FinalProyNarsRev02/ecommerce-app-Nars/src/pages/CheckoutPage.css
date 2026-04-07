@@ -11,6 +11,22 @@
   color: #cbd5e1;
 }
 
+.checkout-page__status {
+  margin: 0.9rem 0 0;
+  padding: 0.85rem 1rem;
+  border: 1px solid #334155;
+  border-radius: 0.8rem;
+  background: rgba(15, 23, 42, 0.72);
+  color: #cbd5e1;
+  font-size: 0.88rem;
+}
+
+.checkout-page__status--warning {
+  border-color: #f59e0b;
+  background: rgba(120, 53, 15, 0.18);
+  color: #fcd34d;
+}
+
 .checkout-form {
   margin-top: 0.9rem;
   border-radius: 0.9rem;
@@ -40,6 +56,11 @@
   border-radius: 0.85rem;
   background: rgba(15, 23, 42, 0.78);
   cursor: pointer;
+}
+
+.saved-option-card:has(input:checked) {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.25);
 }
 
 .saved-option-card input {

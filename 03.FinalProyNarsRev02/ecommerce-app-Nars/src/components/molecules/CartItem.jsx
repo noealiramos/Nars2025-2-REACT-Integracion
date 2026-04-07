@@ -12,6 +12,9 @@ export function CartItem({ item, onRemove, onChangeQuantity }) {
     currency: "MXN",
   }).format(item.price * item.quantity);
 
+  const stock = Number(item.stock || 0);
+  const maxReached = Number.isFinite(stock) && stock > 0 && item.quantity >= stock;
+
   return (
     <div className="cart-item">
       <div className="cart-item__thumb">
@@ -51,9 +54,13 @@ export function CartItem({ item, onRemove, onChangeQuantity }) {
               type="button"
               className="cart-item__qty-btn"
               onClick={() => onChangeQuantity(item.id, item.quantity + 1)}
+              disabled={maxReached}
             >
               +
             </button>
+            {Number.isFinite(stock) && stock > 0 && (
+              <span className="cart-item__stock-note">Stock: {stock}</span>
+            )}
           </div>
           <p className="cart-item__subtotal">Subtotal: {subtotal}</p>
         </div>

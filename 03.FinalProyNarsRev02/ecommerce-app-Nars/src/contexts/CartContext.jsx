@@ -1,13 +1,14 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { cartApi } from "../api/cartApi";
 import { useAuth } from "./AuthContext";
+import { useCartStockValidation } from "../hooks/useCartStockValidation";
 import { logger } from "../utils/logger";
-import { STORAGE_KEYS, readLocalJSON, writeLocalJSON } from "../utils/storageHelpers";
 
 const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
   const { isAuthenticated } = useAuth();
+  const { showStockError, getSafeRequestedQuantity, getSafeAddQuantity } = useCartStockValidation();
   const [items, setItems] = useState([]);
   const [cartId, setCartId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -29,6 +30,7 @@ export function CartProvider({ children }) {
           name: product.name || "Producto",
           price: Number(product.price || 0),
           image,
+          stock: Number(product.stock || 0),
           quantity: Number(item.quantity || 0),
         };
       })
@@ -40,23 +42,6 @@ export function CartProvider({ children }) {
     setItems(mapCartToItems(cart));
   };
 
-  const syncLocalCartIfNeeded = async () => {
-    const localItems = readLocalJSON(STORAGE_KEYS.cart);
-    if (!Array.isArray(localItems) || localItems.length === 0) return;
-
-    try {
-      for (const item of localItems) {
-        if (!item?.id) continue;
-        await cartApi.addProduct(item.id, item.quantity || 1);
-      }
-      localStorage.removeItem(STORAGE_KEYS.cart);
-    } catch (syncError) {
-      logger.warn("cart", "Failed to sync local cart", {
-        message: syncError.message,
-      });
-    }
-  };
-
   useEffect(() => {
     let active = true;
 
@@ -66,15 +51,13 @@ export function CartProvider({ children }) {
 
       try {
         if (isAuthenticated) {
-          await syncLocalCartIfNeeded();
           const cart = await cartApi.getCurrent();
           if (!active) return;
           applyCartResponse(cart);
         } else {
-          const saved = readLocalJSON(STORAGE_KEYS.cart);
           if (!active) return;
           setCartId(null);
-          setItems(Array.isArray(saved) ? saved : []);
+          setItems([]);
         }
       } catch (loadError) {
         if (!active) return;
@@ -91,18 +74,7 @@ export function CartProvider({ children }) {
     };
   }, [isAuthenticated]);
 
-  useEffect(() => {
-    if (!isAuthenticated && !isLoading) {
-      writeLocalJSON(STORAGE_KEYS.cart, items);
-    }
-  }, [items, isAuthenticated, isLoading]);
-
   const persistCartItems = async (nextItems) => {
-    if (!isAuthenticated) {
-      setItems(nextItems);
-      return;
-    }
-
     if (nextItems.length === 0 && !cartId) {
       setItems([]);
       return;
@@ -139,17 +111,18 @@ export function CartProvider({ children }) {
     if (!product?.id && !product?._id) return;
 
     if (!isAuthenticated) {
-      setItems((prev) => {
-        const existing = prev.find((item) => item.id === product.id);
-        if (existing) {
-          return prev.map((item) =>
-            item.id === product.id
-              ? { ...item, quantity: item.quantity + quantity }
-              : item
-          );
-        }
-        return [...prev, { ...product, quantity }];
+      logger.info("cart", "Blocked guest add to cart", {
+        productId: product.id || product._id,
       });
+      return;
+    }
+
+    const productId = product.id || product._id;
+    const existingItem = items.find((item) => item.id === productId);
+    const addValidation = getSafeAddQuantity(product, existingItem?.quantity || 0, quantity);
+
+    if (!addValidation.ok) {
+      showStockError(addValidation.message);
       return;
     }
 
@@ -167,12 +140,12 @@ export function CartProvider({ children }) {
   };
 
   const removeItem = async (productId) => {
-    const nextItems = items.filter((item) => item.id !== productId);
-
     if (!isAuthenticated) {
-      setItems(nextItems);
+      logger.info("cart", "Blocked guest remove from cart", { productId });
       return;
     }
+
+    const nextItems = items.filter((item) => item.id !== productId);
 
     setIsLoading(true);
     setError(null);
@@ -188,7 +161,7 @@ export function CartProvider({ children }) {
 
   const clearCart = async () => {
     if (!isAuthenticated) {
-      setItems([]);
+      logger.info("cart", "Blocked guest clear cart");
       return;
     }
 
@@ -205,22 +178,33 @@ export function CartProvider({ children }) {
   };
 
   const updateQuantity = async (productId, quantity) => {
+    if (!isAuthenticated) {
+      logger.info("cart", "Blocked guest quantity update", { productId, quantity });
+      return;
+    }
+
     if (quantity <= 0) {
       await removeItem(productId);
       return;
     }
 
+     const currentItem = items.find((item) => item.id === productId);
+     const validation = getSafeRequestedQuantity(currentItem, quantity);
+
+     if (!validation.ok) {
+       showStockError(validation.message);
+       if (validation.quantity === currentItem?.quantity) {
+         return;
+       }
+       quantity = validation.quantity;
+     }
+
     const nextItems = items.map((item) =>
       item.id === productId ? { ...item, quantity } : item
     );
 
-    if (!isAuthenticated) {
-      setItems(nextItems);
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
+     setIsLoading(true);
+     setError(null);
 
     try {
       await persistCartItems(nextItems);
@@ -251,6 +235,7 @@ export function CartProvider({ children }) {
     updateQuantity,
     totalItems,
     totalPrice,
+    isGuestMode: !isAuthenticated,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

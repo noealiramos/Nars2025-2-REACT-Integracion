@@ -78,8 +78,8 @@ export function ConfirmationPage() {
         ¡Gracias por tu compra!
       </Heading>
       <Text className="confirmation-page__intro">
-        Hemos registrado tu pedido en Ramdi Jewerly. A continuación verás un
-        resumen simulado de la compra realizada.
+        Hemos registrado tu pedido en Ramdi Jewerly. A continuación verás el
+        resumen real de la compra realizada.
       </Text>
 
       {order ? (

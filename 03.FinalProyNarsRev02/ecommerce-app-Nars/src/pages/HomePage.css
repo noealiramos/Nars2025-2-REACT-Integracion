@@ -31,3 +31,23 @@
 .home-products {
   margin-top: 0.25rem;
 }
+
+.home-feedback {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.home-feedback__text {
+  margin: 0;
+  color: #9ca3af;
+}
+
+@media (max-width: 640px) {
+  .home-hero__text {
+    max-width: none;
+  }
+}

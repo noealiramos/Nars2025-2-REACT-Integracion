@@ -1,44 +1,43 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { fetchProducts, searchProducts } from "../services/productService";
 import { ProductList } from "../components/organisms/ProductList";
 import { useCart } from "../contexts/CartContext";
+import { useUI } from "../contexts/UIContext";
 import { Heading } from "../components/atoms/Heading";
 import { Text } from "../components/atoms/Text";
 import "./HomePage.css";
 
 export function HomePage() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const { addItem } = useCart();
+  const { dispatch } = useUI();
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("search");
 
+  const { data: products = [], isLoading, isError, refetch } = useQuery({
+    queryKey: ["products", searchQuery || "all"],
+    queryFn: () => (searchQuery ? searchProducts(searchQuery) : fetchProducts()),
+  });
+
+  const isEmpty = !isLoading && !isError && products.length === 0;
+
   useEffect(() => {
-    let mounted = true;
-    setLoading(true);
-    setError(null);
+    if (isLoading) {
+      dispatch({ type: "START_LOADING" });
+      return () => dispatch({ type: "STOP_LOADING" });
+    }
+    return undefined;
+  }, [dispatch, isLoading]);
 
-    const loadProducts = searchQuery
-      ? searchProducts(searchQuery)
-      : fetchProducts();
-
-    loadProducts
-      .then((data) => {
-        if (mounted) setProducts(data);
-      })
-      .catch(() => {
-        if (mounted) setError("No se pudieron cargar los productos.");
-      })
-      .finally(() => {
-        if (mounted) setLoading(false);
+  useEffect(() => {
+    if (isError) {
+      dispatch({
+        type: "SHOW_MESSAGE",
+        payload: { type: "error", text: "No se pudieron cargar los productos." },
       });
-
-    return () => {
-      mounted = false;
-    };
-  }, [searchQuery]);
+    }
+  }, [dispatch, isError]);
 
   const handleAddToCart = (product) => {
     addItem(product, 1);
@@ -55,9 +54,27 @@ export function HomePage() {
       </section>
 
       <section className="home-products container">
-        {loading && <p className="page__status">Cargando productos...</p>}
-        {error && <p className="page__status page__status--error">{error}</p>}
-        {!loading && !error && (
+        {isLoading && (
+          <section className="home-feedback home-feedback--loading" data-testid="home-loading">
+            <p className="page__status">Cargando productos...</p>
+            <p className="home-feedback__text">Consultando catálogo en tiempo real.</p>
+          </section>
+        )}
+        {isError && (
+          <section className="home-feedback home-feedback--error" data-testid="home-error">
+            <p className="page__status page__status--error">No se pudieron cargar los productos.</p>
+            <Button type="button" variant="secondary" onClick={() => refetch()} data-testid="home-retry">
+              Reintentar
+            </Button>
+          </section>
+        )}
+        {isEmpty && (
+          <section className="home-feedback home-feedback--empty" data-testid="home-empty">
+            <p className="page__status">No encontramos productos para esta búsqueda.</p>
+            <p className="home-feedback__text">Prueba con otra palabra clave o vuelve al catálogo general.</p>
+          </section>
+        )}
+        {!isLoading && !isError && !isEmpty && (
           <ProductList products={products} onAddToCart={handleAddToCart} />
         )}
       </section>

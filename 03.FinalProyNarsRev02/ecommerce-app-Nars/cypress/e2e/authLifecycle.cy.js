@@ -46,8 +46,8 @@ describe('Phase 2.1 - Auth Lifecycle Hardening', () => {
     cy.get('.site-header').should('contain', testUser.displayName)
     cy.wrap(null, { timeout: 15000 }).should(() => {
       expect(orderStatuses).to.include(401)
-      expect(orderStatuses).to.include(200)
-      expect(orderStatuses[orderStatuses.length - 1]).to.eq(200)
+      expect(orderStatuses.some((status) => [200, 304].includes(status))).to.eq(true)
+      expect([200, 304]).to.include(orderStatuses[orderStatuses.length - 1])
     })
   })
 

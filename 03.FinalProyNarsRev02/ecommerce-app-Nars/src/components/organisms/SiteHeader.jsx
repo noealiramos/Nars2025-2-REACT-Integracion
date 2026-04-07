@@ -9,6 +9,7 @@ export function SiteHeader() {
   const { totalItems } = useCart();
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
+  const isAdmin = user?.role === "admin";
 
   const handleSearch = (query) => {
     navigate(`/?search=${encodeURIComponent(query)}`);
@@ -67,6 +68,46 @@ export function SiteHeader() {
 
           {isAuthenticated ? (
             <div className="site-header__user">
+              {isAdmin && (
+                <>
+                  <NavLink
+                    to="/admin/products"
+                    className={({ isActive }) =>
+                      "site-header__link" + (isActive ? " site-header__link--active" : "")
+                    }
+                    data-testid="nav-admin-products"
+                  >
+                    Admin productos
+                  </NavLink>
+                  <NavLink
+                    to="/admin/categories"
+                    className={({ isActive }) =>
+                      "site-header__link" + (isActive ? " site-header__link--active" : "")
+                    }
+                    data-testid="nav-admin-categories"
+                  >
+                    Admin categorías
+                  </NavLink>
+                </>
+              )}
+              <NavLink
+                to="/wishlist"
+                className={({ isActive }) =>
+                  "site-header__link" + (isActive ? " site-header__link--active" : "")
+                }
+                data-testid="nav-wishlist"
+              >
+                Wishlist
+              </NavLink>
+              <NavLink
+                to="/profile"
+                className={({ isActive }) =>
+                  "site-header__link" + (isActive ? " site-header__link--active" : "")
+                }
+                data-testid="nav-profile"
+              >
+                Mi perfil
+              </NavLink>
               <NavLink
                 to="/orders"
                 className={({ isActive }) =>

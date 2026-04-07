@@ -25,6 +25,7 @@ describe("CartPage", () => {
       clearCart: vi.fn(),
       isLoading: true,
       error: null,
+      isGuestMode: false,
     });
 
     renderPage();
@@ -40,6 +41,7 @@ describe("CartPage", () => {
       clearCart: vi.fn(),
       isLoading: false,
       error: "Algo falló",
+      isGuestMode: false,
     });
 
     renderPage();
@@ -55,6 +57,7 @@ describe("CartPage", () => {
       clearCart: vi.fn(),
       isLoading: false,
       error: null,
+      isGuestMode: false,
     });
 
     renderPage();
@@ -78,10 +81,27 @@ describe("CartPage", () => {
       clearCart: vi.fn(),
       isLoading: false,
       error: null,
+      isGuestMode: false,
     });
 
     renderPage();
     expect(screen.getByText(/Tienes 1 producto/i)).toBeInTheDocument();
     expect(screen.getByText(/Anillo/i)).toBeInTheDocument();
+  });
+
+  it("renderiza estado invitado cuando el carrito no forma parte del flujo autenticado", () => {
+    useCart.mockReturnValue({
+      items: [],
+      totalPrice: 0,
+      updateQuantity: vi.fn(),
+      removeItem: vi.fn(),
+      clearCart: vi.fn(),
+      isLoading: false,
+      error: null,
+      isGuestMode: true,
+    });
+
+    renderPage();
+    expect(screen.getByText(/Inicia sesión para usar tu carrito/i)).toBeInTheDocument();
   });
 });

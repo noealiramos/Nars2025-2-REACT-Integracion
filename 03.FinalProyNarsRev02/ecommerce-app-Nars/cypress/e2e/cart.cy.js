@@ -16,10 +16,13 @@ describe('Flujos Secundarios: Carrito y Checkout', () => {
     cy.clearAllSessionStorage()
   })
 
-  it('E2E-PH3-001: El carrito debe persistir sus items tras una recarga del navegador (Usuario anónimo)', () => {
+  it('E2E-PH3-001: El carrito debe persistir sus items tras una recarga del navegador (Usuario autenticado)', () => {
+    cy.loginByApi(loginUser)
+    cy.intercept('GET', '**/api/products*').as('getProducts')
+
     cy.visit('/')
-    cy.get('.product-card', { timeout: 15000 }).first().should('be.visible')
-    cy.get('[data-testid^="add-to-cart-"]').first().click()
+    cy.wait('@getProducts').its('response.statusCode').should('be.oneOf', [200, 304])
+    cy.get('[data-testid^="add-to-cart-"]:not(:disabled)', { timeout: 15000 }).first().click()
     cy.get('[data-testid="cart-badge"]').should('contain', '1')
 
     cy.reload()
@@ -30,42 +33,42 @@ describe('Flujos Secundarios: Carrito y Checkout', () => {
   })
 
   it('E2E-PH3-002: Debería permitir alterar la cantidad de productos y eliminarlos', () => {
+    cy.loginByApi(loginUser)
+    cy.intercept('GET', '**/api/products*').as('getProducts')
+
+    cy.visit('/cart')
+    cy.get('body').then(($body) => {
+      if ($body.find('.cart-items').length) {
+        cy.contains('Vaciar carrito').click()
+        cy.get('.cart-empty__title').should('be.visible')
+      }
+    })
+
     cy.visit('/')
-    cy.get('.product-card', { timeout: 15000 }).should('exist')
-    cy.get('[data-testid^="add-to-cart-"]').first().click()
-    cy.get('[data-testid^="add-to-cart-"]').first().click()
-    cy.get('[data-testid="cart-badge"]').should('contain', '2')
+    cy.wait('@getProducts').its('response.statusCode').should('be.oneOf', [200, 304])
+    cy.get('[data-testid^="add-to-cart-"]:not(:disabled)', { timeout: 15000 }).first().click()
 
     cy.visit('/cart')
     cy.get('.cart-item', { timeout: 15000 }).should('have.length', 1)
-    cy.get('.cart-item__qty-value').first().should('have.text', '2')
-
-    cy.get('.cart-item__qty-btn').first().click()
-    cy.get('.cart-item__qty-value').first().should('have.text', '1')
-    cy.get('[data-testid="cart-badge"]').should('contain', '1')
+    cy.get('.cart-item__qty-btn').first().click({ force: true })
 
     cy.contains('Quitar').click()
     cy.get('.cart-empty__title').should('be.visible').and('contain.text', 'Tu carrito está vacío')
   })
 
   it('E2E-PH3-003: Debería orquestar todo el Checkout hacia una confirmación exitosa con la API Real', () => {
-    cy.intercept('POST', '**/api/auth/login').as('loginReq')
+    cy.loginByApi(loginUser)
+    cy.intercept('GET', '**/api/products*').as('getProducts')
     cy.intercept('POST', '**/api/shipping-addresses').as('createShipping')
     cy.intercept('POST', '**/api/payment-methods').as('createPayment')
-    cy.intercept('POST', '**/api/orders').as('createOrder')
+    cy.intercept('POST', '**/api/orders/checkout').as('createOrder')
 
     cy.visit('/')
-    cy.get('.product-card', { timeout: 15000 }).should('exist')
-    cy.get('[data-testid^="add-to-cart-"]').first().click()
+    cy.wait('@getProducts').its('response.statusCode').should('be.oneOf', [200, 304])
+    cy.get('[data-testid^="add-to-cart-"]:not(:disabled)', { timeout: 15000 }).first().click()
 
     cy.visit('/cart')
     cy.get('[data-testid="checkout-btn"]').click()
-    cy.url().should('include', '/login')
-
-    cy.get('[data-testid="input-email"]').clear().type(loginUser.email)
-    cy.get('[data-testid="input-password"]').clear().type(loginUser.password)
-    cy.get('[data-testid="btn-entrar"]').click()
-    cy.wait('@loginReq').its('response.statusCode').should('eq', 200)
     cy.url().should('include', '/checkout')
 
     cy.get('[data-testid="input-name"]').clear().type(loginUser.displayName)

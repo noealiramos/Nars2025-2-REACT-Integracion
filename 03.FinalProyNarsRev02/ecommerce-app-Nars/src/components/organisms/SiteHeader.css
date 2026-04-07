@@ -132,6 +132,24 @@
   color: white;
 }
 
+@media (max-width: 900px) {
+  .site-header__inner {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .site-header__nav {
+    flex-wrap: wrap;
+    gap: 0.9rem;
+  }
+
+  .site-header__user {
+    margin-left: auto;
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
 @media (max-width: 700px) {
   .site-header__inner {
     flex-direction: column;
@@ -142,7 +160,8 @@
 
   .site-header__nav {
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 0.75rem;
   }
 
   .site-header__user-info {

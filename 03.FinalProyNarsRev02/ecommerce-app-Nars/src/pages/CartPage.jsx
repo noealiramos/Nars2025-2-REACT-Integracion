@@ -7,7 +7,7 @@ import { Button } from "../components/atoms/Button";
 import "./CartPage.css";
 
 export function CartPage() {
-  const { items, updateQuantity, removeItem, totalPrice, clearCart, isLoading, error } = useCart();
+  const { items, updateQuantity, removeItem, totalPrice, clearCart, isLoading, error, isGuestMode } = useCart();
   const navigate = useNavigate();
 
   const handleCheckout = () => {
@@ -29,7 +29,18 @@ export function CartPage() {
               {error}
             </p>
           )}
-          {!isLoading && !error && isEmpty ? (
+          {!isLoading && !error && isGuestMode ? (
+            <div className="cart-empty cart-empty--guest" data-testid="guest-cart-state">
+              <p className="cart-empty__title">Inicia sesión para usar tu carrito</p>
+              <p className="cart-empty__text">
+                El carrito evaluable del proyecto se sincroniza con el backend una vez que accedes con tu cuenta.
+              </p>
+              <Link to="/login" className="cart-empty__button">
+                Ir a iniciar sesión
+              </Link>
+            </div>
+          ) : null}
+          {!isLoading && !error && !isGuestMode && isEmpty ? (
             <div className="cart-empty">
               <p className="cart-empty__title">Tu carrito está vacío</p>
               <p className="cart-empty__text">
@@ -40,7 +51,7 @@ export function CartPage() {
               </Link>
             </div>
           ) : null}
-          {!isLoading && !error && !isEmpty && (
+          {!isLoading && !error && !isGuestMode && !isEmpty && (
             <div className="cart-items">
               <div className="cart-items__header">
                 <p className="cart-items__info">
@@ -63,10 +74,10 @@ export function CartPage() {
         </section>
 
         <section className="cart-page__summary">
-          {!isLoading && !error && !isEmpty && (
+          {!isLoading && !error && !isGuestMode && !isEmpty && (
             <CartSummary subtotal={totalPrice} onCheckout={handleCheckout} />
           )}
-          {!isLoading && !error && isEmpty && (
+          {!isLoading && !error && !isGuestMode && isEmpty && (
             <p className="cart-page__hint">
               Agrega al menos una pieza para poder continuar al pago.
             </p>

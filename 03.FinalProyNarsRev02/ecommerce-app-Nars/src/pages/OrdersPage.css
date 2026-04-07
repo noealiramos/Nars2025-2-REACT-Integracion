@@ -111,6 +111,10 @@
   color: #f8fafc;
 }
 
+.orders-card__id {
+  overflow-wrap: anywhere;
+}
+
 .orders-card__status {
   padding: 0.35rem 0.7rem;
   border-radius: 999px;
@@ -150,6 +154,13 @@
 }
 
 @media (max-width: 520px) {
+  .orders-card,
+  .orders-pagination,
+  .orders-empty {
+    padding-left: 0.9rem;
+    padding-right: 0.9rem;
+  }
+
   .orders-card__grid {
     grid-template-columns: 1fr;
   }

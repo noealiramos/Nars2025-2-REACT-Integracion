@@ -3,7 +3,7 @@ import { renderHook, act, waitFor } from "@testing-library/react";
 import { CartProvider, useCart } from "../CartContext";
 import { cartApi } from "../../api/cartApi";
 import { useAuth } from "../AuthContext";
-import { STORAGE_KEYS } from "../../utils/storageHelpers";
+import { UIProvider } from "../UIContext";
 
 vi.mock("../../api/cartApi", () => ({
   cartApi: {
@@ -18,7 +18,11 @@ vi.mock("../AuthContext", () => ({
   useAuth: vi.fn(),
 }));
 
-const wrapper = ({ children }) => <CartProvider>{children}</CartProvider>;
+const wrapper = ({ children }) => (
+  <UIProvider>
+    <CartProvider>{children}</CartProvider>
+  </UIProvider>
+);
 
 describe("CartContext integration", () => {
   const authState = { isAuthenticated: false };
@@ -29,18 +33,13 @@ describe("CartContext integration", () => {
     useAuth.mockImplementation(() => authState);
   });
 
-  it("usa fallback local cuando no está autenticado", async () => {
-    localStorage.setItem(
-      STORAGE_KEYS.cart,
-      JSON.stringify([{ id: "p1", name: "Item", price: 10, quantity: 2 }])
-    );
-
+  it("mantiene carrito vacio cuando no está autenticado", async () => {
     const { result } = renderHook(() => useCart(), { wrapper });
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
-    expect(result.current.items).toHaveLength(1);
-    expect(result.current.totalItems).toBe(2);
-    expect(result.current.totalPrice).toBe(20);
+    expect(result.current.items).toHaveLength(0);
+    expect(result.current.totalItems).toBe(0);
+    expect(result.current.totalPrice).toBe(0);
     expect(cartApi.getCurrent).not.toHaveBeenCalled();
   });
 
@@ -68,13 +67,7 @@ describe("CartContext integration", () => {
     });
   });
 
-  it("sincroniza carrito local al backend al iniciar sesión sin duplicar", async () => {
-    localStorage.setItem(
-      STORAGE_KEYS.cart,
-      JSON.stringify([{ id: "p1", name: "Item", price: 10, quantity: 2 }])
-    );
-
-    cartApi.addProduct.mockResolvedValue({ _id: "c1", products: [] });
+  it("carga carrito backend al iniciar sesión sin depender de persistencia local", async () => {
     cartApi.getCurrent.mockResolvedValue({ _id: "c1", products: [] });
 
     const { rerender } = renderHook(() => useCart(), { wrapper });
@@ -82,12 +75,8 @@ describe("CartContext integration", () => {
     authState.isAuthenticated = true;
     rerender();
 
-    await waitFor(() => expect(cartApi.addProduct).toHaveBeenCalledTimes(1));
-    expect(cartApi.addProduct).toHaveBeenCalledWith("p1", 2);
-    expect(localStorage.getItem(STORAGE_KEYS.cart)).toBeNull();
-
-    rerender();
-    await waitFor(() => expect(cartApi.addProduct).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(cartApi.getCurrent).toHaveBeenCalledTimes(1));
+    expect(cartApi.addProduct).not.toHaveBeenCalled();
   });
 
   it("expone estado error cuando falla la carga", async () => {
@@ -117,17 +106,18 @@ describe("CartContext integration", () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(cartApi.update).not.toHaveBeenCalled();
     expect(cartApi.remove).not.toHaveBeenCalled();
+    expect(result.current.items).toHaveLength(0);
   });
 
   it("actualiza cantidades y totales con backend", async () => {
     authState.isAuthenticated = true;
     cartApi.getCurrent.mockResolvedValue({
       _id: "c1",
-      products: [{ product: { _id: "p1", name: "Item", price: 10 }, quantity: 1 }],
+      products: [{ product: { _id: "p1", name: "Item", price: 10, stock: 5 }, quantity: 1 }],
     });
     cartApi.update.mockResolvedValue({
       _id: "c1",
-      products: [{ product: { _id: "p1", name: "Item", price: 10 }, quantity: 3 }],
+      products: [{ product: { _id: "p1", name: "Item", price: 10, stock: 5 }, quantity: 3 }],
     });
 
     const { result } = renderHook(() => useCart(), { wrapper });

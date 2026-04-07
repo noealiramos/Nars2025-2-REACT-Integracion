@@ -63,3 +63,9 @@
   font-size: 0.7rem;
   color: #9ca3af;
 }
+
+@media (max-width: 900px) {
+  .cart-summary {
+    max-width: none;
+  }
+}

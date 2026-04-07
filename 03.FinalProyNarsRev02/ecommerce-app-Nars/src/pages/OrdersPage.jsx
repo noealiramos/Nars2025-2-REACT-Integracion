@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Heading } from "../components/atoms/Heading";
 import { Button } from "../components/atoms/Button";
 import { useAuth } from "../contexts/AuthContext";
+import { useUI } from "../contexts/UIContext";
 import { getOrdersByUser } from "../services/orderService";
 import "./OrdersPage.css";
 
@@ -23,47 +25,46 @@ const formatDate = (value) => {
 
 export function OrdersPage() {
   const { user } = useAuth();
-  const [orders, setOrders] = useState([]);
-  const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, totalResults: 0 });
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { dispatch } = useUI();
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["orders", user?.id, page],
+    queryFn: () =>
+      getOrdersByUser(user.id, {
+        page,
+        limit: 5,
+        sort: "createdAt",
+        order: "desc",
+      }),
+    enabled: Boolean(user?.id),
+  });
+
+  const orders = data?.orders || [];
+  const pagination = data?.pagination || {
+    currentPage: 1,
+    totalPages: 1,
+    totalResults: 0,
+    hasNext: false,
+    hasPrev: false,
+  };
 
   useEffect(() => {
-    let active = true;
+    if (isLoading) {
+      dispatch({ type: "START_LOADING" });
+      return () => dispatch({ type: "STOP_LOADING" });
+    }
+    return undefined;
+  }, [dispatch, isLoading]);
 
-    const loadOrders = async () => {
-      if (!user?.id) return;
-
-      setLoading(true);
-      setError(null);
-
-      try {
-        const data = await getOrdersByUser(user.id, {
-          page,
-          limit: 5,
-          sort: "createdAt",
-          order: "desc",
-        });
-
-        if (!active) return;
-
-        setOrders(data.orders);
-        setPagination(data.pagination);
-      } catch (requestError) {
-        if (!active) return;
-        setError(requestError.response?.data?.message || requestError.response?.data?.error || "No pudimos cargar tus órdenes.");
-      } finally {
-        if (active) setLoading(false);
-      }
-    };
-
-    loadOrders();
-
-    return () => {
-      active = false;
-    };
-  }, [page, user?.id]);
+  useEffect(() => {
+    if (isError) {
+      dispatch({
+        type: "SHOW_MESSAGE",
+        payload: { type: "error", text: "No pudimos cargar tus órdenes." },
+      });
+    }
+  }, [dispatch, isError]);
 
   return (
     <main className="page container orders-page" data-cy="orders-page">
@@ -77,11 +78,11 @@ export function OrdersPage() {
         </Link>
       </div>
 
-      {loading && <p className="orders-page__status" data-cy="orders-loading">Cargando órdenes...</p>}
+      {isLoading && <p className="orders-page__status" data-cy="orders-loading">Cargando órdenes...</p>}
 
-      {!loading && error && <p className="orders-page__status orders-page__status--error" data-cy="orders-error">{error}</p>}
+      {!isLoading && isError && <p className="orders-page__status orders-page__status--error" data-cy="orders-error">No pudimos cargar tus órdenes.</p>}
 
-      {!loading && !error && orders.length === 0 && (
+      {!isLoading && !isError && orders.length === 0 && (
         <section className="orders-empty" data-cy="orders-empty">
           <p className="orders-empty__title">Todavía no tienes órdenes registradas.</p>
           <p className="orders-empty__text">Cuando completes tu primera compra la verás aquí con su total, estado y fecha.</p>
@@ -91,7 +92,7 @@ export function OrdersPage() {
         </section>
       )}
 
-      {!loading && !error && orders.length > 0 && (
+      {!isLoading && !isError && orders.length > 0 && (
         <>
           <div className="orders-list" data-cy="orders-list">
             {orders.map((order) => (

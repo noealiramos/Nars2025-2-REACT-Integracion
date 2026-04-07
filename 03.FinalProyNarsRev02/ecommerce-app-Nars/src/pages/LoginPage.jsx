@@ -5,6 +5,7 @@ import { Button } from "../components/atoms/Button";
 import { Heading } from "../components/atoms/Heading";
 import { Text } from "../components/atoms/Text";
 import { useAuth } from "../contexts/AuthContext";
+import { validateLoginForm } from "../utils/formValidators";
 import "./LoginPage.css";
 
 export function LoginPage() {
@@ -12,6 +13,7 @@ export function LoginPage() {
   const [email, setEmail] = useState("ali.ramos@mail.com");
   const [password, setPassword] = useState("123456");
   const [submitting, setSubmitting] = useState(false);
+  const [validationError, setValidationError] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -19,6 +21,13 @@ export function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const nextValidationError = validateLoginForm({ email, password });
+    if (nextValidationError) {
+      setValidationError(nextValidationError);
+      return;
+    }
+
+    setValidationError(null);
     setSubmitting(true);
     const ok = await login(email, password);
     setSubmitting(false);
@@ -60,7 +69,7 @@ export function LoginPage() {
             required
             data-testid="input-password"
           />
-          {error && <p className="login-form__error">{error}</p>}
+          {(validationError || error) && <p className="login-form__error">{validationError || error}</p>}
           <Button 
             type="submit" 
             className="login-form__button" 

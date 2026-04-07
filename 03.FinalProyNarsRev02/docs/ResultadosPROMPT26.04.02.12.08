@@ -1,0 +1,42 @@
+1. CAUSA RAIZ
+- Cypress estaba enviando `cy.request()` a `http://127.0.0.1:3000/api/auth/register` desde `ecommerce-app-Nars/cypress/support/commands.js`, pero el backend real de pruebas escucha en el puerto 3001. El puerto 3000 no estaba levantado, por eso ocurria `ECONNREFUSED` en el `before all`.
+
+2. EVIDENCIA
+- `ecommerce-app-Nars/cypress/support/commands.js:1` tenia `const API_URL = 'http://127.0.0.1:3000/api'`.
+- `ecommerce-app-Nars/cypress/e2e/goldenPath.cy.js:10` llama `cy.ensureUser(testUser)` en `before()`; ese comando usa `API_URL`.
+- `ecommerce-api-Nars/.env:1` define `PORT=3001`.
+- `ecommerce-api-Nars/.env.test:1` define `PORT=3001`.
+- `ecommerce-api-Nars/scripts/start-test-server.mjs:3` fuerza `process.env.PORT = process.env.PORT || '3001'`.
+- `ecommerce-app-Nars/.env.local:1` y `ecommerce-app-Nars/.env.test.local:1` apuntan a `VITE_API_URL=http://localhost:3001/api`.
+- Verificacion real: `http://127.0.0.1:3000/api/health -> ECONNREFUSED`; `http://127.0.0.1:3001/api/health -> 200`; `http://127.0.0.1:5173 -> ECONNREFUSED` antes de levantar frontend.
+
+3. PLAN
+- Alinear las URLs de Cypress con el puerto real del backend (`3001`).
+- Corregir tambien el hardcode equivalente en `cypress/e2e/auth.cy.js` para evitar el mismo fallo en otra suite.
+- Validar levantando el frontend de pruebas y ejecutando la spec afectada.
+
+4. CAMBIOS REALIZADOS
+- `ecommerce-app-Nars/cypress/support/commands.js`: `API_URL` cambio de `http://127.0.0.1:3000/api` a `http://localhost:3001/api`.
+- `ecommerce-app-Nars/cypress/support/commands.js`: `AUTH_TEST_API_URL` ahora reutiliza `API_URL` para evitar otro desalineamiento.
+- `ecommerce-app-Nars/cypress/e2e/auth.cy.js`: el `before()` de registro dejo de usar `http://127.0.0.1:3000/api/auth/register` y ahora usa `http://localhost:3001/api/auth/register`.
+
+5. ARCHIVOS AFECTADOS
+- `ecommerce-app-Nars/cypress/support/commands.js`
+- `ecommerce-app-Nars/cypress/e2e/auth.cy.js`
+
+6. COMANDOS EJECUTADOS
+- `node -e "const http=require('http');http.get('http://127.0.0.1:3000/api/health',...)"`
+- `node -e "const http=require('http');http.get('http://127.0.0.1:3001/api/health',...)"`
+- `node -e "const http=require('http');http.get('http://127.0.0.1:5173',...)"`
+- `npm run dev:test`
+- `npx cypress run --spec cypress/e2e/goldenPath.cy.js`
+
+7. RESULTADO DE PRUEBAS
+- Antes de la correccion: la suite fallaba en `before all` con `connect ECONNREFUSED 127.0.0.1:3000`.
+- Despues de la correccion: `goldenPath.cy.js` ya no falla en `before all`; avanza hasta el caso de uso y falla despues en otro punto no relacionado con conectividad: `Expected to find element: .product-card, but never found it`.
+
+8. ESTATUS FINAL
+- PARTIAL
+
+9. SIGUIENTES PASOS
+- Investigar por que la UI no renderiza `.product-card` aunque el flujo ya logra autenticarse y pasar la inicializacion API.

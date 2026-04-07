@@ -5,7 +5,7 @@ import RefreshToken from '../models/refreshToken.js';
 
 const router = express.Router();
 
-router.use((req, res, next) => {
+router.use('/auth/test', (req, res, next) => {
   if (env.NODE_ENV !== 'test' || !env.ENABLE_TEST_AUTH_TOOLS) {
     return res.status(404).json({ message: 'Route not found' });
   }

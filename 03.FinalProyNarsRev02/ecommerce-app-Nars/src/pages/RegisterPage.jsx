@@ -7,6 +7,7 @@ import { Text } from "../components/atoms/Text";
 import { authApi } from "../api/authApi";
 import { persistAuthSession } from "../services/authService";
 import { useAuth } from "../contexts/AuthContext";
+import { validateRegisterForm } from "../utils/formValidators";
 import "./LoginPage.css"; // Reusamos estilos base de login
 
 export function RegisterPage() {
@@ -21,6 +22,12 @@ export function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const validationError = validateRegisterForm({ name, email, password });
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     setSubmitting(true);
     setError(null);
 

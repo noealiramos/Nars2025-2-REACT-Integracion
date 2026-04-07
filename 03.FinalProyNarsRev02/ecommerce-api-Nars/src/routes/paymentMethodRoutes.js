@@ -16,6 +16,7 @@ import isAdmin from '../middlewares/isAdminMiddleware.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 import { body, param } from 'express-validator';
 import validate from '../middlewares/validation.js';
+import { isValidExpiryDate, normalizeExpiryDate } from '../utils/paymentExpiry.js';
 
 import PaymentMethod from '../models/paymentMethod.js';
 
@@ -35,7 +36,7 @@ const createPaymentMethodValidation = [
   body('brand').optional().isString().withMessage('brand must be a string').trim(),
   body('last4').optional().isLength({ min: 4, max: 4 }).withMessage('last4 must contain 4 characters').isString().withMessage('last4 must be a string').trim(),
   body('cardHolderName').optional().isString().withMessage('cardHolderName must be a string').trim(),
-  body('expiryDate').optional().matches(/^(0[1-9]|1[0-2])\/\d{2}$/).withMessage('expiryDate must be in MM/YY format'),
+  body('expiryDate').optional().customSanitizer(normalizeExpiryDate).custom((value) => isValidExpiryDate(value)).withMessage('expiryDate must be in MM/YY format'),
   body('isDefault').optional().isBoolean().withMessage('isDefault must be boolean'),
   body('active').optional().isBoolean().withMessage('active must be boolean'),
 ];
@@ -49,7 +50,7 @@ const updatePaymentMethodValidation = [
   body('brand').optional().isString().withMessage('brand must be a string').trim(),
   body('last4').optional().isString().withMessage('last4 must be a string').isLength({ min: 4, max: 4 }).withMessage('last4 must contain 4 characters').trim(),
   body('cardHolderName').optional().isString().withMessage('cardHolderName must be a string').trim(),
-  body('expiryDate').optional().matches(/^(0[1-9]|1[0-2])\/\d{2}$/).withMessage('expiryDate must be in MM/YY format'),
+  body('expiryDate').optional().customSanitizer(normalizeExpiryDate).custom((value) => isValidExpiryDate(value)).withMessage('expiryDate must be in MM/YY format'),
   body('isDefault').optional().isBoolean().withMessage('isDefault must be boolean'),
   body('active').optional().isBoolean().withMessage('active must be boolean'),
 ];

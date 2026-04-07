@@ -11,9 +11,13 @@ import { orderApi } from "../api/orderApi";
 import { SHIPPING_COST } from "../constants/orderConstants";
 import { appendOrderToHistory } from "../utils/storageHelpers";
 import { logger } from "../utils/logger";
+import { isValidExpiryDate, normalizeExpiryDateInput } from "../utils/paymentExpiry";
 import { fetchShippingAddressesByUser } from "../services/shippingService";
 import { fetchPaymentMethodsByUser } from "../services/paymentService";
+import { validateCheckoutFields } from "../utils/formValidators";
 import "./CheckoutPage.css";
+
+const getDefaultCheckoutItem = (items) => items.find((entry) => entry.isDefault) || items[0] || null;
 
 const getCheckoutErrorMessage = (error) => {
   const responseData = error.response?.data;
@@ -56,6 +60,7 @@ export function CheckoutPage() {
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [savedPaymentMethods, setSavedPaymentMethods] = useState([]);
   const [loadingSavedData, setLoadingSavedData] = useState(false);
+  const [savedDataError, setSavedDataError] = useState("");
   const [shippingMode, setShippingMode] = useState("new");
   const [paymentMode, setPaymentMode] = useState("new");
   const [selectedAddressId, setSelectedAddressId] = useState("");
@@ -80,6 +85,48 @@ export function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
 
+  const resetShippingForm = () => {
+    setName(user?.displayName || "");
+    setAddress("");
+    setCity("");
+    setState("");
+    setPostalCode("");
+    setPhone("");
+  };
+
+  const resetPaymentForm = () => {
+    setCardHolder(user?.displayName || "");
+    setCardNumber("");
+    setCardExpiry("");
+    setCardCvv("");
+  };
+
+  const selectExistingAddress = (addressData) => {
+    if (!addressData?._id) return;
+    setShippingMode("existing");
+    setSelectedAddressId(addressData._id);
+    applySavedAddress(addressData);
+  };
+
+  const selectNewShipping = () => {
+    setShippingMode("new");
+    setSelectedAddressId("");
+    resetShippingForm();
+  };
+
+  const selectExistingPaymentMethod = (paymentMethod) => {
+    if (!paymentMethod?._id) return;
+    setPaymentMode("existing");
+    setSelectedPaymentMethodId(paymentMethod._id);
+    applySavedPaymentMethod(paymentMethod);
+  };
+
+  const selectNewPaymentMethod = () => {
+    setPaymentMode("new");
+    setSelectedPaymentMethodId("");
+    resetPaymentForm();
+  };
+
   const applySavedAddress = (addressData) => {
     if (!addressData) return;
     setName(addressData.name || user?.displayName || "");
@@ -93,7 +140,7 @@ export function CheckoutPage() {
   const applySavedPaymentMethod = (paymentMethod) => {
     if (!paymentMethod) return;
     setCardHolder(paymentMethod.cardHolderName || user?.displayName || "");
-    setCardExpiry(paymentMethod.expiryDate || "");
+    setCardExpiry(normalizeExpiryDateInput(paymentMethod.expiryDate || ""));
     setCardNumber(paymentMethod.last4 ? `•••• ${paymentMethod.last4}` : "");
     setCardCvv("");
   };
@@ -118,48 +165,64 @@ export function CheckoutPage() {
 
         if (cachedAddresses.length > 0) {
           setSavedAddresses(cachedAddresses);
-          const cachedDefaultAddress = cachedAddresses.find((entry) => entry.isDefault) || cachedAddresses[0];
-          setShippingMode("existing");
-          setSelectedAddressId(cachedDefaultAddress._id);
-          applySavedAddress(cachedDefaultAddress);
+          selectExistingAddress(getDefaultCheckoutItem(cachedAddresses));
         }
 
         if (cachedPaymentMethods.length > 0) {
           setSavedPaymentMethods(cachedPaymentMethods);
-          const cachedDefaultPaymentMethod = cachedPaymentMethods.find((entry) => entry.isDefault) || cachedPaymentMethods[0];
-          setPaymentMode("existing");
-          setSelectedPaymentMethodId(cachedDefaultPaymentMethod._id);
-          applySavedPaymentMethod(cachedDefaultPaymentMethod);
+          selectExistingPaymentMethod(getDefaultCheckoutItem(cachedPaymentMethods));
         }
 
-        const [addresses, paymentMethods] = await Promise.all([
+        const [addressResult, paymentResult] = await Promise.allSettled([
           fetchShippingAddressesByUser(user.id),
           fetchPaymentMethodsByUser(user.id),
         ]);
 
         if (!mounted) return;
 
-        setSavedAddresses(addresses);
-        setSavedPaymentMethods(paymentMethods);
-        writeCachedCheckoutItems("addresses", user.id, addresses);
-        writeCachedCheckoutItems("payment-methods", user.id, paymentMethods);
+        const shippingFailed = addressResult.status === "rejected";
+        const paymentFailed = paymentResult.status === "rejected";
 
-        const defaultAddress = addresses.find((entry) => entry.isDefault) || addresses[0];
-        const defaultPaymentMethod = paymentMethods.find((entry) => entry.isDefault) || paymentMethods[0];
-
-        if (defaultAddress) {
-          setShippingMode("existing");
-          setSelectedAddressId(defaultAddress._id);
-          applySavedAddress(defaultAddress);
+        if (shippingFailed || paymentFailed) {
+          setSavedDataError("No pudimos actualizar todos tus datos guardados. Puedes continuar con nuevos datos si lo prefieres.");
+        } else {
+          setSavedDataError("");
         }
 
-        if (defaultPaymentMethod) {
-          setPaymentMode("existing");
-          setSelectedPaymentMethodId(defaultPaymentMethod._id);
-          applySavedPaymentMethod(defaultPaymentMethod);
+        if (addressResult.status === "fulfilled") {
+          const addresses = addressResult.value;
+          setSavedAddresses(addresses);
+          writeCachedCheckoutItems("addresses", user.id, addresses);
+
+          const defaultAddress = getDefaultCheckoutItem(addresses);
+
+          if (defaultAddress) {
+            selectExistingAddress(defaultAddress);
+          } else {
+            selectNewShipping();
+          }
+        }
+
+        if (paymentResult.status === "fulfilled") {
+          const paymentMethods = paymentResult.value;
+          setSavedPaymentMethods(paymentMethods);
+          writeCachedCheckoutItems("payment-methods", user.id, paymentMethods);
+
+          const defaultPaymentMethod = getDefaultCheckoutItem(paymentMethods);
+
+          if (defaultPaymentMethod) {
+            selectExistingPaymentMethod(defaultPaymentMethod);
+          } else {
+            selectNewPaymentMethod();
+          }
         }
       } catch (error) {
         logger.error("checkout", "Failed to load saved checkout data", error);
+        if (mounted) {
+          setSavedDataError("No pudimos cargar tus datos guardados. Puedes continuar con nuevos datos.");
+          selectNewShipping();
+          selectNewPaymentMethod();
+        }
       } finally {
         if (mounted) {
           setLoadingSavedData(false);
@@ -181,12 +244,27 @@ export function CheckoutPage() {
     e.preventDefault();
     setErrorMsg(null);
 
-    // Validaciones básicas
-    if (
-      (requiresNewShipping && (!name || !address || !city || !state || !postalCode || !phone)) ||
-      (requiresNewPayment && (!cardNumber || !cardHolder || !cardExpiry || !cardCvv))
-    ) {
-      setErrorMsg("Por favor, completa todos los campos requeridos.");
+    const normalizedCardExpiry = normalizeExpiryDateInput(cardExpiry);
+
+    const validationError = validateCheckoutFields({
+      requiresNewShipping,
+      requiresNewPayment,
+      name,
+      address,
+      city,
+      state,
+      postalCode,
+      phone,
+      cardNumber,
+      cardHolder,
+      cardExpiry: normalizedCardExpiry,
+      cardCvv,
+      isValidExpiryDate,
+    });
+
+    if (validationError) {
+      setCardExpiry(normalizedCardExpiry);
+      setErrorMsg(validationError);
       return;
     }
 
@@ -217,7 +295,7 @@ export function CheckoutPage() {
         const paymentRes = await paymentApi.create({
           type: "credit_card",
           cardHolderName: cardHolder,
-          expiryDate: cardExpiry,
+          expiryDate: normalizedCardExpiry,
           brand: "Visa",
           last4,
           isDefault: saveAsDefault || savedPaymentMethods.length === 0,
@@ -228,18 +306,30 @@ export function CheckoutPage() {
         writeCachedCheckoutItems("payment-methods", user?.id, nextPaymentMethods);
       }
 
-      // 3. Crear Orden
-      const orderData = {
-        products: items.map(item => ({
-          productId: item.id,
-          quantity: item.quantity
-        })),
+      const checkoutData = {
         shippingAddress: shippingAddressId,
         paymentMethod: paymentMethodId,
         shippingCost: SHIPPING_COST
       };
 
-      const finalOrder = await orderApi.create(orderData);
+      let finalOrder;
+
+      try {
+        finalOrder = await orderApi.checkout(checkoutData);
+      } catch (checkoutError) {
+        logger.warn("checkout", "Checkout endpoint failed, falling back to order creation", {
+          status: checkoutError.response?.status,
+          data: checkoutError.response?.data,
+        });
+
+        finalOrder = await orderApi.create({
+          products: items.map((item) => ({
+            productId: item.id,
+            quantity: item.quantity,
+          })),
+          ...checkoutData,
+        });
+      }
 
       // Limpiar carrito y navegar
       appendOrderToHistory(finalOrder);
@@ -264,9 +354,18 @@ export function CheckoutPage() {
         Ingresa tus datos de envío y pago para completar la orden.
       </p>
 
+      {savedDataError && (
+        <p className="checkout-page__status checkout-page__status--warning" data-testid="saved-data-error">
+          {savedDataError}
+        </p>
+      )}
+
       <form onSubmit={handleSubmit} className="checkout-form">
         <section className="checkout-section">
           <Heading level={3}>Información de Envío</Heading>
+          {loadingSavedData && (
+            <p className="checkout-page__hint" data-testid="shipping-loading-state">Cargando direcciones guardadas...</p>
+          )}
           {savedAddresses.length > 0 && (
             <div className="saved-options" data-testid="saved-shipping-options">
               <p className="saved-options__label">Elige una dirección guardada o captura una nueva.</p>
@@ -277,7 +376,7 @@ export function CheckoutPage() {
                   name="shippingMode"
                   value="new"
                   checked={shippingMode === "new"}
-                  onChange={() => setShippingMode("new")}
+                  onChange={selectNewShipping}
                   data-testid="shipping-option-new"
                 />
                 <span>Usar una dirección nueva</span>
@@ -290,11 +389,7 @@ export function CheckoutPage() {
                     name="shippingMode"
                     value={savedAddress._id}
                     checked={shippingMode === "existing" && selectedAddressId === savedAddress._id}
-                    onChange={() => {
-                      setShippingMode("existing");
-                      setSelectedAddressId(savedAddress._id);
-                      applySavedAddress(savedAddress);
-                    }}
+                    onChange={() => selectExistingAddress(savedAddress)}
                     data-testid={`shipping-option-${savedAddress._id}`}
                   />
                   <span>
@@ -304,6 +399,11 @@ export function CheckoutPage() {
                 </label>
               ))}
             </div>
+          )}
+          {!loadingSavedData && user?.id && savedAddresses.length === 0 && (
+            <p className="checkout-page__status" data-testid="shipping-empty-state">
+              No encontramos direcciones guardadas. Puedes capturar una nueva para esta compra.
+            </p>
           )}
           <div className="form-grid">
             <TextInput
@@ -369,6 +469,9 @@ export function CheckoutPage() {
 
         <section className="checkout-section">
           <Heading level={3}>Método de Pago</Heading>
+          {loadingSavedData && (
+            <p className="checkout-page__hint" data-testid="payment-loading-state">Cargando métodos guardados...</p>
+          )}
           {savedPaymentMethods.length > 0 && (
             <div className="saved-options" data-testid="saved-payment-options">
               <p className="saved-options__label">Selecciona un método guardado o agrega uno nuevo.</p>
@@ -379,7 +482,7 @@ export function CheckoutPage() {
                   name="paymentMode"
                   value="new"
                   checked={paymentMode === "new"}
-                  onChange={() => setPaymentMode("new")}
+                  onChange={selectNewPaymentMethod}
                   data-testid="payment-option-new"
                 />
                 <span>Usar un método nuevo</span>
@@ -392,11 +495,7 @@ export function CheckoutPage() {
                     name="paymentMode"
                     value={paymentMethod._id}
                     checked={paymentMode === "existing" && selectedPaymentMethodId === paymentMethod._id}
-                    onChange={() => {
-                      setPaymentMode("existing");
-                      setSelectedPaymentMethodId(paymentMethod._id);
-                      applySavedPaymentMethod(paymentMethod);
-                    }}
+                    onChange={() => selectExistingPaymentMethod(paymentMethod)}
                     data-testid={`payment-option-${paymentMethod._id}`}
                   />
                   <span>
@@ -406,6 +505,11 @@ export function CheckoutPage() {
                 </label>
               ))}
             </div>
+          )}
+          {!loadingSavedData && user?.id && savedPaymentMethods.length === 0 && (
+            <p className="checkout-page__status" data-testid="payment-empty-state">
+              No encontramos métodos de pago guardados. Puedes capturar uno nuevo sin salir del checkout.
+            </p>
           )}
           <div className="payment-form">
             <TextInput
@@ -431,9 +535,11 @@ export function CheckoutPage() {
                 id="cardExpiry"
                 label="Vencimiento"
                 value={cardExpiry}
-                onChange={(e) => setCardExpiry(e.target.value)}
+                onChange={(e) => setCardExpiry(normalizeExpiryDateInput(e.target.value))}
                 placeholder="MM/YY"
                 required={requiresNewPayment}
+                inputMode="numeric"
+                maxLength={5}
                 disabled={paymentMode === "existing"}
               />
               <TextInput
@@ -462,7 +568,6 @@ export function CheckoutPage() {
           </div>
         </section>
 
-        {loadingSavedData && <p className="checkout-page__hint">Cargando datos guardados...</p>}
         {errorMsg && <p className="form-error">{errorMsg}</p>}
 
         <div className="checkout-form__actions">

@@ -1,5 +1,5 @@
-const API_URL = 'http://127.0.0.1:3000/api'
-const AUTH_TEST_API_URL = 'http://127.0.0.1:3001/api'
+const API_URL = 'http://localhost:3001/api'
+const AUTH_TEST_API_URL = API_URL
 const AUTH_TEST_ACCESS_TOKEN_WAIT_MS = 42000
 
 const getCollectionItems = (body, key) => {
@@ -109,7 +109,30 @@ Cypress.Commands.add('addFirstProductToCartViaUi', () => {
   cy.visit('/')
   cy.wait('@getProducts').its('response.statusCode').should('be.oneOf', [200, 304])
   cy.get('.product-card', { timeout: 15000 }).should('have.length.greaterThan', 0)
-  cy.get('[data-testid^="add-to-cart-"]').first().click()
+
+  cy.get('[data-testid^="add-to-cart-"]', { timeout: 15000 })
+    .filter(':visible:not(:disabled)')
+    .should('have.length.greaterThan', 0)
+    .first()
+    .should('not.contain', 'Agotado')
+    .click()
+})
+
+Cypress.Commands.add('openFirstAvailableProductDetailViaUi', () => {
+  cy.intercept('GET', '**/api/products*').as('getProducts')
+  cy.visit('/')
+  cy.wait('@getProducts').its('response.statusCode').should('be.oneOf', [200, 304])
+  cy.get('.product-card', { timeout: 15000 }).should('have.length.greaterThan', 0)
+
+  cy.get('[data-testid^="add-to-cart-"]', { timeout: 15000 })
+    .filter(':visible:not(:disabled)')
+    .should('have.length.greaterThan', 0)
+    .first()
+    .should('not.contain', 'Agotado')
+    .closest('.product-card')
+    .find('[data-testid^="view-detail-"]')
+    .should('be.visible')
+    .click()
 })
 
 Cypress.Commands.add('completeCheckoutViaUi', (user, overrides = {}) => {
@@ -130,7 +153,7 @@ Cypress.Commands.add('completeCheckoutViaUi', (user, overrides = {}) => {
 
   cy.intercept('POST', '**/api/shipping-addresses').as('createShipping')
   cy.intercept('POST', '**/api/payment-methods').as('createPayment')
-  cy.intercept('POST', '**/api/orders').as('createOrder')
+  cy.intercept('POST', '**/api/orders/checkout').as('createOrder')
 
   cy.get('form.checkout-form').should('be.visible')
   cy.get('[data-testid="input-name"]').clear().type(checkoutData.name)
@@ -144,7 +167,7 @@ Cypress.Commands.add('completeCheckoutViaUi', (user, overrides = {}) => {
   cy.get('[data-testid="input-cardExpiry"]').clear().type(checkoutData.cardExpiry)
   cy.get('[data-testid="input-cardCvv"]').clear().type(checkoutData.cardCvv)
   if (checkoutData.saveAsDefault) {
-    cy.get('[data-testid="input-save-default"]').check({ force: true })
+    cy.get('[data-testid="input-save-default"]').check()
   }
   cy.get('[data-testid="btn-confirmar-compra"]').click()
 

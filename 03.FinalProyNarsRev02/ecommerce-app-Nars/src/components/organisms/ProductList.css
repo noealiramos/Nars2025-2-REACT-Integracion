@@ -8,3 +8,10 @@
   font-size: 0.9rem;
   color: #9ca3af;
 }
+
+@media (max-width: 640px) {
+  .product-list {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+}

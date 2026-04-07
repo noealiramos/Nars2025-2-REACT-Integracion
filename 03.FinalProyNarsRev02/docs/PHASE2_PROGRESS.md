@@ -87,3 +87,10 @@ Nota importante:
 Siguiente paso natural:
 1. separar scripts de CI entre release-gate, extended y auth-test
 2. avanzar la siguiente iteración de hardening UX para shipping reuse
+
+## Phase 2.2 - Checkout Reuse Operational Closure
+
+- El detalle consolidado de cierre se mueve al documento canonico `docs/PHASE_2_4_PROGRESS.mdm` para evitar duplicidad entre reportes.
+- Estado de la fase: `ALIGNED` en dev y test para los endpoints y smoke paths validados.
+- Evidencia principal: `ecommerce-app-Nars/cypress/e2e/checkoutReuse.cy.js` con `5/5` escenarios passing en dev normal y `ecommerce-app-Nars/cypress/e2e/goldenPath.cy.js` con `1/1` smoke passing.
+- La discrepancia previa de `GET /api/products` en `3000` quedo corregida al aislar `testAuthRoutes` solo bajo `/auth/test`.

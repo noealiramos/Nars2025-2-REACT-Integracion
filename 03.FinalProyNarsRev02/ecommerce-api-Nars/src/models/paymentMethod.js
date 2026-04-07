@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { isValidExpiryDate, normalizeExpiryDate } from '../utils/paymentExpiry.js';
 
 const PAYMENT_TYPES = ['credit_card', 'debit_card', 'paypal', 'bank_transfer', 'cash_on_delivery'];
 
@@ -27,10 +28,11 @@ const paymentMethodSchema = new mongoose.Schema({
   },
   expiryDate: {
     type: String, // formato sugerido MM/YY
+    set: normalizeExpiryDate,
     validate: {
       validator: function (v) {
         if (!v) return true;
-        return /^(0[1-9]|1[0-2])\/\d{2}$/.test(v);
+        return isValidExpiryDate(v);
       },
       message: 'expiryDate must be in MM/YY format',
     },

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getProductById } from "../services/productService";
 import { useCart } from "../contexts/CartContext";
+import { useAuth } from "../contexts/AuthContext";
 import { Button } from "../components/atoms/Button";
 import { Heading } from "../components/atoms/Heading";
 import { Text } from "../components/atoms/Text";
@@ -13,6 +14,8 @@ export function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { addItem } = useCart();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     let mounted = true;
@@ -58,6 +61,17 @@ export function ProductDetailPage() {
     style: "currency",
     currency: "MXN",
   }).format(product.price);
+  const parsedStock = Number(product.stock);
+  const hasStock = Number.isFinite(parsedStock) && parsedStock > 0;
+  const shouldShowAddToCart = isAuthenticated && hasStock;
+
+  const handleAddToCart = () => {
+    if (!shouldShowAddToCart) {
+      return;
+    }
+
+    addItem(product, 1);
+  };
 
   return (
     <main className="page container product-detail">
@@ -93,15 +107,27 @@ export function ProductDetailPage() {
               Piedra: <span>{product.stone}</span>
             </p>
           )}
-          <p>Stock disponible: {product.stock}</p>
+          <p>Stock disponible: {hasStock ? parsedStock : 0}</p>
         </div>
 
         <p className="product-detail__price">{formattedPrice}</p>
 
         <div className="product-detail__actions">
-          <Button type="button" onClick={() => addItem(product, 1)} data-testid="add-to-cart-detail">
-            Agregar al carrito
-          </Button>
+          {shouldShowAddToCart ? (
+            <Button
+              type="button"
+              onClick={handleAddToCart}
+              data-testid="add-to-cart-detail"
+            >
+              Agregar al carrito
+            </Button>
+          ) : !hasStock ? (
+            <p className="page__status" data-testid="stock-state-detail">Agotado</p>
+          ) : (
+            <Button type="button" variant="secondary" onClick={() => navigate("/login")} data-testid="login-to-buy-detail">
+              Inicia sesion para comprar
+            </Button>
+          )}
         </div>
       </div>
     </main>

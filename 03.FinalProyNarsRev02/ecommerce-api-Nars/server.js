@@ -7,6 +7,7 @@ import cors from 'cors';
 import { rateLimit } from 'express-rate-limit';
 
 import dbConnection from './src/config/database.js';
+import seedTestCatalog from './src/utils/seedTestCatalog.js';
 import setupGlobalErrorHandlers from './src/middlewares/globalErrorHandler.js';
 import requestId from './src/middlewares/requestId.js';
 import mongoSanitize from 'express-mongo-sanitize';
@@ -30,6 +31,14 @@ await dbConnection();
 
 // Fuerza createCollection() + índices sin insertar documentos
 await Promise.all([Category.init(), Product.init()]);
+
+if (env.NODE_ENV === 'test') {
+  const seedResult = await seedTestCatalog();
+  logger.info({
+    message: 'Test catalog seed status',
+    ...seedResult,
+  });
+}
 
 const app = express();
 
