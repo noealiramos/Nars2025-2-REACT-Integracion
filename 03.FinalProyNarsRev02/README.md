@@ -57,7 +57,10 @@ App esperada en `http://localhost:5173`.
 
 Variables principales:
 
+- Copiar desde `ecommerce-api-Nars/.env.example`
+
 - `PORT`
+- `PUBLIC_API_URL`
 - `MONGODB_URI`
 - `MONGODB_DB`
 - `JWT_SECRET`
@@ -72,7 +75,10 @@ Variables principales:
 
 ### Frontend
 
+- Copiar desde `ecommerce-app-Nars/.env.example`
 - `VITE_API_URL`
+- `CYPRESS_API_URL`
+- `CYPRESS_BASE_URL`
 
 Ejemplo local:
 

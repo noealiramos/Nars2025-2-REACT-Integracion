@@ -39,7 +39,7 @@ export async function bootstrapServer({ startListening = (env.NODE_ENV !== 'test
         const server = app.listen(PORT, () => {
           logger.info({
             message: 'Server started',
-            url: `http://localhost:${PORT}`,
+            url: env.PUBLIC_API_URL,
             environment: env.NODE_ENV,
           });
           resolve(server);

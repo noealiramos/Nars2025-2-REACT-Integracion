@@ -1,6 +1,6 @@
-const API_URL = 'http://localhost:3001/api'
-const AUTH_TEST_API_URL = API_URL
 const AUTH_TEST_ACCESS_TOKEN_WAIT_MS = 42000
+
+const getApiUrl = () => Cypress.config('apiUrl')
 
 const getCollectionItems = (body, key) => {
   if (Array.isArray(body)) return body
@@ -32,7 +32,7 @@ const requestWithRetry = (requestOptions, retries = 3) => {
 Cypress.Commands.add('ensureUser', (user) => {
   requestWithRetry({
     method: 'POST',
-    url: `${API_URL}/auth/register`,
+    url: `${getApiUrl()}/auth/register`,
     body: {
       displayName: user.displayName,
       email: user.email,
@@ -50,7 +50,7 @@ Cypress.Commands.add('loginByApi', (user) => {
     cy.wait(1100)
     requestWithRetry({
       method: 'POST',
-      url: `${API_URL}/auth/login`,
+      url: `${getApiUrl()}/auth/login`,
       body: {
         email: user.email,
         password: user.password,
@@ -183,7 +183,7 @@ Cypress.Commands.add('createOrderForUser', (user) => {
 
   return cy.wait(1100).then(() => requestWithRetry({
     method: 'POST',
-    url: `${API_URL}/auth/login`,
+    url: `${getApiUrl()}/auth/login`,
     body: {
       email: user.email,
       password: user.password,
@@ -193,7 +193,7 @@ Cypress.Commands.add('createOrderForUser', (user) => {
       Authorization: `Bearer ${authBody.accessToken}`,
     }
 
-    return cy.request(`${API_URL}/products?limit=1`).then(({ body: productsBody }) => {
+    return cy.request(`${getApiUrl()}/products?limit=1`).then(({ body: productsBody }) => {
       const product = getCollectionItems(productsBody, 'products')[0]
 
       expect(product, 'seed product').to.exist
@@ -201,7 +201,7 @@ Cypress.Commands.add('createOrderForUser', (user) => {
       return cy
         .request({
           method: 'POST',
-          url: `${API_URL}/shipping-addresses`,
+          url: `${getApiUrl()}/shipping-addresses`,
           headers: authHeaders,
           body: {
             name: user.displayName,
@@ -219,7 +219,7 @@ Cypress.Commands.add('createOrderForUser', (user) => {
           return cy
             .request({
               method: 'POST',
-              url: `${API_URL}/payment-methods`,
+              url: `${getApiUrl()}/payment-methods`,
               headers: authHeaders,
               body: {
                 type: 'credit_card',
@@ -236,7 +236,7 @@ Cypress.Commands.add('createOrderForUser', (user) => {
               return cy
                 .request({
                   method: 'POST',
-                  url: `${API_URL}/orders`,
+                  url: `${getApiUrl()}/orders`,
                   headers: authHeaders,
                   body: {
                     products: [
@@ -271,7 +271,7 @@ Cypress.Commands.add('revokeRefreshTokensForCurrentSession', () => {
 
     return requestWithRetry({
       method: 'POST',
-      url: `${AUTH_TEST_API_URL}/auth/logout`,
+      url: `${getApiUrl()}/auth/logout`,
       body: {
         refreshToken,
       },

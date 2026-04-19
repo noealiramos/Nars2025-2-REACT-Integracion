@@ -34,10 +34,17 @@ npm start
 
 ## Variables de entorno
 
-Crear un archivo `.env.local` si necesitas cambiar la URL del backend:
+Usa `.env.example` como base. Crea un archivo `.env.local` si necesitas cambiar la URL del backend:
 
 ```bash
 VITE_API_URL=http://localhost:3001/api
+```
+
+Para Cypress puedes sobreescribir estas variables desde el shell:
+
+```bash
+CYPRESS_API_URL=http://localhost:3001/api
+CYPRESS_BASE_URL=http://localhost:5173
 ```
 
 ## Funcionalidades actuales

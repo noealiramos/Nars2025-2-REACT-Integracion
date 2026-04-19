@@ -1,6 +1,7 @@
 import { createServer } from 'vite';
+import { resolveApiUrl } from '../src/config/runtimeUrls.mjs';
 
-process.env.VITE_API_URL = 'http://localhost:3001/api';
+process.env.VITE_API_URL = resolveApiUrl(process.env.VITE_API_URL);
 
 const server = await createServer({
   mode: 'test',

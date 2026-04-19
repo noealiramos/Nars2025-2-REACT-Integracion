@@ -1,8 +1,9 @@
 import axios from "axios";
+import { getRuntimeApiUrl } from "../config/runtimeUrls.mjs";
 import { STORAGE_KEYS } from "../utils/storageHelpers";
 import { logger } from "../utils/logger";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+const API_URL = getRuntimeApiUrl();
 
 let refreshPromise = null;
 

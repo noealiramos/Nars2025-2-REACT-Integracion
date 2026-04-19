@@ -2,6 +2,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const normalizeUrl = (value) => value.replace(/\/+$/, '');
+
 const nodeEnv = process.env.NODE_ENV || 'development';
 if (nodeEnv) {
     dotenv.config({ path: `.env.${nodeEnv}`, override: true });
@@ -35,6 +37,7 @@ export const env = {
     CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY || '',
     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET || '',
     PORT: process.env.PORT || 3000,
+    PUBLIC_API_URL: normalizeUrl(process.env.PUBLIC_API_URL || `http://localhost:${process.env.PORT || 3000}`),
     NODE_ENV: nodeEnv,
     ACCESS_TOKEN_TTL: process.env.ACCESS_TOKEN_TTL || '15m',
     REFRESH_TOKEN_TTL: process.env.REFRESH_TOKEN_TTL || '7d',

@@ -1,5 +1,5 @@
 describe('Flujos de Autenticación', () => {
-  const API_URL = 'http://localhost:3001/api'
+  const getApiUrl = () => Cypress.config('apiUrl')
   const testUser = {
     displayName: 'Cypress Test',
     email: `test-${Date.now()}@example.com`,
@@ -16,7 +16,7 @@ describe('Flujos de Autenticación', () => {
     // Ensure the QA login user exists by using the actual API
     cy.request({
       method: 'POST',
-      url: `${API_URL}/auth/register`,
+      url: `${getApiUrl()}/auth/register`,
       failOnStatusCode: false, 
       body: {
         displayName: loginUser.displayName,
