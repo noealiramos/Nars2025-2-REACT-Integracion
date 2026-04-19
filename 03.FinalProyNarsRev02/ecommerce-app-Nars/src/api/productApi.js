@@ -47,9 +47,9 @@ export const productApi = {
     return mapProductCollectionResponse(response.data);
   },
 
-  search: async (query) => {
+  search: async (query, params = {}) => {
     const response = await apiClient.get("/products/search", {
-      params: { q: query },
+      params: { q: query, ...params },
     });
     return mapProductCollectionResponse(response.data);
   },

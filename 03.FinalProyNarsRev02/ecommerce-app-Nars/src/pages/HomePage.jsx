@@ -1,24 +1,44 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
-import { fetchProducts, searchProducts } from "../services/productService";
+import { fetchProductsPaginated, searchProductsPaginated } from "../services/productService";
 import { ProductList } from "../components/organisms/ProductList";
 import { useCart } from "../contexts/CartContext";
 import { useUI } from "../contexts/UIContext";
 import { Heading } from "../components/atoms/Heading";
+import { Button } from "../components/atoms/Button";
 import { Text } from "../components/atoms/Text";
 import "./HomePage.css";
 
 export function HomePage() {
   const { addItem } = useCart();
   const { dispatch } = useUI();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("search");
+  const pageFromQuery = Number.parseInt(searchParams.get("page") || "1", 10);
+  const currentPage = Number.isFinite(pageFromQuery) && pageFromQuery > 0 ? pageFromQuery : 1;
+  const pageSize = 10;
 
-  const { data: products = [], isLoading, isError, refetch } = useQuery({
-    queryKey: ["products", searchQuery || "all"],
-    queryFn: () => (searchQuery ? searchProducts(searchQuery) : fetchProducts()),
+  const {
+    data,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["products", searchQuery || "all", currentPage],
+    queryFn: () => (searchQuery
+      ? searchProductsPaginated(searchQuery, { page: currentPage, limit: pageSize })
+      : fetchProductsPaginated({ page: currentPage, limit: pageSize })),
   });
+
+  const products = data?.products || [];
+  const pagination = data?.pagination || {
+    currentPage: 1,
+    totalPages: 1,
+    totalResults: products.length,
+    hasNext: false,
+    hasPrev: false,
+  };
 
   const isEmpty = !isLoading && !isError && products.length === 0;
 
@@ -41,6 +61,19 @@ export function HomePage() {
 
   const handleAddToCart = (product) => {
     addItem(product, 1);
+  };
+
+  const updatePage = (nextPage) => {
+    const normalizedPage = Math.max(nextPage, 1);
+    const nextParams = new URLSearchParams(searchParams);
+
+    if (normalizedPage <= 1) {
+      nextParams.delete("page");
+    } else {
+      nextParams.set("page", String(normalizedPage));
+    }
+
+    setSearchParams(nextParams);
   };
 
   return (
@@ -75,7 +108,35 @@ export function HomePage() {
           </section>
         )}
         {!isLoading && !isError && !isEmpty && (
-          <ProductList products={products} onAddToCart={handleAddToCart} />
+          <>
+            <ProductList products={products} onAddToCart={handleAddToCart} />
+
+            {pagination.totalPages > 1 && (
+              <div className="home-pagination" data-testid="home-pagination">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => updatePage(pagination.currentPage - 1)}
+                  disabled={!pagination.hasPrev}
+                  data-testid="home-pagination-prev"
+                >
+                  Anterior
+                </Button>
+                <span className="home-pagination__text" data-testid="home-pagination-text">
+                  Pagina {pagination.currentPage} de {pagination.totalPages}
+                </span>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => updatePage(pagination.currentPage + 1)}
+                  disabled={!pagination.hasNext}
+                  data-testid="home-pagination-next"
+                >
+                  Siguiente
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </section>
     </main>

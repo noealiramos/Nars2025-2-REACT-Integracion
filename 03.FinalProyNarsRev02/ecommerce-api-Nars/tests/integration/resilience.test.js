@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
 import request from 'supertest';
-import app from '../../server.js';
 import Product from '../../src/models/product.js';
 
 // Mockeamos Product pero debemos mantener 'init' ya que server.js lo llama al iniciar
@@ -16,6 +15,8 @@ vi.mock('../../src/models/product.js', () => {
         default: MockProduct
     };
 });
+
+import app from '../../src/app.js';
 
 describe('Resilience & Error Handling Integration', () => {
     it('debe retornar 500 y un JSON estructurado ante un error inesperado', async () => {

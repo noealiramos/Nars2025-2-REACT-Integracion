@@ -33,7 +33,8 @@
 }
 
 .admin-products-form__textarea-group,
-.admin-products-form__select-group {
+.admin-products-form__select-group,
+.admin-products-form__upload-group {
   display: grid;
   gap: 0.5rem;
 }
@@ -54,9 +55,29 @@
   flex-wrap: wrap;
 }
 
+.admin-products-form__upload-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
 .admin-products-list__items {
   display: grid;
   gap: 1rem;
+}
+
+.admin-products-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+}
+
+.admin-products-pagination__text {
+  color: var(--muted);
+  font-size: 0.95rem;
 }
 
 .admin-product-card {
@@ -64,12 +85,56 @@
   border-radius: var(--radius);
   padding: 1rem;
   display: grid;
-  gap: 0.75rem;
+  gap: 1rem;
+  grid-template-columns: 112px minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 144px;
+}
+
+.admin-product-card__media {
+  width: 112px;
+  aspect-ratio: 1 / 1;
+  border-radius: calc(var(--radius) - 0.2rem);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.admin-product-card__image,
+.admin-product-card__image-fallback {
+  width: 100%;
+  height: 100%;
+}
+
+.admin-product-card__image {
+  display: block;
+  object-fit: cover;
+}
+
+.admin-product-card__image-fallback {
+  display: grid;
+  place-items: center;
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.admin-product-card__content {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
 }
 
 .admin-product-card p,
 .admin-product-card small {
   margin: 0;
+}
+
+.admin-product-card__actions {
+  align-self: stretch;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .admin-products-page__success {
@@ -79,5 +144,26 @@
 @media (max-width: 960px) {
   .admin-products-page__layout {
     grid-template-columns: 1fr;
+  }
+
+  .admin-product-card {
+    grid-template-columns: 96px minmax(0, 1fr);
+  }
+
+  .admin-product-card__actions {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-product-card {
+    grid-template-columns: 1fr;
+    min-height: unset;
+  }
+
+  .admin-product-card__media {
+    width: min(100%, 200px);
   }
 }

@@ -53,6 +53,20 @@
   gap: 1rem;
 }
 
+.admin-categories-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+}
+
+.admin-categories-pagination__text {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
 .admin-category-card {
   border: 1px solid var(--border);
   border-radius: var(--radius);

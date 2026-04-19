@@ -51,3 +51,15 @@ export const getCurrentProfile = async () => {
     throw error;
   }
 };
+
+export const updateCurrentProfile = async (payload) => {
+  try {
+    const response = await apiClient.patch("/users/me", payload);
+    const profilePayload = extractProfilePayload(response.data);
+
+    return profilePayload ? normalizeUserProfile(profilePayload) : null;
+  } catch (error) {
+    logger.error("userService", "Failed to update current profile", error.response?.data || error.message);
+    throw error;
+  }
+};

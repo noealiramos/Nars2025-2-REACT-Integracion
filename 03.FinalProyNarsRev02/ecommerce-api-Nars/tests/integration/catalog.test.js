@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
-import app from '../../server.js';
 import Product from '../../src/models/product.js';
 
 vi.mock('../../src/config/database.js', () => ({
@@ -9,6 +8,8 @@ vi.mock('../../src/config/database.js', () => ({
 
 vi.mock('../../src/models/product.js');
 vi.mock('../../src/models/category.js');
+
+import app from '../../src/app.js';
 
 describe('Catalog & Health Integration Tests', () => {
     beforeAll(async () => {

@@ -29,6 +29,24 @@ const formatPaymentMethod = (order) => {
     .join(" ");
 };
 
+const normalizeOrderItems = (order) =>
+  Array.isArray(order.products)
+    ? order.products.map((product) => ({
+        ...product,
+        name: product.productId?.name || product.name || "Producto",
+        price: Number(product.price || 0),
+        quantity: Number(product.quantity || 0),
+        id: product.productId?._id || product.productId || product.id,
+      }))
+    : Array.isArray(order.items)
+      ? order.items.map((item) => ({
+          ...item,
+          price: Number(item.price || 0),
+          quantity: Number(item.quantity || 0),
+          id: item.id || item.productId || `${item.name}-${item.quantity}`,
+        }))
+      : [];
+
 export function ConfirmationPage() {
   const location = useLocation();
   const [order, setOrder] = useState(null);
@@ -36,21 +54,19 @@ export function ConfirmationPage() {
   useEffect(() => {
     if (location.state?.order) {
       const o = location.state.order;
-      // Normalizar campos del backend si es necesario
+      const items = normalizeOrderItems(o);
+      const subtotal = Number(o.subtotal || 0);
+      const shippingCost = Number(o.shippingCost || 0);
+
       setOrder({
         ...o,
         id: o._id || o.id,
-        total: o.totalPrice || o.total,
-        subtotal: o.totalPrice ? o.totalPrice - (o.shippingCost || 0) : o.subtotal, // Cálculo simple si falta
+        total: Number(o.totalPrice || o.total || 0),
+        subtotal,
+        shippingCost,
         shippingAddressLabel: formatShippingAddress(o.shippingAddress),
         paymentMethodLabel: formatPaymentMethod(o),
-        items: o.products ? o.products.map(p => ({
-          ...p,
-          name: p.productId?.name || "Producto",
-          price: p.price,
-          quantity: p.quantity,
-          id: p.productId?._id || p.productId
-        })) : o.items
+        items,
       });
     }
   }, [location.state]);
@@ -137,10 +153,6 @@ export function ConfirmationPage() {
             <div className="order-summary__row">
               <span>Subtotal</span>
               <span>{formatMoney(order.subtotal)}</span>
-            </div>
-            <div className="order-summary__row order-summary__row--muted">
-              <span>IVA (16%)</span>
-              <span>{formatMoney(order.iva)}</span>
             </div>
             <div className="order-summary__row order-summary__row--muted">
               <span>Envío</span>

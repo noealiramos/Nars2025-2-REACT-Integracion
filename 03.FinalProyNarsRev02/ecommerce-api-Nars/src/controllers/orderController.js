@@ -6,6 +6,50 @@ import Cart from '../models/cart.js';                 // necesario para checkout
 
 import { getPagination } from '../utils/pagination.js';
 
+const roundMoney = (value) => Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+
+const getItemsSubtotal = (items = []) => roundMoney(
+  items.reduce((acc, item) => acc + Number(item.price || 0) * Number(item.quantity || 0), 0)
+);
+
+const calculateOrderTotals = (items = [], shippingCost = 0) => {
+  const subtotal = getItemsSubtotal(items);
+  const shipping = roundMoney(shippingCost);
+  const taxAmount = 0;
+  const totalPrice = roundMoney(subtotal + shipping);
+
+  return {
+    subtotal,
+    taxAmount,
+    shippingCost: shipping,
+    totalPrice,
+  };
+};
+
+const enrichOrderTotals = (order) => {
+  if (!order) return order;
+
+  const subtotal = Number.isFinite(Number(order.subtotal)) && Number(order.subtotal) > 0
+    ? roundMoney(order.subtotal)
+    : (Array.isArray(order.products)
+        ? getItemsSubtotal(order.products)
+        : 0);
+
+  const taxAmount = Number.isFinite(Number(order.taxAmount)) ? roundMoney(order.taxAmount) : 0;
+  const shippingCost = Number.isFinite(Number(order.shippingCost)) ? roundMoney(order.shippingCost) : 0;
+  const totalPrice = Number.isFinite(Number(order.totalPrice)) && Number(order.totalPrice) > 0
+    ? roundMoney(order.totalPrice)
+    : roundMoney(subtotal + taxAmount + shippingCost);
+
+  return {
+    ...order,
+    subtotal,
+    taxAmount,
+    shippingCost,
+    totalPrice,
+  };
+};
+
 // GET paginado de todas las órdenes (admin)
 async function getOrders(req, res, next) {
   try {
@@ -37,7 +81,7 @@ async function getOrders(req, res, next) {
     const totalPages = Math.ceil(totalResults / limit);
 
     return res.status(200).json({
-      orders,
+      orders: orders.map(enrichOrderTotals),
       pagination: {
         currentPage: page,
         totalPages,
@@ -66,7 +110,7 @@ async function getOrderById(req, res, next) {
       return res.status(404).json({ message: 'Orden no encontrada' });
     }
 
-    res.json(order);
+    res.json(enrichOrderTotals(order));
   } catch (error) {
     return next(error);
   }
@@ -102,7 +146,7 @@ async function getOrdersByUser(req, res, next) {
     const totalPages = Math.ceil(totalResults / limit);
 
     return res.status(200).json({
-      orders,
+      orders: orders.map(enrichOrderTotals),
       pagination: {
         currentPage: page,
         totalPages,
@@ -197,15 +241,16 @@ async function createOrder(req, res, next) {
     if (!Number.isFinite(shipping) || shipping < 0) {
       return res.status(400).json({ error: 'shippingCost must be a non-negative number' });
     }
-    const subtotal = normalizedItems.reduce((acc, it) => acc + it.price * it.quantity, 0);
-    const totalPrice = subtotal + shipping;
+    const { subtotal, taxAmount, shippingCost: normalizedShippingCost, totalPrice } = calculateOrderTotals(normalizedItems, shipping);
 
     const newOrder = await Order.create({
       user,
       products: normalizedItems,
       shippingAddress,
       paymentMethod,
-      shippingCost: shipping,
+      subtotal,
+      taxAmount,
+      shippingCost: normalizedShippingCost,
       totalPrice,
       status: 'pending',
       paymentStatus: 'pending'
@@ -216,7 +261,7 @@ async function createOrder(req, res, next) {
     await newOrder.populate('shippingAddress');
     await newOrder.populate('paymentMethod');
 
-    return res.status(201).json(newOrder);
+    return res.status(201).json(enrichOrderTotals(newOrder.toObject()));
   } catch (error) {
     return next(error);
   }
@@ -301,8 +346,7 @@ async function checkoutFromCart(req, res, next) {
     if (!Number.isFinite(shipping) || shipping < 0) {
       return res.status(400).json({ error: 'shippingCost must be a non-negative number' });
     }
-    const subtotal = normalizedItems.reduce((acc, it) => acc + it.price * it.quantity, 0);
-    const totalPrice = subtotal + shipping;
+    const { subtotal, taxAmount, shippingCost: normalizedShippingCost, totalPrice } = calculateOrderTotals(normalizedItems, shipping);
 
     // Descontar stock con control/rollback simple (sin transacciones)
     const decremented = [];
@@ -331,7 +375,9 @@ async function checkoutFromCart(req, res, next) {
       products: normalizedItems,
       shippingAddress,
       paymentMethod,
-      shippingCost: shipping,
+      subtotal,
+      taxAmount,
+      shippingCost: normalizedShippingCost,
       totalPrice,
       status: 'pending',
       paymentStatus: 'pending'
@@ -346,7 +392,7 @@ async function checkoutFromCart(req, res, next) {
     await newOrder.populate('shippingAddress');
     await newOrder.populate('paymentMethod');
 
-    return res.status(201).json(newOrder);
+    return res.status(201).json(enrichOrderTotals(newOrder.toObject()));
   } catch (error) {
     return next(error);
   }
@@ -368,8 +414,20 @@ async function updateOrder(req, res, next) {
     if (filteredUpdate.shippingCost !== undefined) {
       const order = await Order.findById(id);
       if (order) {
-        const subtotal = order.products.reduce((total, item) => total + (item.price * item.quantity), 0);
-        filteredUpdate.totalPrice = subtotal + filteredUpdate.shippingCost;
+        const subtotal = Number.isFinite(Number(order.subtotal)) && Number(order.subtotal) > 0
+          ? roundMoney(order.subtotal)
+          : getItemsSubtotal(order.products);
+        const taxAmount = Number.isFinite(Number(order.taxAmount)) ? roundMoney(order.taxAmount) : 0;
+        const shippingCost = roundMoney(filteredUpdate.shippingCost);
+
+        if (!Number.isFinite(shippingCost) || shippingCost < 0) {
+          return res.status(400).json({ error: 'shippingCost must be a non-negative number' });
+        }
+
+        filteredUpdate.subtotal = subtotal;
+        filteredUpdate.taxAmount = taxAmount;
+        filteredUpdate.shippingCost = shippingCost;
+        filteredUpdate.totalPrice = roundMoney(subtotal + taxAmount + shippingCost);
       }
     }
 
@@ -384,7 +442,7 @@ async function updateOrder(req, res, next) {
       .populate('paymentMethod');
 
     if (updatedOrder) {
-      return res.status(200).json(updatedOrder);
+      return res.status(200).json(enrichOrderTotals(updatedOrder.toObject()));
     } else {
       return res.status(404).json({ message: 'Orden no encontrada' });
     }
@@ -421,7 +479,7 @@ async function cancelOrder(req, res, next) {
       .populate('shippingAddress')
       .populate('paymentMethod');
 
-    res.status(200).json(updatedOrder);
+    res.status(200).json(enrichOrderTotals(updatedOrder.toObject()));
   } catch (error) {
     return next(error);
   }
@@ -450,7 +508,7 @@ async function updateOrderStatus(req, res, next) {
       .populate('paymentMethod');
 
     if (updatedOrder) {
-      return res.status(200).json(updatedOrder);
+      return res.status(200).json(enrichOrderTotals(updatedOrder.toObject()));
     } else {
       return res.status(404).json({ message: 'Orden no encontrada' });
     }
@@ -482,7 +540,7 @@ async function updatePaymentStatus(req, res, next) {
       .populate('paymentMethod');
 
     if (updatedOrder) {
-      return res.status(200).json(updatedOrder);
+      return res.status(200).json(enrichOrderTotals(updatedOrder.toObject()));
     } else {
       return res.status(404).json({ message: 'Orden no encontrada' });
     }

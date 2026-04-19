@@ -53,6 +53,19 @@ describe('categoryController', () => {
             });
             Category.create.mockResolvedValue({ _id: 'c1', name: 'Joyería' });
             await createCategory(req, res, next);
+            expect(Category.create).toHaveBeenCalledWith(expect.objectContaining({ imageURL: null }));
+            expect(res.status).toHaveBeenCalledWith(201);
+        });
+
+        it('normaliza imageURL vacío a null al crear', async () => {
+            const { req, res, next } = createMockReqRes({
+                body: { name: 'Joyería', description: 'desc', imageURL: '   ' }
+            });
+            Category.create.mockResolvedValue({ _id: 'c1', name: 'Joyería' });
+
+            await createCategory(req, res, next);
+
+            expect(Category.create).toHaveBeenCalledWith(expect.objectContaining({ imageURL: null }));
             expect(res.status).toHaveBeenCalledWith(201);
         });
     });
@@ -65,6 +78,23 @@ describe('categoryController', () => {
             });
             Category.findByIdAndUpdate.mockResolvedValue({ _id: 'c1', name: 'Updated' });
             await updateCategory(req, res, next);
+            expect(res.status).toHaveBeenCalledWith(200);
+        });
+
+        it('normaliza imageURL vacío a null al actualizar', async () => {
+            const { req, res, next } = createMockReqRes({
+                params: { id: 'c1' },
+                body: { name: 'Updated', description: 'desc', imageURL: '   ' }
+            });
+            Category.findByIdAndUpdate.mockResolvedValue({ _id: 'c1', name: 'Updated', imageURL: null });
+
+            await updateCategory(req, res, next);
+
+            expect(Category.findByIdAndUpdate).toHaveBeenCalledWith(
+                'c1',
+                expect.objectContaining({ imageURL: null }),
+                { new: true }
+            );
             expect(res.status).toHaveBeenCalledWith(200);
         });
     });

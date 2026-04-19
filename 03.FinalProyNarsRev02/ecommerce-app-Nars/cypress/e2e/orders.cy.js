@@ -54,6 +54,8 @@ describe('Orders Feature - API Real', () => {
     cy.get('[data-cy="order-detail-card"]').should('be.visible')
     cy.get('[data-cy="order-detail-id"]').should('contain', seededOrderId)
     cy.get('[data-cy="order-detail-items"]').should('be.visible')
+    cy.get('[data-cy="order-detail-subtotal"]').should('be.visible')
+    cy.get('[data-cy="order-detail-shipping-cost"]').should('be.visible')
     cy.get('[data-cy="order-detail-total"]').should('be.visible')
   })
 

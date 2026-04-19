@@ -68,6 +68,8 @@ describe('Flujos Secundarios: Carrito y Checkout', () => {
     cy.get('[data-testid^="add-to-cart-"]:not(:disabled)', { timeout: 15000 }).first().click()
 
     cy.visit('/cart')
+    cy.contains('Envío').should('be.visible')
+    cy.contains('IVA').should('not.exist')
     cy.get('[data-testid="checkout-btn"]').click()
     cy.url().should('include', '/checkout')
 
@@ -90,6 +92,8 @@ describe('Flujos Secundarios: Carrito y Checkout', () => {
     cy.url().should('include', '/confirmation')
     cy.get('[data-testid="order-summary"]', { timeout: 10000 }).should('be.visible')
     cy.get('[data-testid="order-summary"]').should('contain', loginUser.displayName)
+    cy.get('[data-testid="order-summary"]').should('contain', 'Envío')
+    cy.get('[data-testid="order-summary"]').should('not.contain', 'IVA')
   })
 
   it('E2E-PH3-004: Historial de Órdenes muestra compras reales del usuario autenticado', () => {

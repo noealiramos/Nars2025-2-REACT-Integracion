@@ -266,18 +266,18 @@ Cypress.Commands.add('waitForAccessTokenToExpire', () => {
 
 Cypress.Commands.add('revokeRefreshTokensForCurrentSession', () => {
   cy.window().then((win) => {
-    const accessToken = win.localStorage.getItem('accessToken')
-    expect(accessToken, 'access token for test revoke endpoint').to.be.a('string').and.not.be.empty
+    const refreshToken = win.localStorage.getItem('refreshToken')
+    expect(refreshToken, 'refresh token for session revoke flow').to.be.a('string').and.not.be.empty
 
     return requestWithRetry({
       method: 'POST',
-      url: `${AUTH_TEST_API_URL}/auth/test/revoke-refresh-tokens`,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
+      url: `${AUTH_TEST_API_URL}/auth/logout`,
+      body: {
+        refreshToken,
       },
     }).then((response) => {
       expect(response.status).to.eq(200)
-      expect(response.body?.revokedCount).to.be.greaterThan(0)
+      expect(response.body?.message).to.eq('Logged out successfully')
     })
   })
 })

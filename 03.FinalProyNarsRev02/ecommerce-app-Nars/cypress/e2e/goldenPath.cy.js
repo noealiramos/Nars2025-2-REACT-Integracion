@@ -46,6 +46,8 @@ describe('Golden Path - Login to Orders', () => {
     cy.get('[data-testid="nav-cart"]').click()
     cy.url().should('include', '/cart')
     cy.get('.cart-item').should('have.length', 1)
+    cy.contains('Envío').should('be.visible')
+    cy.contains('IVA').should('not.exist')
 
     cy.intercept('POST', '**/api/shipping-addresses').as('createShipping')
     cy.intercept('POST', '**/api/payment-methods').as('createPayment')
@@ -78,6 +80,8 @@ describe('Golden Path - Login to Orders', () => {
     cy.url().should('include', '/confirmation')
     cy.get('[data-testid="order-summary"]').should('be.visible')
     cy.contains('ID de orden').should('be.visible')
+    cy.get('[data-testid="order-summary"]').should('contain', 'Envío')
+    cy.get('[data-testid="order-summary"]').should('not.contain', 'IVA')
     cy.get('[data-testid="cart-badge"]').should('not.exist')
 
     cy.intercept('GET', '**/api/orders/user/*').as('getOrders')

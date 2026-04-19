@@ -14,8 +14,8 @@ Aplicacion frontend del e-commerce de joyeria Ramdi Jewelry. Consume una API rea
 ## Requisitos
 
 - Node.js 18+
-- Backend `ecommerce-api-Nars` corriendo en `http://localhost:3000`
-- Variable opcional `VITE_API_URL` si la API no usa `http://localhost:3000/api`
+- Backend `ecommerce-api-Nars` corriendo en `http://localhost:3001`
+- Variable opcional `VITE_API_URL` si la API no usa `http://localhost:3001/api`
 
 ## Instalacion
 
@@ -34,10 +34,10 @@ npm start
 
 ## Variables de entorno
 
-Crear un archivo `.env` si necesitas cambiar la URL del backend:
+Crear un archivo `.env.local` si necesitas cambiar la URL del backend:
 
 ```bash
-VITE_API_URL=http://localhost:3000/api
+VITE_API_URL=http://localhost:3001/api
 ```
 
 ## Funcionalidades actuales
@@ -92,7 +92,7 @@ Los escenarios de Cypress estan en `cypress/e2e` e incluyen:
 - ordenes
 - validaciones de login y checkout
 
-Para ejecutarlas, el frontend debe estar disponible en `http://localhost:5173` y el backend en `http://localhost:3000`.
+Para ejecutarlas, el frontend debe estar disponible en `http://localhost:5173` y el backend en `http://localhost:3001`.
 
 ## Estado actual
 

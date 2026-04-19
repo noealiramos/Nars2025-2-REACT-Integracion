@@ -9,6 +9,7 @@ import {
     getOrderById,
     createOrder,
     checkoutFromCart,
+    updateOrder,
     cancelOrder,
     deleteOrder
 } from '../../../src/controllers/orderController.js';
@@ -57,6 +58,31 @@ describe('orderController', () => {
             await getOrderById(req, res, next);
             expect(res.json).toHaveBeenCalled();
         });
+
+        it('mantiene taxAmount en 0 para ordenes legacy sin recalculo retroactivo', async () => {
+            const { req, res, next } = createMockReqRes({
+                params: { id: 'o-legacy' },
+                user: { id: 'u1', role: 'customer' }
+            });
+            Order.findById.mockReturnValue({
+                populate: vi.fn().mockReturnThis(),
+                lean: vi.fn().mockResolvedValue({
+                    _id: 'o-legacy',
+                    user: 'u1',
+                    products: [{ price: 100, quantity: 2 }],
+                    shippingCost: 99,
+                })
+            });
+
+            await getOrderById(req, res, next);
+
+            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+                subtotal: 200,
+                taxAmount: 0,
+                shippingCost: 99,
+                totalPrice: 299,
+            }));
+        });
     });
 
     describe('createOrder', () => {
@@ -80,8 +106,43 @@ describe('orderController', () => {
             Order.create.mockResolvedValue(mockOrder);
 
             await createOrder(req, res, next);
-            expect(Order.create).toHaveBeenCalled();
+            expect(Order.create).toHaveBeenCalledWith(expect.objectContaining({
+                subtotal: 100,
+                taxAmount: 0,
+                shippingCost: 0,
+                totalPrice: 100,
+            }));
             expect(res.status).toHaveBeenCalledWith(201);
+        });
+
+        it('mantiene total consistente sin IVA visible', async () => {
+            const { req, res, next } = createMockReqRes({
+                user: { id: 'u1' },
+                body: {
+                    products: [{ productId: 'p1', quantity: 3 }],
+                    shippingAddress: 'addr1',
+                    paymentMethod: 'pm1',
+                    shippingCost: 99,
+                }
+            });
+            ShippingAddress.findById.mockReturnValue({ lean: vi.fn().mockResolvedValue({ _id: 'addr1', user: 'u1' }) });
+            PaymentMethod.findById.mockReturnValue({ lean: vi.fn().mockResolvedValue({ _id: 'pm1', user: 'u1', active: true }) });
+            Product.find.mockReturnValue({ lean: vi.fn().mockResolvedValue([{ _id: 'p1', price: 333.33 }]) });
+
+            const mockOrder = {
+                _id: 'o-rounded',
+                populate: vi.fn().mockReturnThis()
+            };
+            Order.create.mockResolvedValue(mockOrder);
+
+            await createOrder(req, res, next);
+
+            expect(Order.create).toHaveBeenCalledWith(expect.objectContaining({
+                subtotal: 999.99,
+                taxAmount: 0,
+                shippingCost: 99,
+                totalPrice: 1098.99,
+            }));
         });
     });
 
@@ -105,6 +166,12 @@ describe('orderController', () => {
 
             expect(Product.findOneAndUpdate).toHaveBeenCalled(); // Descuento stock
             expect(Cart.updateOne).toHaveBeenCalledWith({ user: 'u1' }, { $set: { products: [] } }); // Vaciar carrito
+            expect(Order.create).toHaveBeenCalledWith(expect.objectContaining({
+                subtotal: 100,
+                taxAmount: 0,
+                shippingCost: 0,
+                totalPrice: 100,
+            }));
             expect(res.status).toHaveBeenCalledWith(201);
         });
 
@@ -123,6 +190,46 @@ describe('orderController', () => {
 
             await checkoutFromCart(req, res, next);
             expect(res.status).toHaveBeenCalledWith(400);
+        });
+    });
+
+    describe('updateOrder', () => {
+        it('recalcula total cuando cambia shippingCost sin alterar IVA legacy en 0', async () => {
+            const { req, res, next } = createMockReqRes({
+                params: { id: 'o1' },
+                body: { shippingCost: 120 }
+            });
+
+            Order.findById.mockResolvedValue({
+                _id: 'o1',
+                subtotal: 200,
+                taxAmount: 0,
+                products: [{ price: 100, quantity: 2 }],
+            });
+            Order.findByIdAndUpdate.mockReturnValue({
+                populate: vi.fn().mockReturnThis(),
+                toObject: vi.fn().mockReturnValue({
+                    _id: 'o1',
+                    subtotal: 200,
+                    taxAmount: 0,
+                    shippingCost: 120,
+                    totalPrice: 320,
+                })
+            });
+
+            await updateOrder(req, res, next);
+
+            expect(Order.findByIdAndUpdate).toHaveBeenCalledWith(
+                'o1',
+                expect.objectContaining({
+                    subtotal: 200,
+                    taxAmount: 0,
+                    shippingCost: 120,
+                    totalPrice: 320,
+                }),
+                { new: true }
+            );
+            expect(res.status).toHaveBeenCalledWith(200);
         });
     });
 

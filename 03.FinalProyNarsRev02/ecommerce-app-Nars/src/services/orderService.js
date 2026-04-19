@@ -18,6 +18,8 @@ const normalizeOrderItem = (item = {}) => {
 
 const normalizeOrder = (order = {}) => {
   const items = Array.isArray(order.products) ? order.products.map(normalizeOrderItem) : [];
+  const subtotal = Number(order.subtotal || 0);
+  const taxAmount = Number(order.taxAmount || 0);
   const shippingCost = Number(order.shippingCost || 0);
   const totalPrice = Number(order.totalPrice || 0);
 
@@ -26,6 +28,8 @@ const normalizeOrder = (order = {}) => {
     id: order._id || order.id,
     items,
     createdAt: order.createdAt || null,
+    subtotal,
+    taxAmount,
     shippingCost,
     totalPrice,
     itemCount: items.reduce((acc, item) => acc + item.quantity, 0),

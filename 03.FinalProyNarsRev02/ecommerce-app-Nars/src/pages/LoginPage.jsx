@@ -10,8 +10,8 @@ import "./LoginPage.css";
 
 export function LoginPage() {
   const { login, error } = useAuth();
-  const [email, setEmail] = useState("ali.ramos@mail.com");
-  const [password, setPassword] = useState("123456");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [validationError, setValidationError] = useState(null);
   const navigate = useNavigate();
@@ -42,12 +42,6 @@ export function LoginPage() {
         <Heading level={2} align="center">
           Iniciar sesión
         </Heading>
-        <Text className="login-card__hint">
-          Usa uno de los usuarios de prueba. Por ejemplo:{" "}
-          <span className="login-card__example">
-            ali.ramos@mail.com / 123456
-          </span>
-        </Text>
         <form onSubmit={handleSubmit} className="login-form">
           <TextInput
             id="email"

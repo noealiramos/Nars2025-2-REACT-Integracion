@@ -1,8 +1,12 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import request from 'supertest';
-import app from '../server.js';
+import app from '../src/app.js';
+import { bootstrapServer } from '../server.js';
 
 describe('Security Verification Tests', () => {
+    beforeAll(async () => {
+        await bootstrapServer({ startListening: false });
+    });
 
     describe('CORS Configuration', () => {
         it('should allow requests from whitelisted origins', async () => {

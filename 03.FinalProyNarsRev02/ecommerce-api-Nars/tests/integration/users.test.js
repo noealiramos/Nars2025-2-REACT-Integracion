@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
-import app from '../../server.js';
 import User from '../../src/models/user.js';
 import jwt from 'jsonwebtoken';
 
@@ -15,6 +14,8 @@ vi.mock('../../src/models/category.js', () => ({
 vi.mock('../../src/models/product.js', () => ({
     default: { init: vi.fn().mockResolvedValue(null), find: vi.fn() }
 }));
+
+import app from '../../src/app.js';
 
 describe('User Integration Tests (RBAC)', () => {
     const secret = 'test_secret';

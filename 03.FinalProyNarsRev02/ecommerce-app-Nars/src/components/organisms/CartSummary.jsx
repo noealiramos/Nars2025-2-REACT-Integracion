@@ -1,10 +1,11 @@
 import { SHIPPING_COST } from "../../constants/orderConstants";
 import "./CartSummary.css";
 
-export function CartSummary({ subtotal, onCheckout }) {
-  const iva = subtotal * 0.16;
-  const shipping = SHIPPING_COST;
-  const total = subtotal + iva + shipping;
+export function CartSummary({ subtotal, shippingCost = SHIPPING_COST, total, onCheckout }) {
+  const resolvedShippingCost = Number(shippingCost || 0);
+  const resolvedTotal = Number.isFinite(Number(total))
+    ? Number(total)
+    : subtotal + resolvedShippingCost;
 
   const formatMoney = (value) =>
     new Intl.NumberFormat("es-MX", {
@@ -23,18 +24,13 @@ export function CartSummary({ subtotal, onCheckout }) {
         </div>
 
         <div className="cart-summary__row cart-summary__row--muted">
-          <span>IVA (16%)</span>
-          <span>{formatMoney(iva)}</span>
-        </div>
-
-        <div className="cart-summary__row cart-summary__row--muted">
           <span>Envío</span>
-          <span>{formatMoney(shipping)}</span>
+          <span>{formatMoney(resolvedShippingCost)}</span>
         </div>
 
         <div className="cart-summary__row cart-summary__row--total">
           <span>Total</span>
-          <span>{formatMoney(total)}</span>
+          <span>{formatMoney(resolvedTotal)}</span>
         </div>
       </div>
 
@@ -48,8 +44,8 @@ export function CartSummary({ subtotal, onCheckout }) {
       </button>
 
       <p className="cart-summary__note">
-        El método de pago se selecciona en el siguiente paso. El envío es fijo
-        por ahora ($99 MXN).
+        El metodo de pago se selecciona en el siguiente paso. Los cargos
+        finales se confirman desde backend al crear la orden.
       </p>
     </aside>
   );

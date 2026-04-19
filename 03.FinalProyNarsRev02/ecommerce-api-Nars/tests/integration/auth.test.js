@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
-import app from '../../server.js';
 import User from '../../src/models/user.js';
 import bcrypt from 'bcrypt';
 
@@ -22,6 +21,8 @@ vi.mock('../../src/models/refreshToken.js', () => ({
         updateMany: vi.fn().mockResolvedValue({ modifiedCount: 1 })
     }
 }));
+
+import app from '../../src/app.js';
 
 describe('Auth Integration Tests', () => {
     beforeEach(() => {

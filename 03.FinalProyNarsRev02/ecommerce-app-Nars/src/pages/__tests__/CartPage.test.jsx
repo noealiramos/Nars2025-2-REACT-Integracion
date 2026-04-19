@@ -87,6 +87,10 @@ describe("CartPage", () => {
     renderPage();
     expect(screen.getByText(/Tienes 1 producto/i)).toBeInTheDocument();
     expect(screen.getByText(/Anillo/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Envío/i).length).toBeGreaterThan(0);
+    expect(screen.getByText("$99.00")).toBeInTheDocument();
+    expect(screen.getByText("$339.00")).toBeInTheDocument();
+    expect(screen.queryByText(/IVA/i)).not.toBeInTheDocument();
   });
 
   it("renderiza estado invitado cuando el carrito no forma parte del flujo autenticado", () => {

@@ -43,13 +43,14 @@ describe("LoginPage", () => {
     loginMock.mockResolvedValue(true);
   });
 
-  it("renderiza el formulario con credenciales de prueba precargadas", () => {
+  it("renderiza el formulario con campos vacios y sin texto demo", () => {
     renderPage();
 
     expect(screen.getByRole("heading", { name: "Iniciar sesión" })).toBeInTheDocument();
-    expect(screen.getByTestId("input-email")).toHaveValue("ali.ramos@mail.com");
-    expect(screen.getByTestId("input-password")).toHaveValue("123456");
+    expect(screen.getByTestId("input-email")).toHaveValue("");
+    expect(screen.getByTestId("input-password")).toHaveValue("");
     expect(screen.getByTestId("btn-entrar")).toHaveTextContent("Entrar");
+    expect(screen.queryByText(/usuarios de prueba/i)).not.toBeInTheDocument();
   });
 
   it("envia email y password al autenticarse correctamente", async () => {
@@ -72,6 +73,8 @@ describe("LoginPage", () => {
     const user = userEvent.setup();
     renderPage([{ pathname: "/login", state: { from: { pathname: "/orders" } } }]);
 
+    await user.type(screen.getByTestId("input-email"), "cliente@mail.com");
+    await user.type(screen.getByTestId("input-password"), "secret123");
     await user.click(screen.getByTestId("btn-entrar"));
 
     await waitFor(() => {
@@ -88,6 +91,8 @@ describe("LoginPage", () => {
     });
 
     renderPage();
+    await user.type(screen.getByTestId("input-email"), "cliente@mail.com");
+    await user.type(screen.getByTestId("input-password"), "secret123");
     await user.click(screen.getByTestId("btn-entrar"));
 
     expect(loginMock).toHaveBeenCalledTimes(1);
@@ -105,6 +110,8 @@ describe("LoginPage", () => {
     );
 
     renderPage();
+    await user.type(screen.getByTestId("input-email"), "cliente@mail.com");
+    await user.type(screen.getByTestId("input-password"), "secret123");
     await user.click(screen.getByTestId("btn-entrar"));
 
     expect(screen.getByTestId("btn-entrar")).toBeDisabled();

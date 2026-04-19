@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
-import app from '../../server.js';
 import Product from '../../src/models/product.js';
 import Cart from '../../src/models/cart.js';
 import ShippingAddress from '../../src/models/shippingAddress.js';
@@ -25,6 +24,8 @@ vi.mock('../../src/models/order.js');
 vi.mock('../../src/models/category.js', () => ({
     default: { init: vi.fn().mockResolvedValue(null) }
 }));
+
+import app from '../../src/app.js';
 
 describe('Cart & Order Integration Tests', () => {
     const secret = 'test_secret';
@@ -82,7 +83,16 @@ describe('Cart & Order Integration Tests', () => {
             const mockOrder = {
                 _id: 'o_test',
                 totalPrice: 200,
-                populate: vi.fn().mockReturnThis()
+                populate: vi.fn().mockReturnThis(),
+                toObject: vi.fn().mockReturnValue({
+                    _id: 'o_test',
+                    totalPrice: 200,
+                    subtotal: 200,
+                    taxAmount: 0,
+                    shippingCost: 0,
+                    status: 'pending',
+                    paymentStatus: 'pending'
+                })
             };
             Order.create.mockResolvedValue(mockOrder);
             Cart.updateOne.mockResolvedValue({});

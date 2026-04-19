@@ -76,7 +76,7 @@ export function OrderDetailPage() {
       {!loading && error && <p className="order-detail-page__status order-detail-page__status--error" data-cy="order-detail-error">{error}</p>}
 
       {!loading && !error && order && (
-        <section className="order-detail-card" data-cy="order-detail-card">
+        <section className="order-detail-card" data-cy="order-detail-card" data-testid="order-detail-card">
           <div className="order-detail-card__meta">
             <div>
               <p className="order-detail-card__label">ID</p>
@@ -111,6 +111,24 @@ export function OrderDetailPage() {
             </div>
           </div>
 
+          <div className="order-detail-card__section">
+            <h3>Resumen</h3>
+            <div className="order-detail-items">
+              <article className="order-detail-item">
+                <div>
+                  <p className="order-detail-item__name">Subtotal</p>
+                </div>
+                <p className="order-detail-item__price" data-cy="order-detail-subtotal" data-testid="order-detail-subtotal">{formatMoney(order.subtotal)}</p>
+              </article>
+              <article className="order-detail-item">
+                <div>
+                  <p className="order-detail-item__name">Envío</p>
+                </div>
+                <p className="order-detail-item__price" data-cy="order-detail-shipping-cost" data-testid="order-detail-shipping-cost">{formatMoney(order.shippingCost)}</p>
+              </article>
+            </div>
+          </div>
+
           <div className="order-detail-card__columns">
             <div className="order-detail-card__section">
               <h3>Envío</h3>
@@ -122,7 +140,7 @@ export function OrderDetailPage() {
             </div>
           </div>
 
-          <div className="order-detail-total" data-cy="order-detail-total">
+          <div className="order-detail-total" data-cy="order-detail-total" data-testid="order-detail-total">
             <span>Total pagado</span>
             <strong>{formatMoney(order.totalPrice)}</strong>
           </div>

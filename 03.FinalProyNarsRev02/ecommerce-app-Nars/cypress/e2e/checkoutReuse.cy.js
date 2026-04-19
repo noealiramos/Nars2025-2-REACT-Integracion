@@ -280,4 +280,42 @@ describe('Phase 2 Hardening - Checkout Reuse', () => {
       expect(counters.payment).to.eq(1)
     })
   })
+
+  it('permite editar una direccion guardada con guardar y cancelar sin confirmar compra', () => {
+    cy.intercept('GET', '**/api/shipping-addresses').as('getShippingOptions')
+    cy.intercept('GET', '**/api/payment-methods/user/*').as('getPaymentOptions')
+    cy.intercept('PATCH', '**/api/shipping-addresses/*').as('updateShipping')
+
+    openCheckoutWithNewCart()
+
+    cy.wait('@getShippingOptions').its('response.statusCode').should('be.oneOf', [200, 304])
+    cy.wait('@getPaymentOptions').its('response.statusCode').should('be.oneOf', [200, 304])
+
+    cy.get('[data-testid^="shipping-edit-"]', { timeout: 15000 }).first().click()
+    cy.get('[data-testid="input-city"]').should('not.be.disabled').clear().type('Zapopan')
+    cy.get('[data-testid="shipping-cancel-edit"]').click()
+    cy.get('[data-testid="input-city"]').should('be.disabled').and('not.have.value', 'Zapopan')
+
+    cy.get('[data-testid^="shipping-edit-"]').first().click()
+    cy.get('[data-testid="input-city"]').clear().type('Zapopan')
+    cy.get('[data-testid="shipping-save-edit"]').click()
+    cy.wait('@updateShipping').its('response.statusCode').should('eq', 200)
+    cy.get('[data-testid="input-city"]').should('be.disabled').and('have.value', 'Zapopan')
+    cy.url().should('include', '/checkout')
+  })
+
+  it('muestra confirmacion al eliminar direccion y respeta cancelar', () => {
+    cy.intercept('GET', '**/api/shipping-addresses').as('getShippingOptions')
+    cy.intercept('GET', '**/api/payment-methods/user/*').as('getPaymentOptions')
+    cy.intercept('DELETE', '**/api/shipping-addresses/*').as('deleteShipping')
+
+    openCheckoutWithNewCart()
+
+    cy.wait('@getShippingOptions').its('response.statusCode').should('be.oneOf', [200, 304])
+    cy.wait('@getPaymentOptions').its('response.statusCode').should('be.oneOf', [200, 304])
+
+    cy.on('window:confirm', () => false)
+    cy.get('[data-testid^="shipping-delete-"]', { timeout: 15000 }).first().click()
+    cy.get('@deleteShipping.all').should('have.length', 0)
+  })
 })

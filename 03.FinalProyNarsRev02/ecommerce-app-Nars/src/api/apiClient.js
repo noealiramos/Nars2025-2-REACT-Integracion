@@ -80,6 +80,10 @@ export const apiClient = axios.create({
 // Interceptor para añadir el token a las peticiones
 apiClient.interceptors.request.use(
   (config) => {
+    if (typeof FormData !== "undefined" && config.data instanceof FormData) {
+      delete config.headers["Content-Type"];
+    }
+
     const token = localStorage.getItem(STORAGE_KEYS.accessToken);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

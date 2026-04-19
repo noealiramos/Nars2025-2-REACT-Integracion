@@ -29,10 +29,27 @@
 
 .checkout-form {
   margin-top: 0.9rem;
+  max-width: 58rem;
   border-radius: 0.9rem;
   border: 1px solid #1f2937;
   background: radial-gradient(circle at top left, #020617, #020617 45%, #020617);
-  padding: 1rem 1.1rem;
+  padding: 1.1rem;
+}
+
+.checkout-section {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.form-grid {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.form-row {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .saved-options {
@@ -48,19 +65,25 @@
 }
 
 .saved-option-card {
-  display: flex;
-  align-items: flex-start;
+  display: grid;
   gap: 0.75rem;
   padding: 0.9rem 1rem;
+  max-width: 42rem;
   border: 1px solid #334155;
   border-radius: 0.85rem;
   background: rgba(15, 23, 42, 0.78);
-  cursor: pointer;
 }
 
 .saved-option-card:has(input:checked) {
   border-color: #38bdf8;
   box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.25);
+}
+
+.saved-option-card label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
 }
 
 .saved-option-card input {
@@ -78,8 +101,20 @@
   color: #9ca3af;
 }
 
+.saved-option-card__actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
 .saved-option-card--new {
   border-style: dashed;
+}
+
+.checkout-section__actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 /* ACCIONES */
@@ -131,6 +166,14 @@
 }
 
 @media (max-width: 640px) {
+  .checkout-form {
+    padding: 1rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
   .payment-form__inline {
     flex-direction: column;
   }

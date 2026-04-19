@@ -22,12 +22,13 @@ const validateCategoryForm = (form) => {
 };
 
 export function AdminCategoriesPage() {
+  const [page, setPage] = useState(1);
   const [form, setForm] = useState(EMPTY_FORM);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const editing = Boolean(form.id);
-  const { categories, isLoading, isError, refetch, saveCategory, deleteCategory, isSaving, isDeleting } = useAdminCategories();
-  const parentOptions = useMemo(() => categories.filter((category) => (category._id || category.id) !== form.id), [categories, form.id]);
+  const { categories, pagination, parentOptions, isLoading, isError, refetch, saveCategory, deleteCategory, isSaving, isDeleting } = useAdminCategories(page);
+  const availableParentOptions = useMemo(() => parentOptions.filter((category) => (category._id || category.id) !== form.id), [parentOptions, form.id]);
 
   const handleFieldChange = (event) => {
     const { name, value } = event.target;
@@ -60,6 +61,9 @@ export function AdminCategoriesPage() {
     try {
       await deleteCategory(categoryId);
       if (form.id === categoryId) resetForm();
+      if (categories.length === 1 && pagination.currentPage > 1) {
+        setPage((currentPage) => Math.max(currentPage - 1, 1));
+      }
       setSuccess("Categoría eliminada correctamente.");
     } catch (requestError) {
       setError(requestError.response?.data?.message || "No pudimos eliminar la categoría.");
@@ -80,7 +84,7 @@ export function AdminCategoriesPage() {
     const payload = {
       name: form.name.trim(),
       description: form.description.trim(),
-      imageURL: form.imageURL.trim() || undefined,
+      imageURL: form.imageURL.trim() || null,
       parentCategory: form.parentCategory || undefined,
     };
 
@@ -88,6 +92,9 @@ export function AdminCategoriesPage() {
       await saveCategory({ id: editing ? form.id : null, payload });
       const message = editing ? "Categoría actualizada correctamente." : "Categoría creada correctamente.";
       setSuccess(message);
+      if (!editing) {
+        setPage(1);
+      }
       resetForm();
     } catch (requestError) {
       setError(requestError.response?.data?.message || "No pudimos guardar la categoría.");
@@ -117,8 +124,8 @@ export function AdminCategoriesPage() {
             <label htmlFor="admin-category-parent" className="form-label">Categoría padre</label>
             <select id="admin-category-parent" name="parentCategory" className="form-input" value={form.parentCategory} onChange={handleFieldChange} data-testid="admin-category-parent">
               <option value="">Sin categoría padre</option>
-              {parentOptions.map((category) => (
-                <option key={category._id} value={category._id}>{category.name}</option>
+              {availableParentOptions.map((category) => (
+                <option key={category._id || category.id} value={category._id || category.id}>{category.name}</option>
               ))}
             </select>
           </div>
@@ -141,25 +148,53 @@ export function AdminCategoriesPage() {
               <Button type="button" variant="secondary" onClick={() => refetch()} data-testid="admin-categories-retry">Reintentar</Button>
             </section>
           ) : (
-            <div className="admin-categories-list__items" data-testid="admin-categories-list">
-              {categories.map((category) => {
-                const categoryId = category._id || category.id;
-                return (
-                  <article className="admin-category-card" key={categoryId} data-testid={`admin-category-row-${categoryId}`}>
-                    <div>
-                      <strong>{category.name}</strong>
-                      <p>{category.description}</p>
-                      <small>Padre: {category.parentCategory?.name || "Ninguna"}</small>
-                    </div>
-                    <div className="admin-category-card__actions">
-                      <Button type="button" variant="secondary" onClick={() => handleEdit(category)} data-testid={`admin-category-edit-${categoryId}`}>Editar</Button>
-                      <Button type="button" variant="ghost" onClick={() => handleDelete(categoryId)} data-testid={`admin-category-delete-${categoryId}`} disabled={isDeleting}>Eliminar</Button>
-                    </div>
-                  </article>
-                );
-              })}
-              {!categories.length && <p className="page__status">No hay categorías disponibles para administrar.</p>}
-            </div>
+            <>
+              <div className="admin-categories-list__items" data-testid="admin-categories-list">
+                {categories.map((category) => {
+                  const categoryId = category._id || category.id;
+                  return (
+                    <article className="admin-category-card" key={categoryId} data-testid={`admin-category-row-${categoryId}`}>
+                      <div>
+                        <strong>{category.name}</strong>
+                        <p>{category.description}</p>
+                        <small>Padre: {category.parentCategory?.name || "Ninguna"}</small>
+                      </div>
+                      <div className="admin-category-card__actions">
+                        <Button type="button" variant="secondary" onClick={() => handleEdit(category)} data-testid={`admin-category-edit-${categoryId}`}>Editar</Button>
+                        <Button type="button" variant="ghost" onClick={() => handleDelete(categoryId)} data-testid={`admin-category-delete-${categoryId}`} disabled={isDeleting}>Eliminar</Button>
+                      </div>
+                    </article>
+                  );
+                })}
+                {!categories.length && <p className="page__status">No hay categorías disponibles para administrar.</p>}
+              </div>
+
+              {pagination.totalPages > 1 && (
+                <div className="admin-categories-pagination" data-testid="admin-categories-pagination">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => setPage((currentPage) => Math.max(currentPage - 1, 1))}
+                    disabled={!pagination.hasPrev}
+                    data-testid="admin-categories-prev"
+                  >
+                    Anterior
+                  </Button>
+                  <span className="admin-categories-pagination__text" data-testid="admin-categories-pagination-text">
+                    Pagina {pagination.currentPage} de {pagination.totalPages}
+                  </span>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => setPage((currentPage) => currentPage + 1)}
+                    disabled={!pagination.hasNext}
+                    data-testid="admin-categories-next"
+                  >
+                    Siguiente
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </section>
       </section>

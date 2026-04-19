@@ -1,6 +1,15 @@
 import Category from "../models/category.js";
 import { getPagination } from "../utils/pagination.js";
 
+const normalizeCategoryImageURL = (imageURL) => {
+  if (typeof imageURL === "string") {
+    const trimmedImageURL = imageURL.trim();
+    return trimmedImageURL ? trimmedImageURL : null;
+  }
+
+  return imageURL == null ? null : imageURL;
+};
+
 async function getCategories(req, res, next) {
   try {
     // default 10 por página
@@ -62,7 +71,7 @@ async function createCategory(req, res, next) {
       name,
       description,
       parentCategory: parentCategory || null,
-      imageURL: imageURL || null,
+      imageURL: normalizeCategoryImageURL(imageURL),
     });
     res.status(201).json(newCategory);
   } catch (error) {
@@ -74,10 +83,11 @@ async function updateCategory(req, res, next) {
   try {
     const { name, description, parentCategory, imageURL } = req.body;
     const idCategory = req.params.id;
+    const normalizedImageURL = normalizeCategoryImageURL(imageURL);
 
     const updatedCategory = await Category.findByIdAndUpdate(
       idCategory,
-      { name, description, parentCategory, imageURL },
+      { name, description, parentCategory, imageURL: normalizedImageURL },
       { new: true }
     );
 

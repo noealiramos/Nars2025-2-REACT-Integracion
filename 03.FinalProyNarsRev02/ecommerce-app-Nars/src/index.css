@@ -41,6 +41,7 @@ body {
   /* Tema claro */
   --bg: #f8fafc;
   --surface: #ffffff;
+  --surface-elevated: #ffffff;
   --text: #0f172a;
   --muted: #475569;
   --border: #cbd5e1;
@@ -69,6 +70,7 @@ body {
 :root[data-theme="dark"] {
   --bg: #0f172a;
   --surface: #1e293b;
+  --surface-elevated: #334155;
   --text: #f8fafc;
   --muted: #94a3b8;
   --border: #334155;

@@ -7,6 +7,7 @@ import { Text } from "../components/atoms/Text";
 import { useUI } from "../contexts/UIContext";
 import { productApi } from "../api/productApi";
 import { categoryApi } from "../api/categoryApi";
+import { uploadApi } from "../api/uploadApi";
 import "./AdminProductsPage.css";
 
 const MATERIALS = ["Plata", "Oro", "Latón", "Aluminio", "Resina"];
@@ -53,11 +54,15 @@ const validateProductForm = (form) => {
 
 export function AdminProductsPage() {
   const [form, setForm] = useState(EMPTY_FORM);
+  const [page, setPage] = useState(1);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const { dispatch } = useUI();
   const queryClient = useQueryClient();
+  const pageSize = 10;
 
   const editing = Boolean(form.id);
 
@@ -66,8 +71,8 @@ export function AdminProductsPage() {
     isLoading: productsLoading,
     isError: productsError,
   } = useQuery({
-    queryKey: ["admin-products"],
-    queryFn: () => productApi.getAll({ limit: 100 }),
+    queryKey: ["admin-products", page],
+    queryFn: () => productApi.getAll({ page, limit: pageSize }),
   });
 
   const {
@@ -80,6 +85,13 @@ export function AdminProductsPage() {
   });
 
   const products = Array.isArray(productsResponse?.products) ? productsResponse.products : productsResponse?.items || [];
+  const pagination = productsResponse?.pagination || {
+    currentPage: page,
+    totalPages: 1,
+    totalResults: products.length,
+    hasNext: false,
+    hasPrev: page > 1,
+  };
   const categories = Array.isArray(categoriesResponse?.categories) ? categoriesResponse.categories : [];
   const loading = productsLoading || categoriesLoading;
   const loadFailed = productsError || categoriesError;
@@ -115,14 +127,42 @@ export function AdminProductsPage() {
 
   const resetForm = () => {
     setForm(EMPTY_FORM);
+    setSelectedImageFile(null);
     setSuccess("");
     setError("");
   };
 
   const handleEdit = (product) => {
     setForm(toFormState(product));
+    setSelectedImageFile(null);
     setSuccess("");
     setError("");
+  };
+
+  const handleImageFileChange = (event) => {
+    const file = event.target.files?.[0] || null;
+    setSelectedImageFile(file);
+    setError("");
+    setSuccess("");
+  };
+
+  const handleUploadImage = async () => {
+    if (!selectedImageFile) return;
+
+    setUploadingImage(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const uploadedImage = await uploadApi.uploadProductImage(selectedImageFile);
+      setForm((prev) => ({ ...prev, imageUrl: uploadedImage.imageUrl || "" }));
+      setSelectedImageFile(null);
+      setSuccess("Imagen subida correctamente. La URL ya quedó lista para guardar el producto.");
+    } catch (requestError) {
+      setError(requestError.response?.data?.message || "No pudimos subir la imagen.");
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const handleDelete = async (productId) => {
@@ -134,7 +174,12 @@ export function AdminProductsPage() {
       if (form.id === productId) resetForm();
       setSuccess("Producto eliminado correctamente.");
       dispatch({ type: "SHOW_MESSAGE", payload: { type: "success", text: "Producto eliminado correctamente." } });
-      await queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+
+      if (products.length === 1 && pagination.currentPage > 1) {
+        setPage((currentPage) => Math.max(currentPage - 1, 1));
+      } else {
+        await queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+      }
     } catch (requestError) {
       setError(requestError.response?.data?.message || "No pudimos eliminar el producto.");
     }
@@ -178,6 +223,9 @@ export function AdminProductsPage() {
         payload: { type: "success", text: editing ? "Producto actualizado correctamente." : "Producto creado correctamente." },
       });
       resetForm();
+      if (!editing) {
+        setPage(1);
+      }
       await queryClient.invalidateQueries({ queryKey: ["admin-products"] });
     } catch (requestError) {
       setError(requestError.response?.data?.message || "No pudimos guardar el producto.");
@@ -241,6 +289,15 @@ export function AdminProductsPage() {
             </div>
           )}
           <TextInput id="admin-image" name="imageUrl" label="Imagen principal (URL)" value={form.imageUrl} onChange={handleFieldChange} />
+          <div className="admin-products-form__upload-group">
+            <label htmlFor="admin-image-file" className="form-label">Subir imagen</label>
+            <input id="admin-image-file" type="file" accept="image/*" className="form-input" onChange={handleImageFileChange} data-testid="admin-product-file" />
+            <div className="admin-products-form__upload-actions">
+              <Button type="button" variant="secondary" onClick={handleUploadImage} disabled={!selectedImageFile || uploadingImage} data-testid="admin-upload-image">
+                {uploadingImage ? "Subiendo..." : "Subir archivo"}
+              </Button>
+            </div>
+          </div>
 
           <div className="admin-products-form__actions">
             <Button type="submit" disabled={!canSubmit} data-testid="admin-save-product">{saving ? "Guardando..." : editing ? "Guardar cambios" : "Crear producto"}</Button>
@@ -253,25 +310,63 @@ export function AdminProductsPage() {
           {loading ? (
             <p className="page__status">Cargando productos...</p>
           ) : (
-            <div className="admin-products-list__items" data-testid="admin-products-list">
-              {products.map((product) => {
-                const productId = product._id || product.id;
-                return (
-                  <article className="admin-product-card" key={productId} data-testid={`admin-product-row-${productId}`}>
-                    <div>
-                      <strong>{product.name}</strong>
-                      <p>{product.description}</p>
-                      <small>Stock: {product.stock} · Precio: ${Number(product.price || 0).toFixed(2)}</small>
-                    </div>
-                    <div className="admin-product-card__actions">
-                      <Button type="button" variant="secondary" onClick={() => handleEdit(product)} data-testid={`admin-edit-${productId}`}>Editar</Button>
-                      <Button type="button" variant="ghost" onClick={() => handleDelete(productId)} data-testid={`admin-delete-${productId}`}>Eliminar</Button>
-                    </div>
-                  </article>
-                );
-              })}
-              {!products.length && <p className="page__status">No hay productos disponibles para administrar.</p>}
-            </div>
+            <>
+              <div className="admin-products-list__items" data-testid="admin-products-list">
+                {products.map((product) => {
+                  const productId = product._id || product.id;
+                  const imageUrl = getImageUrl(product);
+                  return (
+                    <article className="admin-product-card" key={productId} data-testid={`admin-product-row-${productId}`}>
+                      <div className="admin-product-card__media" data-testid={`admin-product-image-wrap-${productId}`}>
+                        {imageUrl ? (
+                          <img src={imageUrl} alt={product.name} className="admin-product-card__image" data-testid={`admin-product-image-${productId}`} />
+                        ) : (
+                          <div className="admin-product-card__image-fallback" data-testid={`admin-product-image-empty-${productId}`}>
+                            Sin imagen
+                          </div>
+                        )}
+                      </div>
+                      <div className="admin-product-card__content">
+                        <strong>{product.name}</strong>
+                        <p>{product.description}</p>
+                        <small>Stock: {product.stock} · Precio: ${Number(product.price || 0).toFixed(2)}</small>
+                      </div>
+                      <div className="admin-product-card__actions">
+                        <Button type="button" variant="secondary" onClick={() => handleEdit(product)} data-testid={`admin-edit-${productId}`}>Editar</Button>
+                        <Button type="button" variant="ghost" onClick={() => handleDelete(productId)} data-testid={`admin-delete-${productId}`}>Eliminar</Button>
+                      </div>
+                    </article>
+                  );
+                })}
+                {!products.length && <p className="page__status">No hay productos disponibles para administrar.</p>}
+              </div>
+
+              {pagination.totalPages > 1 && (
+                <div className="admin-products-pagination" data-testid="admin-products-pagination">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => setPage((currentPage) => Math.max(currentPage - 1, 1))}
+                    disabled={!pagination.hasPrev}
+                    data-testid="admin-products-prev"
+                  >
+                    Anterior
+                  </Button>
+                  <span className="admin-products-pagination__text" data-testid="admin-products-pagination-text">
+                    Pagina {pagination.currentPage} de {pagination.totalPages}
+                  </span>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => setPage((currentPage) => currentPage + 1)}
+                    disabled={!pagination.hasNext}
+                    data-testid="admin-products-next"
+                  >
+                    Siguiente
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </section>
       </section>

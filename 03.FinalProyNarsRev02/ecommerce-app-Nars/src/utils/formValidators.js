@@ -18,6 +18,7 @@ const digitsOnly = (value) => String(value || "").replace(/\D/g, "");
 export const validateCheckoutFields = ({
   requiresNewShipping,
   requiresNewPayment,
+  allowStoredPaymentNumber,
   name,
   address,
   city,
@@ -51,7 +52,8 @@ export const validateCheckoutFields = ({
     if (!cardHolder || cardHolder.trim().length < 2) return "Ingresa el nombre del titular de la tarjeta.";
 
     const normalizedCardNumber = digitsOnly(cardNumber);
-    if (normalizedCardNumber.length < 13 || normalizedCardNumber.length > 19) {
+    const hasStoredCardReference = allowStoredPaymentNumber && normalizedCardNumber.length === 4;
+    if (!hasStoredCardReference && (normalizedCardNumber.length < 13 || normalizedCardNumber.length > 19)) {
       return "Ingresa un número de tarjeta válido.";
     }
 

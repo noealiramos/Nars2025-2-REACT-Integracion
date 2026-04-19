@@ -12,6 +12,8 @@ const orderSchema = new mongoose.Schema(
     ],
     shippingAddress: { type: mongoose.Schema.Types.ObjectId, ref: 'ShippingAddress', required: true },
     paymentMethod: { type: mongoose.Schema.Types.ObjectId, ref: 'PaymentMethod', required: true },
+    subtotal: { type: Number, required: true, default: 0 },
+    taxAmount: { type: Number, required: true, default: 0 },
     shippingCost: { type: Number, required: true, default: 0 },
     totalPrice: { type: Number, required: true },
     status: {
