@@ -47,6 +47,14 @@ CYPRESS_API_URL=http://localhost:3001/api
 CYPRESS_BASE_URL=http://localhost:5173
 ```
 
+Para produccion en Vercel o Netlify, la variable obligatoria es:
+
+```bash
+VITE_API_URL=https://<tu-backend>.onrender.com/api
+```
+
+El proyecto usa `BrowserRouter`, por lo que necesita rewrite SPA en hosting estatico. Para Vercel ya existe `vercel.json` en la raiz del frontend.
+
 ## Funcionalidades actuales
 
 - Catalogo dinamico consumido desde la API

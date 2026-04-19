@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: ramdi-jewelry-api
+    runtime: node
+    rootDir: ecommerce-api-Nars
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health

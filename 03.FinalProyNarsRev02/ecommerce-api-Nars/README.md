@@ -45,7 +45,10 @@ npm run lint
 
 Variables principales:
 
+- usar `./.env.example` como plantilla base
+
 - `PORT`
+- `PUBLIC_API_URL`
 - `MONGODB_URI`
 - `MONGODB_DB`
 - `JWT_SECRET`
@@ -123,3 +126,8 @@ La suite incluye unit, integration y security tests.
 - en produccion se deben sacar secretos del repositorio
 - `ENABLE_TEST_AUTH_TOOLS` debe ir en `false`
 - `START_SERVER` debe ajustarse segun entorno
+- `PORT` debe ser suministrado por la plataforma si aplica; el servidor ya usa `process.env.PORT`
+- `PUBLIC_API_URL` debe apuntar a la URL publica real del backend desplegado
+- `CORS_WHITELIST` debe incluir el dominio real del frontend desplegado
+- `MONGODB_URI` debe ser compatible con MongoDB Atlas para despliegue remoto
+- existe blueprint base en `../render.yaml` para Render

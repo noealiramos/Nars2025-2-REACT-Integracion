@@ -117,6 +117,46 @@ npx cypress run
 - Base de datos: MongoDB Atlas
 - Frontend: Vercel, Netlify o Render Static Site
 
+### Backend en Render
+
+- Blueprint opcional disponible en `render.yaml`
+- Root directory: `ecommerce-api-Nars`
+- Build command: `npm install`
+- Start command: `npm start`
+- Health check: `/api/health`
+
+Variables recomendadas en Render:
+
+- `NODE_ENV=production`
+- `PUBLIC_API_URL=https://<tu-backend>.onrender.com`
+- `MONGODB_URI=<mongodb+srv://...>`
+- `MONGODB_DB=<nombre-db>`
+- `JWT_SECRET=<secreto-largo>`
+- `CORS_WHITELIST=https://<tu-frontend>.vercel.app`
+- `ACCESS_TOKEN_TTL=15m`
+- `REFRESH_TOKEN_TTL=7d`
+- `ENABLE_TEST_AUTH_TOOLS=false`
+- `START_SERVER=true`
+- `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` solo si se requiere carga de imagenes admin
+
+### Frontend en Vercel
+
+- Root directory: `ecommerce-app-Nars`
+- Build command: `npm run build`
+- Output directory: `dist`
+- Rewrites SPA disponibles en `ecommerce-app-Nars/vercel.json`
+
+Variables recomendadas en Vercel:
+
+- `VITE_API_URL=https://<tu-backend>.onrender.com/api`
+
+### Base de datos en MongoDB Atlas
+
+- Crear cluster y usuario dedicados
+- Autorizar la IP de Render o usar acceso controlado segun politica del proyecto
+- Usar connection string `mongodb+srv://...` en `MONGODB_URI`
+- Mantener el nombre de base en `MONGODB_DB`
+
 Para produccion:
 
 - desactivar `ENABLE_TEST_AUTH_TOOLS`
