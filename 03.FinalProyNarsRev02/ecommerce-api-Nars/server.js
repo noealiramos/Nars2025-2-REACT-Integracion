@@ -34,12 +34,11 @@ export async function bootstrapServer({ startListening = (env.NODE_ENV !== 'test
     }
 
     if (startListening) {
-      const PORT = process.env.PORT || env.PORT || 3001;
+      const PORT = env.PORT;
       serverInstance = await new Promise((resolve) => {
         const server = app.listen(PORT, () => {
           logger.info({
             message: 'Server started',
-            port: PORT,
             url: env.PUBLIC_API_URL,
             environment: env.NODE_ENV,
           });
