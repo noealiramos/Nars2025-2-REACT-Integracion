@@ -11,19 +11,19 @@ import { AdminRoute } from "./components/organisms/AdminRoute";
 import { GuestOnlyRoute } from "./components/organisms/GuestOnlyRoute";
 import { CartPage } from "./pages/CartPage";
 import { ConfirmationPage } from "./pages/ConfirmationPage";
-import { OrdersPage } from "./pages/OrdersPage";
-import { OrderDetailPage } from "./pages/OrderDetailPage";
-import { AdminProductsPage } from "./pages/AdminProductsPage";
-import { AdminCategoriesPage } from "./pages/AdminCategoriesPage";
-import { WishlistPage } from "./pages/WishlistPage";
-import { LoginPage } from "./pages/LoginPage";
-import { RegisterPage } from "./pages/RegisterPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 
 const HomePage = lazy(() => import("./pages/HomePage").then((module) => ({ default: module.HomePage })));
 const ProductDetailPage = lazy(() => import("./pages/ProductDetailPage").then((module) => ({ default: module.ProductDetailPage })));
 const CheckoutPage = lazy(() => import("./pages/CheckoutPage").then((module) => ({ default: module.CheckoutPage })));
 const ProfilePage = lazy(() => import("./pages/ProfilePage").then((module) => ({ default: module.ProfilePage })));
+const OrdersPage = lazy(() => import("./pages/OrdersPage").then((module) => ({ default: module.OrdersPage })));
+const OrderDetailPage = lazy(() => import("./pages/OrderDetailPage").then((module) => ({ default: module.OrderDetailPage })));
+const AdminProductsPage = lazy(() => import("./pages/AdminProductsPage").then((module) => ({ default: module.AdminProductsPage })));
+const AdminCategoriesPage = lazy(() => import("./pages/AdminCategoriesPage").then((module) => ({ default: module.AdminCategoriesPage })));
+const WishlistPage = lazy(() => import("./pages/WishlistPage").then((module) => ({ default: module.WishlistPage })));
+const LoginPage = lazy(() => import("./pages/LoginPage").then((module) => ({ default: module.LoginPage })));
+const RegisterPage = lazy(() => import("./pages/RegisterPage").then((module) => ({ default: module.RegisterPage })));
 
 function RouteFallback() {
   return (

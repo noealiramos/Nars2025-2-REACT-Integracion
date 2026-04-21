@@ -1,5 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getCurrentUser, login as authLogin, logout as authLogout } from "../services/authService";
+import {
+  bootstrapSession,
+  clearAuthSession,
+  login as authLogin,
+  logout as authLogout,
+} from "../services/authService";
 
 const AuthContext = createContext(null);
 
@@ -10,21 +15,41 @@ export function AuthProvider({ children }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const current = getCurrentUser();
-    if (current) {
-      setUser(current);
-      setIsAuthenticated(true);
-    }
-    setLoading(false);
+    let active = true;
+
+    const initializeAuth = async () => {
+      setLoading(true);
+
+      const result = await bootstrapSession();
+
+      if (!active) return;
+
+      if (result.success && result.user) {
+        setUser(result.user);
+        setIsAuthenticated(true);
+      } else {
+        setUser(null);
+        setIsAuthenticated(false);
+      }
+
+      setLoading(false);
+    };
+
+    initializeAuth();
 
     // Listener para errores de autenticación (ej: refresh token expirado)
     const handleAuthError = () => {
+      clearAuthSession();
       setUser(null);
       setIsAuthenticated(false);
+      setLoading(false);
     };
 
     window.addEventListener("auth-error", handleAuthError);
-    return () => window.removeEventListener("auth-error", handleAuthError);
+    return () => {
+      active = false;
+      window.removeEventListener("auth-error", handleAuthError);
+    };
   }, []);
 
   const login = async (email, password) => {
@@ -45,6 +70,7 @@ export function AuthProvider({ children }) {
     authLogout();
     setUser(null);
     setIsAuthenticated(false);
+    setLoading(false);
   };
 
   const restoreSession = (nextUser) => {

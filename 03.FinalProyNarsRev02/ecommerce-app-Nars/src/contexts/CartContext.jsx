@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useReducer } from "react";
 import { cartApi } from "../api/cartApi";
 import { useAuth } from "./AuthContext";
 import { useCartStockValidation } from "../hooks/useCartStockValidation";
@@ -6,48 +6,92 @@ import { logger } from "../utils/logger";
 
 const CartContext = createContext(null);
 
+const initialState = {
+  items: [],
+  cartId: null,
+  isLoading: true,
+  error: null,
+};
+
+function mapCartToItems(cart) {
+  if (!cart || !Array.isArray(cart.products)) return [];
+
+  return cart.products
+    .map((item) => {
+      const product = item.product || {};
+      const image = Array.isArray(product.imagesUrl)
+        ? product.imagesUrl[0]
+        : product.imagesUrl || product.image || "";
+
+      return {
+        id: product._id || product.id || item.product,
+        productId: product._id || product.id || item.product,
+        name: product.name || "Producto",
+        price: Number(product.price || 0),
+        image,
+        stock: Number(product.stock || 0),
+        quantity: Number(item.quantity || 0),
+      };
+    })
+    .filter((item) => item.id);
+}
+
+function cartReducer(state, action) {
+  switch (action.type) {
+    case "LOAD_START":
+      return {
+        ...state,
+        isLoading: true,
+        error: null,
+      };
+    case "LOAD_SUCCESS":
+    case "SET_CART":
+      return {
+        ...state,
+        cartId: action.payload?._id || action.payload?.id || null,
+        items: mapCartToItems(action.payload),
+        isLoading: false,
+        error: null,
+      };
+    case "LOAD_ERROR":
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload,
+      };
+    case "CLEAR_CART_STATE":
+      return {
+        ...state,
+        cartId: null,
+        items: [],
+        isLoading: false,
+        error: null,
+      };
+    case "RESET_CART_CONTENT":
+      return {
+        ...state,
+        cartId: null,
+        items: [],
+      };
+    default:
+      return state;
+  }
+}
+
 export function CartProvider({ children }) {
   const { isAuthenticated } = useAuth();
   const { showStockError, getSafeRequestedQuantity, getSafeAddQuantity } = useCartStockValidation();
-  const [items, setItems] = useState([]);
-  const [cartId, setCartId] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const mapCartToItems = (cart) => {
-    if (!cart || !Array.isArray(cart.products)) return [];
-
-    return cart.products
-      .map((item) => {
-        const product = item.product || {};
-        const image = Array.isArray(product.imagesUrl)
-          ? product.imagesUrl[0]
-          : product.imagesUrl || product.image || "";
-
-        return {
-          id: product._id || product.id || item.product,
-          productId: product._id || product.id || item.product,
-          name: product.name || "Producto",
-          price: Number(product.price || 0),
-          image,
-          stock: Number(product.stock || 0),
-          quantity: Number(item.quantity || 0),
-        };
-      })
-      .filter((item) => item.id);
-  };
+  const [state, dispatch] = useReducer(cartReducer, initialState);
 
   const applyCartResponse = (cart) => {
-    setCartId(cart?._id || cart?.id || null);
-    setItems(mapCartToItems(cart));
+    dispatch({ type: "SET_CART", payload: cart });
   };
 
   useEffect(() => {
     let active = true;
 
     const loadCart = async () => {
-      setIsLoading(true);
-      setError(null);
+      dispatch({ type: "LOAD_START" });
 
       try {
         if (isAuthenticated) {
@@ -56,14 +100,14 @@ export function CartProvider({ children }) {
           applyCartResponse(cart);
         } else {
           if (!active) return;
-          setCartId(null);
-          setItems([]);
+          dispatch({ type: "CLEAR_CART_STATE" });
         }
       } catch (loadError) {
         if (!active) return;
-        setError(loadError?.message || "No pudimos cargar el carrito.");
-      } finally {
-        if (active) setIsLoading(false);
+        dispatch({
+          type: "LOAD_ERROR",
+          payload: loadError?.message || "No pudimos cargar el carrito.",
+        });
       }
     };
 
@@ -75,12 +119,12 @@ export function CartProvider({ children }) {
   }, [isAuthenticated]);
 
   const persistCartItems = async (nextItems) => {
-    if (nextItems.length === 0 && !cartId) {
-      setItems([]);
+    if (nextItems.length === 0 && !state.cartId) {
+      dispatch({ type: "RESET_CART_CONTENT" });
       return;
     }
 
-    if (!cartId && nextItems.length > 0) {
+    if (!state.cartId && nextItems.length > 0) {
       const first = nextItems[0];
       const created = await cartApi.addProduct(first.id, first.quantity || 1);
       const createdId = created?._id || created?.id;
@@ -103,7 +147,7 @@ export function CartProvider({ children }) {
       product: item.id,
       quantity: item.quantity,
     }));
-    const updated = await cartApi.update(cartId, productsPayload);
+    const updated = await cartApi.update(state.cartId, productsPayload);
     applyCartResponse(updated);
   };
 
@@ -118,7 +162,7 @@ export function CartProvider({ children }) {
     }
 
     const productId = product.id || product._id;
-    const existingItem = items.find((item) => item.id === productId);
+    const existingItem = state.items.find((item) => item.id === productId);
     const addValidation = getSafeAddQuantity(product, existingItem?.quantity || 0, quantity);
 
     if (!addValidation.ok) {
@@ -126,16 +170,16 @@ export function CartProvider({ children }) {
       return;
     }
 
-    setIsLoading(true);
-    setError(null);
+    dispatch({ type: "LOAD_START" });
 
     try {
       const cart = await cartApi.addProduct(product.id || product._id, quantity);
       applyCartResponse(cart);
     } catch (requestError) {
-      setError(requestError?.response?.data?.message || requestError.message);
-    } finally {
-      setIsLoading(false);
+      dispatch({
+        type: "LOAD_ERROR",
+        payload: requestError?.response?.data?.message || requestError.message,
+      });
     }
   };
 
@@ -145,17 +189,17 @@ export function CartProvider({ children }) {
       return;
     }
 
-    const nextItems = items.filter((item) => item.id !== productId);
+    const nextItems = state.items.filter((item) => item.id !== productId);
 
-    setIsLoading(true);
-    setError(null);
+    dispatch({ type: "LOAD_START" });
 
     try {
       await persistCartItems(nextItems);
     } catch (requestError) {
-      setError(requestError?.response?.data?.message || requestError.message);
-    } finally {
-      setIsLoading(false);
+      dispatch({
+        type: "LOAD_ERROR",
+        payload: requestError?.response?.data?.message || requestError.message,
+      });
     }
   };
 
@@ -165,15 +209,15 @@ export function CartProvider({ children }) {
       return;
     }
 
-    setIsLoading(true);
-    setError(null);
+    dispatch({ type: "LOAD_START" });
 
     try {
       await persistCartItems([]);
     } catch (requestError) {
-      setError(requestError?.response?.data?.message || requestError.message);
-    } finally {
-      setIsLoading(false);
+      dispatch({
+        type: "LOAD_ERROR",
+        payload: requestError?.response?.data?.message || requestError.message,
+      });
     }
   };
 
@@ -188,53 +232,54 @@ export function CartProvider({ children }) {
       return;
     }
 
-     const currentItem = items.find((item) => item.id === productId);
-     const validation = getSafeRequestedQuantity(currentItem, quantity);
+    const currentItem = state.items.find((item) => item.id === productId);
+    const validation = getSafeRequestedQuantity(currentItem, quantity);
 
-     if (!validation.ok) {
-       showStockError(validation.message);
-       if (validation.quantity === currentItem?.quantity) {
-         return;
-       }
-       quantity = validation.quantity;
-     }
+    if (!validation.ok) {
+      showStockError(validation.message);
+      if (validation.quantity === currentItem?.quantity) {
+        return;
+      }
+      quantity = validation.quantity;
+    }
 
-    const nextItems = items.map((item) =>
+    const nextItems = state.items.map((item) =>
       item.id === productId ? { ...item, quantity } : item
     );
 
-     setIsLoading(true);
-     setError(null);
+    dispatch({ type: "LOAD_START" });
 
     try {
       await persistCartItems(nextItems);
     } catch (requestError) {
-      setError(requestError?.response?.data?.message || requestError.message);
-    } finally {
-      setIsLoading(false);
+      dispatch({
+        type: "LOAD_ERROR",
+        payload: requestError?.response?.data?.message || requestError.message,
+      });
     }
   };
 
   const totalItems = useMemo(
-    () => items.reduce((acc, item) => acc + item.quantity, 0),
-    [items]
+    () => state.items.reduce((acc, item) => acc + item.quantity, 0),
+    [state.items]
   );
 
   const totalPrice = useMemo(
-    () => items.reduce((acc, item) => acc + item.price * item.quantity, 0),
-    [items]
+    () => state.items.reduce((acc, item) => acc + item.price * item.quantity, 0),
+    [state.items]
   );
 
   const value = {
-    items,
-    isLoading,
-    error,
+    items: state.items,
+    isLoading: state.isLoading,
+    error: state.error,
     addItem,
     removeItem,
     clearCart,
     updateQuantity,
     totalItems,
     totalPrice,
+    cartId: state.cartId,
     isGuestMode: !isAuthenticated,
   };
 
