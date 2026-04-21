@@ -42,11 +42,11 @@
 
 ## 5. Output de Terminal
 - El output completo y sin resumir de la validacion se preservo verbatim en estos archivos generados durante la ejecucion:
-- `docs/bitacora/2026-04-19_13-22_backend_start.log`
-- `docs/bitacora/2026-04-19_13-22_frontend_start.log`
-- `docs/bitacora/2026-04-19_13-22_cypress_run.log`
-- `docs/bitacora/2026-04-19_13-22_cypress_run_rerun.log`
-- `docs/bitacora/2026-04-19_13-22_cypress_run_final.log`
+- `docs/archive/bitacora/2026-04-19_13-22_backend_start.log`
+- `docs/archive/bitacora/2026-04-19_13-22_frontend_start.log`
+- `docs/archive/bitacora/2026-04-19_13-22_cypress_run.log`
+- `docs/archive/bitacora/2026-04-19_13-22_cypress_run_rerun.log`
+- `docs/archive/bitacora/2026-04-19_13-22_cypress_run_final.log`
 
 ### Estado/health check previo a Cypress
 
@@ -130,4 +130,4 @@ Corrida 3 Cypress:
 - Suite que paso: corrida completa real de `npx cypress run` sobre 13 specs.
 - Total final: `33/33` tests passing.
 - Servicios usados: backend real `http://localhost:3001` y frontend real `http://localhost:5173`.
-- Evidencia de OK: `docs/bitacora/2026-04-19_13-22_backend_start.log`, `docs/bitacora/2026-04-19_13-22_frontend_start.log`, `docs/bitacora/2026-04-19_13-22_cypress_run.log`, `docs/bitacora/2026-04-19_13-22_cypress_run_rerun.log` y `docs/bitacora/2026-04-19_13-22_cypress_run_final.log`.
+- Evidencia de OK: `docs/archive/bitacora/2026-04-19_13-22_backend_start.log`, `docs/archive/bitacora/2026-04-19_13-22_frontend_start.log`, `docs/archive/bitacora/2026-04-19_13-22_cypress_run.log`, `docs/archive/bitacora/2026-04-19_13-22_cypress_run_rerun.log` y `docs/archive/bitacora/2026-04-19_13-22_cypress_run_final.log`.

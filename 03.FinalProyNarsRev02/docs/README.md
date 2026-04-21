@@ -1,38 +1,31 @@
 # Docs index
 
-## Documentos canonicos
+## Documentacion vigente
 
-- `docs/architecture.md`: vision tecnica general
-- `docs/endpoints.md`: resumen practico de endpoints
-- `docs/audit/`: auditorias recientes y vigentes
-- `docs/qa/`: validaciones, smoke tests y ejecucion de suites
-- `docs/fixes/`: fixes tecnicos puntuales
-- `docs/specs/`: decisiones y specs de implementacion recientes
-- `docs/release/`: limpieza final y release notes
-- `docs/archive/`: historico movido para no contaminar la entrega
+- `docs/architecture.md`: vision tecnica general del sistema.
+- `docs/endpoints.md`: resumen practico de endpoints y contratos API.
+- `docs/release/2026-04-19-0115-repo-cleanup-docs.md`: primera limpieza estructural del repositorio.
+- `docs/release/2026-04-19-1238-env-hardening.md`: endurecimiento de configuracion y readiness de despliegue.
+- `docs/auto-audit/2026-04-21.1704hrs.DOCS_CLEANUP_FULL.md`: auditoria documental mas reciente y estado final de limpieza.
+- `docs/archive/`: historico preservado para trazabilidad y defensa.
 
-## Lectura recomendada
+## Estado actual del sistema
 
-### Para evaluar el proyecto rapido
+- Proyecto fullstack terminado.
+- Backend y frontend reportados como deployados en Render.
+- Base de datos reportada en MongoDB Atlas.
+- La evidencia historica de QA, bitacoras y auditorias previas se conserva en `docs/archive/`.
+
+## Flujo de lectura recomendado
 
 1. `../README.md`
 2. `architecture.md`
 3. `endpoints.md`
-4. `audit/2026-04-18-2045-auditoria-rubrica-ecommerce.md`
-5. `qa/2026-04-18-2105-validacion-suite-completa.md`
-
-### Para revisar calidad tecnica
-
-- `qa/2026-04-18-1938-smoke-test-funcional.md`
-- `qa/2026-04-18-2335-backend-bootstrap-seed-fix.md`
-- `qa/2026-04-18-2359-auth-lifecycle-e2e-fix.md`
-
-### Para revisar cambios funcionales recientes
-
-- `specs/2026-04-18-17-20-home-paginacion-implementacion.md`
-- `specs/2026-04-18-17-35-admin-paginacion-implementacion.md`
-- `specs/2026-04-18-18-05-admin-categories-paginacion-implementacion.md`
+4. `release/2026-04-19-1238-env-hardening.md`
+5. `auto-audit/2026-04-21.1704hrs.DOCS_CLEANUP_FULL.md`
+6. `release/2026-04-19-0115-repo-cleanup-docs.md`
 
 ## Nota
 
-El contenido de `docs/archive/` se conserva por trazabilidad, pero no representa necesariamente el estado actual recomendado de entrega.
+- `docs/archive/` concentra documentacion obsoleta, iteraciones, prompts operativos, bitacoras y logs conservados solo por trazabilidad.
+- La referencia principal de auditoria vigente es `docs/auto-audit/2026-04-21.1704hrs.DOCS_CLEANUP_FULL.md`.

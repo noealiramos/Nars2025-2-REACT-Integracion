@@ -44,26 +44,26 @@
 
 ## 5. Output de Terminal
 - El output completo de terminal se preservo sin resumir en los siguientes archivos generados durante la ejecucion:
-- `docs/bitacora/2026-04-19_13-49_cleanup_search.log`
-- `docs/bitacora/2026-04-19_13-49_cleanup_validation.log`
-- `docs/bitacora/2026-04-19_13-49_cleanup_backend.log`
-- `docs/bitacora/2026-04-19_13-49_cleanup_frontend.log`
-- `docs/bitacora/2026-04-19_13-49_cleanup_cypress.log`
+- `docs/archive/bitacora/2026-04-19_13-49_cleanup_search.log`
+- `docs/archive/bitacora/2026-04-19_13-49_cleanup_validation.log`
+- `docs/archive/bitacora/2026-04-19_13-49_cleanup_backend.log`
+- `docs/archive/bitacora/2026-04-19_13-49_cleanup_frontend.log`
+- `docs/archive/bitacora/2026-04-19_13-49_cleanup_cypress.log`
 
 ### Busqueda de referencias
-- Ver `docs/bitacora/2026-04-19_13-49_cleanup_search.log`
+- Ver `docs/archive/bitacora/2026-04-19_13-49_cleanup_search.log`
 
 ### Validaciones previas y representativas
-- Ver `docs/bitacora/2026-04-19_13-49_cleanup_validation.log`
+- Ver `docs/archive/bitacora/2026-04-19_13-49_cleanup_validation.log`
 
 ### Arranque backend
-- Ver `docs/bitacora/2026-04-19_13-49_cleanup_backend.log`
+- Ver `docs/archive/bitacora/2026-04-19_13-49_cleanup_backend.log`
 
 ### Arranque frontend
-- Ver `docs/bitacora/2026-04-19_13-49_cleanup_frontend.log`
+- Ver `docs/archive/bitacora/2026-04-19_13-49_cleanup_frontend.log`
 
 ### Corrida Cypress completa final
-- Ver `docs/bitacora/2026-04-19_13-49_cleanup_cypress.log`
+- Ver `docs/archive/bitacora/2026-04-19_13-49_cleanup_cypress.log`
 
 ## 6. Validacion funcional
 - Resultado de la corrida final: OK.
@@ -80,4 +80,4 @@
 ## 8. Resultado final
 - Clasificacion final: Cypress clean OK
 - Cierre tecnico exitoso: se dejo `allowCypressEnv: false` y la suite completa mantuvo `33/33` passing.
-- Evidencia principal: `docs/bitacora/2026-04-19_13-49_cleanup_cypress.log` y esta bitacora.
+- Evidencia principal: `docs/archive/bitacora/2026-04-19_13-49_cleanup_cypress.log` y esta bitacora.

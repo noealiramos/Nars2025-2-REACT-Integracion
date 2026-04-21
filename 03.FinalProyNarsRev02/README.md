@@ -169,6 +169,6 @@ Para produccion:
 - `docs/README.md`
 - `docs/architecture.md`
 - `docs/endpoints.md`
-- `docs/qa/`
-- `docs/audit/`
-- `docs/fixes/`
+- `docs/release/2026-04-19-1238-env-hardening.md`
+- `docs/auto-audit/2026-04-21.1704hrs.DOCS_CLEANUP_FULL.md`
+- `docs/archive/`
