@@ -32,6 +32,32 @@ describe("CartPage", () => {
     expect(screen.getByText(/Cargando carrito/i)).toBeInTheDocument();
   });
 
+  it("mantiene items visibles durante loading si el carrito ya tiene productos", () => {
+    useCart.mockReturnValue({
+      items: [
+        {
+          id: "p1",
+          name: "Anillo",
+          price: 120,
+          quantity: 2,
+          image: "img",
+        },
+      ],
+      totalPrice: 240,
+      updateQuantity: vi.fn(),
+      removeItem: vi.fn(),
+      clearCart: vi.fn(),
+      isLoading: true,
+      error: null,
+      isGuestMode: false,
+    });
+
+    renderPage();
+    expect(screen.queryByText(/Cargando carrito/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/Tienes 1 producto/i)).toBeInTheDocument();
+    expect(screen.getByText(/Anillo/i)).toBeInTheDocument();
+  });
+
   it("renderiza estado error", () => {
     useCart.mockReturnValue({
       items: [],

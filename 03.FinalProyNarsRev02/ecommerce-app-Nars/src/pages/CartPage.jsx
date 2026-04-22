@@ -15,21 +15,22 @@ export function CartPage() {
   };
 
   const isEmpty = items.length === 0;
+  const showInitialLoading = isLoading && isEmpty && !error && !isGuestMode;
 
   return (
     <main className="page container cart-page">
       <Heading level={2}>Tu carrito</Heading>
       <div className="cart-page__layout">
         <section>
-          {isLoading && (
+          {showInitialLoading && (
             <p className="cart-page__status">Cargando carrito...</p>
           )}
-          {!isLoading && error && (
+          {!showInitialLoading && error && (
             <p className="cart-page__status cart-page__status--error">
               {error}
             </p>
           )}
-          {!isLoading && !error && isGuestMode ? (
+          {!showInitialLoading && !error && isGuestMode ? (
             <div className="cart-empty cart-empty--guest" data-testid="guest-cart-state">
               <p className="cart-empty__title">Inicia sesión para usar tu carrito</p>
               <p className="cart-empty__text">
@@ -40,7 +41,7 @@ export function CartPage() {
               </Link>
             </div>
           ) : null}
-          {!isLoading && !error && !isGuestMode && isEmpty ? (
+          {!showInitialLoading && !error && !isGuestMode && isEmpty ? (
             <div className="cart-empty">
               <p className="cart-empty__title">Tu carrito está vacío</p>
               <p className="cart-empty__text">
@@ -51,7 +52,7 @@ export function CartPage() {
               </Link>
             </div>
           ) : null}
-          {!isLoading && !error && !isGuestMode && !isEmpty && (
+          {!error && !isGuestMode && !isEmpty && (
             <div className="cart-items">
               <div className="cart-items__header">
                 <p className="cart-items__info">
@@ -74,10 +75,10 @@ export function CartPage() {
         </section>
 
         <section className="cart-page__summary">
-          {!isLoading && !error && !isGuestMode && !isEmpty && (
+          {!error && !isGuestMode && !isEmpty && (
             <CartSummary subtotal={totalPrice} onCheckout={handleCheckout} />
           )}
-          {!isLoading && !error && !isGuestMode && isEmpty && (
+          {!showInitialLoading && !error && !isGuestMode && isEmpty && (
             <p className="cart-page__hint">
               Agrega al menos una pieza para poder continuar al pago.
             </p>
