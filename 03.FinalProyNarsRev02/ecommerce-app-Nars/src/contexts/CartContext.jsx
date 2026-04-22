@@ -19,6 +19,7 @@ function mapCartToItems(cart) {
   return cart.products
     .map((item) => {
       const product = item.product || {};
+      const parsedStock = Number(product.stock);
       const image = Array.isArray(product.imagesUrl)
         ? product.imagesUrl[0]
         : product.imagesUrl || product.image || "";
@@ -29,7 +30,12 @@ function mapCartToItems(cart) {
         name: product.name || "Producto",
         price: Number(product.price || 0),
         image,
-        stock: Number(product.stock || 0),
+        stock:
+          product.stock == null || product.stock === ""
+            ? null
+            : Number.isFinite(parsedStock)
+              ? parsedStock
+              : null,
         quantity: Number(item.quantity || 0),
       };
     })

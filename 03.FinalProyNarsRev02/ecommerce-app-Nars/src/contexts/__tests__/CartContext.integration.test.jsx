@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, act, waitFor } from "@testing-library/react";
+import { renderHook, act, waitFor, screen } from "@testing-library/react";
 import { CartProvider, useCart } from "../CartContext";
 import { cartApi } from "../../api/cartApi";
 import { useAuth } from "../AuthContext";
-import { UIProvider } from "../UIContext";
+import { UIProvider, GlobalUIFeedback } from "../UIContext";
 
 vi.mock("../../api/cartApi", () => ({
   cartApi: {
@@ -20,6 +20,7 @@ vi.mock("../AuthContext", () => ({
 
 const wrapper = ({ children }) => (
   <UIProvider>
+    <GlobalUIFeedback />
     <CartProvider>{children}</CartProvider>
   </UIProvider>
 );
@@ -131,5 +132,88 @@ describe("CartContext integration", () => {
     expect(cartApi.update).toHaveBeenCalled();
     expect(result.current.totalItems).toBe(3);
     expect(result.current.totalPrice).toBe(30);
+  });
+
+  it("agrega producto cuando hay stock disponible", async () => {
+    authState.isAuthenticated = true;
+    cartApi.getCurrent.mockResolvedValue({ _id: "c1", products: [] });
+    cartApi.addProduct.mockResolvedValue({
+      _id: "c1",
+      products: [{ product: { _id: "p1", name: "Anillo", price: 120, stock: 4 }, quantity: 1 }],
+    });
+
+    const { result } = renderHook(() => useCart(), { wrapper });
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    await act(async () => {
+      await result.current.addItem({ _id: "p1", name: "Anillo", price: 120, stock: 4 }, 1);
+    });
+
+    expect(cartApi.addProduct).toHaveBeenCalledWith("p1", 1);
+    expect(result.current.items[0]).toMatchObject({ id: "p1", quantity: 1, stock: 4 });
+  });
+
+  it("permite incrementar cuando el carrito inicial llega sin stock poblado", async () => {
+    authState.isAuthenticated = true;
+    cartApi.getCurrent.mockResolvedValue({
+      _id: "c1",
+      products: [{ product: { _id: "p1", name: "Item", price: 10 }, quantity: 1 }],
+    });
+    cartApi.update.mockResolvedValue({
+      _id: "c1",
+      products: [{ product: { _id: "p1", name: "Item", price: 10, stock: 5 }, quantity: 2 }],
+    });
+
+    const { result } = renderHook(() => useCart(), { wrapper });
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    await act(async () => {
+      await result.current.updateQuantity("p1", 2);
+    });
+
+    expect(cartApi.update).toHaveBeenCalledWith("c1", [{ product: "p1", quantity: 2 }]);
+    expect(result.current.items[0].quantity).toBe(2);
+    expect(screen.queryByTestId("global-ui-message")).not.toBeInTheDocument();
+  });
+
+  it("mantiene bloqueo cuando el stock real es cero", async () => {
+    authState.isAuthenticated = true;
+    cartApi.getCurrent.mockResolvedValue({
+      _id: "c1",
+      products: [{ product: { _id: "p1", name: "Item", price: 10, stock: 0 }, quantity: 1 }],
+    });
+
+    const { result } = renderHook(() => useCart(), { wrapper });
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    await act(async () => {
+      await result.current.updateQuantity("p1", 2);
+    });
+
+    expect(cartApi.update).not.toHaveBeenCalled();
+    expect(screen.getByTestId("global-ui-message")).toHaveTextContent("Este producto ya no tiene stock disponible.");
+  });
+
+  it("elimina el producto cuando la cantidad pasa de 1 a 0", async () => {
+    authState.isAuthenticated = true;
+    cartApi.getCurrent.mockResolvedValue({
+      _id: "c1",
+      products: [{ product: { _id: "p1", name: "Item", price: 10, stock: 5 }, quantity: 1 }],
+    });
+    cartApi.update.mockResolvedValue({ _id: "c1", products: [] });
+
+    const { result } = renderHook(() => useCart(), { wrapper });
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    await act(async () => {
+      await result.current.updateQuantity("p1", 0);
+    });
+
+    expect(cartApi.update).toHaveBeenCalledWith("c1", []);
+    expect(result.current.items).toHaveLength(0);
   });
 });

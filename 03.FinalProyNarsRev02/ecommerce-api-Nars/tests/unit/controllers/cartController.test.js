@@ -127,7 +127,7 @@ describe('cartController', () => {
 
             await getCartByUser(req, res, next);
             expect(res.json).toHaveBeenCalled();
-            expect(populateMock).toHaveBeenNthCalledWith(2, 'products.product', 'name price _id imagesUrl image');
+            expect(populateMock).toHaveBeenNthCalledWith(2, 'products.product', 'name price stock _id imagesUrl image');
         });
 
         it('debe retornar una estructura vacia si el carrito no existe', async () => {

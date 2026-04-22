@@ -56,4 +56,4 @@ Ambas se comunican por HTTP usando `VITE_API_URL` en frontend.
 
 - Backend: Render
 - MongoDB: Atlas
-- Frontend: hosting estatico o Render/Vercel/Netlify
+- Frontend: hosting estatico o Render

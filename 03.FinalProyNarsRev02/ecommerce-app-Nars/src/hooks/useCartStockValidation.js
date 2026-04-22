@@ -8,13 +8,22 @@ export function useCartStockValidation() {
   };
 
   const getSafeRequestedQuantity = (item, requestedQuantity) => {
+    const rawStock = item?.stock;
     const stock = Number(item?.stock);
 
     if (!Number.isFinite(requestedQuantity) || requestedQuantity < 0) {
       return { ok: false, message: "La cantidad solicitada no es válida.", quantity: item?.quantity || 1 };
     }
 
-    if (!Number.isFinite(stock) || stock <= 0) {
+    if (rawStock == null || rawStock === "") {
+      return { ok: true, quantity: requestedQuantity };
+    }
+
+    if (!Number.isFinite(stock)) {
+      return { ok: true, quantity: requestedQuantity };
+    }
+
+    if (stock <= 0) {
       return { ok: false, message: "Este producto ya no tiene stock disponible.", quantity: item?.quantity || 1 };
     }
 
@@ -30,10 +39,19 @@ export function useCartStockValidation() {
   };
 
   const getSafeAddQuantity = (product, existingQuantity, delta) => {
+    const rawStock = product?.stock;
     const stock = Number(product?.stock);
     const requestedQuantity = Number(existingQuantity || 0) + Number(delta || 0);
 
-    if (!Number.isFinite(stock) || stock <= 0) {
+    if (rawStock == null || rawStock === "") {
+      return { ok: true, quantity: requestedQuantity };
+    }
+
+    if (!Number.isFinite(stock)) {
+      return { ok: true, quantity: requestedQuantity };
+    }
+
+    if (stock <= 0) {
       return { ok: false, message: "Este producto está agotado.", quantity: existingQuantity || 0 };
     }
 
